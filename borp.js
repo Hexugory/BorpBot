@@ -46,13 +46,13 @@ client
 		}
 		let memeChannelIDs = client.provider.get(msg.guild, 'memeChannelIDs', null);
 		if(memeChannelIDs != null){
-			if(memeChannelIDs.indexOf(msg.channel.id)){
+			if(memeChannelIDs.indexOf(msg.channel.id) > -1){
 				let customCommands = client.provider.get(msg.guild, 'customCommands', []);
 				let commandInput = msg.content;
 				if(commandInput.slice(0,1) === "'"){
-					function findCommand(element){return element.name === commandInput}
+					
 					commandInput = commandInput.slice(1);
-					let commandIndex = customCommands.findIndex(findCommand);
+					let commandIndex = customCommands.findIndex(function(element){return element.name === commandInput});
 					if(commandIndex > -1){
 						msg.channel.sendMessage(customCommands[commandIndex].output);
 					}
