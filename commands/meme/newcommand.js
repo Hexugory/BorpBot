@@ -33,6 +33,8 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 	
 
 	async run(msg, args) {
+			return msg.reply('Do not use backticks "`" in your command name.');
+		}
 		let customCommands = this.client.provider.get(msg.guild, 'customCommands', []);
 		customCommands.push({
 			name: args.name,
