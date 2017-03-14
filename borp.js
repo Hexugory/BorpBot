@@ -50,6 +50,7 @@ client
 	.on('voiceStateUpdate', (oldMember, newMember) => {
 		let voiceAnnounceIDs = client.provider.get(oldMember.guild, 'voiceAnnounceIDs', null);
 		if(voiceAnnounceIDs != null){
+			//compare old channel state to new channel state
 			if(oldMember.voiceChannel === undefined && newMember.voiceChannel != undefined){
 				sendMessages(voiceAnnounceIDs, `**${oldMember.displayName}** joined **${newMember.voiceChannel.name}**.`);
 			}
