@@ -1,6 +1,6 @@
 const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
-const path =  require('path');
+const mMessages = require('../../perms.js').mMessages;
 
 module.exports = class AnnounceToggleCommand extends commando.Command {
 	constructor(client) {
@@ -28,7 +28,7 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 		}
 		else{
 			//manage messages
-			return msg.member.hasPermission(8192);
+			return msg.member.hasPermission(mMessages);
 		}
 	}
 
