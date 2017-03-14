@@ -18,6 +18,6 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 		for(var i = 0; i < customCommands.length; i++){
 			commandList += `\`${customCommands[i].name}\` `
 		}
-		return msg.reply(commandList);
+		return msg.channel.sendMessage(commandList);
 	}
 };
