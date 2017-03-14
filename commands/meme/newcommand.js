@@ -15,14 +15,16 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 					key: 'name',
 					label: 'name',
 					prompt: 'The command input.',
-					type: 'string'
+					type: 'string',
+					default: 'blank'
 				},
 				{
 					key: 'out',
 					label: 'output',
 					prompt: 'The command output.',
 					type: 'string',
-					infinite: true
+					infinite: true,
+					default: 'blank'
 				}
 			]
 		});
