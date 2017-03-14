@@ -27,8 +27,10 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
+		//check for a valid argument
 		if(['voice'].find(function(element){return element === args.announcer}) != undefined){
 			let list = this.client.provider.get(msg.guild, args.announcer + 'AnnounceIDs', []);
+			//check if the channel isnt already in the list
 			if(list.find(function(element){return element === msg.channel.id}) === undefined){
 				list.push(msg.channel.id);
 				this.client.provider.set(msg.guild, args.announcer + 'AnnounceIDs', list);
