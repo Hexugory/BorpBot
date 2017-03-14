@@ -31,17 +31,19 @@ client
 		//probably not a good idea to get these on every message
 		let xChannelIDs = client.provider.get(msg.guild, 'xChannelIDs', null);
 		if(xChannelIDs != null){
-			if(xChannelIDs.indexOf(msg.channel.id)){
-				if(msg.attachments.array()[0] != undefined){
-					if(msg.attachments.array()[0].id != undefined){
-						msg.react('\u{274c}')
+			if(xChannelIDs.indexOf(msg.channel.id) > -1){
+				setTimeout(function(){
+					if(msg.attachments.array()[0] != undefined){
+						if(msg.attachments.array()[0].id != undefined){
+							msg.react('\u{274c}')
+						}
 					}
-				}
-				if(msg.embeds[0] != undefined){
-					if(msg.embeds[0].type === 'video' || msg.embeds[0].type === 'image'){
-						msg.react('\u{274c}')
+					if(msg.embeds[0] != undefined){
+						if(msg.embeds[0].type === 'video' || msg.embeds[0].type === 'image'){
+							msg.react('\u{274c}')
+						}
 					}
-				}
+				}, 1000);
 			}
 		}
 		let memeChannelIDs = client.provider.get(msg.guild, 'memeChannelIDs', null);
