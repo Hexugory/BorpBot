@@ -23,7 +23,6 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 					label: 'output',
 					prompt: 'Enter command output',
 					type: 'string',
-					infinite: true,
 					default: 'blank'
 				}
 			]
@@ -39,7 +38,7 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 		let customCommands = this.client.provider.get(msg.guild, 'customCommands', []);
 		customCommands.push({
 			name: args.name,
-			output: args.out.join(" ")
+			output: args.out
 		});
 		this.client.provider.set(msg.guild, 'customCommands', customCommands);
 		return msg.reply(`\`'${args.name}\` added.`);
