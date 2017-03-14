@@ -39,7 +39,7 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 		if(['voice', 'x', 'meme'].indexOf(args.ac) > -1){
 			let list = this.client.provider.get(msg.guild, args.ac + 'ChannelIDs', []);
 			//check if the channel isnt already in the list
-			if(list.indexOf(msg.channel.id) > -1){
+			if(list.indexOf(msg.channel.id) === -1){
 				list.push(msg.channel.id);
 				this.client.provider.set(msg.guild, args.ac + 'ChannelIDs', list);
 				return msg.reply(`${msg.channel} added to **${args.ac}**.`);
