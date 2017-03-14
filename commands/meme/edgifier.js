@@ -27,7 +27,7 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
-		jimp.read(msg.author.avatarURL).then(function(ava){
+		jimp.read(msg.author.avatarURL + "?size=256").then(function(ava){
 			ava.greyscale()
 			.invert()
 			.color([
