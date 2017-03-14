@@ -16,7 +16,8 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 					key: 'name',
 					label: 'name',
 					prompt: 'The command input.',
-					type: 'string'
+					type: 'string',
+					default: 0
 				}
 			]
 		});
@@ -34,7 +35,12 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 
 	async run(msg, args) {
 		let customCommands = this.client.provider.get(msg.guild, 'customCommands', []);
-		customCommands.splice(customCommands.findIndex(function(element){return element.name === args.name}), 1)
+		if(args.name === 0){
+			customCommands.length -= 1;
+		}
+		else{
+			customCommands.splice(customCommands.findIndex(function(element){return element.name === args.name}), 1);
+		}
 		this.client.provider.set(msg.guild, 'customCommands', customCommands);
 		return msg.reply(`\`'${args.name}\` removed.`);
 	}
