@@ -29,7 +29,6 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 			return true;
 		}
 		else{
-			//manage channels
 			return msg.member.hasPermission(mChannels);
 		}
 	}
