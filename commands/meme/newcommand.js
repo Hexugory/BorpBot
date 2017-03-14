@@ -8,6 +8,8 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 			group: 'meme',
 			memberName: 'newcommand',
 			description: 'Adds a custom command.',
+			guildOnly: true,
+			throttling:{usages:1, duration:30},
 			examples: ['\'newcommand sumirekt http://i.imgur.com/yUKLbuc.jpg'],
 
 			args: [

@@ -11,6 +11,7 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 			memberName: 'setchannel',
 			description: 'Adds the channel to the specified automated action.',
 			examples: ['\'setchannel voice'],
+			guildOnly: true,
 
 			args: [
 				{

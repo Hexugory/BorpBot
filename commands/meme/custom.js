@@ -8,6 +8,7 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 			group: 'meme',
 			memberName: 'custom',
 			description: 'Lists custom commands.'
+			guildOnly: true,
 		});
 	}
 	
