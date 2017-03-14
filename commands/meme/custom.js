@@ -1,6 +1,5 @@
 const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
-const path =  require('path');
 
 module.exports = class AnnounceToggleCommand extends commando.Command {
 	constructor(client) {
