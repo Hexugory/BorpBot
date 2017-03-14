@@ -10,6 +10,7 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 			memberName: 'removecommand',
 			description: 'Removes a custom command.',
 			examples: ['\'removecommand sumirekt'],
+			guildOnly: true,
 
 			args: [
 				{
