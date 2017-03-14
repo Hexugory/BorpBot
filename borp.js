@@ -28,6 +28,7 @@ client
 	.on('disconnect', () => { console.warn('Disconnected!'); })
 	.on('reconnecting', () => { console.warn('Reconnecting...'); })
 	.on('message', (msg) => {
+		//probably not a good idea to get these on every message
 		let xChannelIDs = client.provider.get(msg.guild, 'xChannelIDs', null);
 		if(xChannelIDs != null){
 			if(xChannelIDs.find(function(element){return element === msg.channel.id})){
@@ -39,6 +40,20 @@ client
 				if(msg.embeds[0] != undefined){
 					if(msg.embeds[0].type === 'video' || msg.embeds[0].type === 'image'){
 						msg.react('\u{274c}')
+					}
+				}
+			}
+		}
+		let memeChannelIDs = client.provider.get(msg.guild, 'memeChannelIDs', null);
+		if(memeChannelIDs != null){
+			if(memeChannelIDs.find(function(element){return element === msg.channel.id})){
+				let customCommands = client.provider.get(msg.guild, 'customCommands', []);
+				let commandInput = msg.content;
+				if(commandInput.slice(0,1) === "'"){
+					commandInput = commandInput.slice(1);
+					let commandIndex = customCommands.findIndex(function(element){return element.name === commandInput});
+					if(commandIndex > -1){
+						msg.channel.sendMessage(customCommands[commandIndex].output);
 					}
 				}
 			}
@@ -103,7 +118,6 @@ client.setProvider(
 
 client.registry
 	.registerGroups([
-	['custom', 'Custom meme commands'],
 	['meme', 'Meme commands'],
 	['channel', 'Channel settings'],
 	['other', 'Not meme commands']
