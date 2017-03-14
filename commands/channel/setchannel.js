@@ -27,13 +27,14 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 			return true;
 		}
 		else{
+			//manage channels
 			return msg.member.hasPermission(16);
 		}
 	}
 
 	async run(msg, args) {
 		//check for a valid argument
-		if(['voice', 'x'].find(function(element){return element === args.ac}) != undefined){
+		if(['voice', 'x', 'meme'].find(function(element){return element === args.ac}) != undefined){
 			let list = this.client.provider.get(msg.guild, args.ac + 'ChannelIDs', []);
 			//check if the channel isnt already in the list
 			if(list.find(function(element){return element === msg.channel.id}) === undefined){
