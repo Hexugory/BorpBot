@@ -4,6 +4,7 @@ const path = require('path');
 const oneLine = require('common-tags').oneLine;
 const sqlite = require('sqlite');
 const config = require('./config.json');
+const mMessages = require('./perms.js').mMessages;
 
 const client = new commando.Client({
 	owner: '157704875726209025',
@@ -47,15 +48,19 @@ client
 		}
 		let memeChannelIDs = client.provider.get(msg.guild, 'memeChannelIDs', null);
 		if(memeChannelIDs != null){
-			if(memeChannelIDs.indexOf(msg.channel.id) > -1){
-				let customCommands = client.provider.get(msg.guild, 'customCommands', []);
-				let commandInput = msg.content;
-				if(commandInput.slice(0,1) === "'"){
-					
-					commandInput = commandInput.slice(1);
-					let commandIndex = customCommands.findIndex(function(element){return element.name === commandInput});
-					if(commandIndex > -1){
+			let customCommands = client.provider.get(msg.guild, 'customCommands', []);
+			let commandInput = msg.content;
+			if(commandInput.slice(0,1) === "'"){
+				commandInput = commandInput.slice(1);
+				let commandIndex = customCommands.findIndex(function(element){return element.name === commandInput});
+				if(commandIndex > -1){
+					if(memeChannelIDs.indexOf(msg.channel.id) > -1 || 
+					 msg.client.isOwner(msg.author) ||
+					 msg.member.hasPermission(mMessages)){
 						msg.channel.sendMessage(customCommands[commandIndex].output);
+					}
+					else{
+						msg.reply("You do not have permission to use that in this channel.")
 					}
 				}
 			}
