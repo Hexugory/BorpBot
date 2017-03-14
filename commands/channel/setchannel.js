@@ -34,17 +34,18 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
+
 		//check for a valid argument
-		if(['voice', 'x', 'meme'].find(function(element){return element === args.ac}) != undefined){
+		if(['voice', 'x', 'meme'].indexOf(args.ac) > -1){
 			let list = this.client.provider.get(msg.guild, args.ac + 'ChannelIDs', []);
 			//check if the channel isnt already in the list
-			if(list.find(function(element){return element === msg.channel.id}) === undefined){
+			if(list.indexOf(msg.channel.id) > -1){
 				list.push(msg.channel.id);
 				this.client.provider.set(msg.guild, args.ac + 'ChannelIDs', list);
 				return msg.reply(`${msg.channel} added to **${args.ac}**.`);
 			}
 			else{
-				list.splice(list.findIndex(function(element){return element === msg.channel.id}), 1);
+				list.splice(list.indexOf(msg.channel.id), 1);
 				this.client.provider.set(msg.guild, args.ac + 'ChannelIDs', list);
 				return msg.reply(`${msg.channel} removed from **${args.ac}**.`);
 			}
