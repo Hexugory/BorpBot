@@ -34,13 +34,14 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
+		function findCommand(element){return element.name === args.name};
 		let customCommands = this.client.provider.get(msg.guild, 'customCommands', []);
 		if(args.name === 0){
 			customCommands.length -= 1;
 			return msg.reply('Last command removed');
 		}
 		else{
-			customCommands.splice(customCommands.findIndex(function(element){return element.name === args.name}), 1);
+			customCommands.splice(customCommands.indexOf(findCommand), 1);
 			return msg.reply(`\`'${args.name}\` removed.`);
 		}
 		this.client.provider.set(msg.guild, 'customCommands', customCommands);

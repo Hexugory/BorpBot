@@ -3,7 +3,7 @@ const commando = require('discord.js-commando');
 const path = require('path');
 const oneLine = require('common-tags').oneLine;
 const sqlite = require('sqlite');
-const token = require('./auth.js').token;
+const config = require('./config.json');
 
 const client = new commando.Client({
 	owner: '157704875726209025',
@@ -31,7 +31,7 @@ client
 		//probably not a good idea to get these on every message
 		let xChannelIDs = client.provider.get(msg.guild, 'xChannelIDs', null);
 		if(xChannelIDs != null){
-			if(xChannelIDs.find(function(element){return element === msg.channel.id})){
+			if(xChannelIDs.indexOf(msg.channel.id)){
 				if(msg.attachments.array()[0] != undefined){
 					if(msg.attachments.array()[0].id != undefined){
 						msg.react('\u{274c}')
@@ -46,12 +46,13 @@ client
 		}
 		let memeChannelIDs = client.provider.get(msg.guild, 'memeChannelIDs', null);
 		if(memeChannelIDs != null){
-			if(memeChannelIDs.find(function(element){return element === msg.channel.id})){
+			if(memeChannelIDs.indexOf(msg.channel.id)){
 				let customCommands = client.provider.get(msg.guild, 'customCommands', []);
 				let commandInput = msg.content;
 				if(commandInput.slice(0,1) === "'"){
+					function findCommand(element){return element.name === commandInput}
 					commandInput = commandInput.slice(1);
-					let commandIndex = customCommands.findIndex(function(element){return element.name === commandInput});
+					let commandIndex = customCommands.findIndex(findCommand);
 					if(commandIndex > -1){
 						msg.channel.sendMessage(customCommands[commandIndex].output);
 					}
@@ -125,4 +126,4 @@ client.registry
 	.registerDefaults()
 	.registerCommandsIn(path.join(__dirname, 'commands'));
 
-client.login(token);
+client.login(config.token);
