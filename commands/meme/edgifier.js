@@ -22,7 +22,7 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 			return true;
 		}
 		else{
-			return client.provider.get(msg.guild, 'memeChannelIDs', null).indexOf(msg.channel.id) > -1
+			return msg.client.provider.get(msg.guild, 'memeChannelIDs', null).indexOf(msg.channel.id) > -1
 		}
 	}
 
