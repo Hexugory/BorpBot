@@ -28,38 +28,41 @@ client
 	.on('disconnect', () => { console.warn('Disconnected!'); })
 	.on('reconnecting', () => { console.warn('Reconnecting...'); })
 	.on('message', (msg) => {
-		if(msg.channel.id === '163175631562080256'){
-			if(msg.attachments.array()[0] != undefined){
-				if(msg.attachments.array()[0].id != undefined){
-					msg.react('\u{274c}')
+		let xChannelIDs = client.provider.get(msg.guild, 'xChannelIDs', null);
+		if(xChannelIDs != null){
+			if(xChannelIDs.find(function(element){return element === msg.channel.id})){
+				if(msg.attachments.array()[0] != undefined){
+					if(msg.attachments.array()[0].id != undefined){
+						msg.react('\u{274c}')
+					}
 				}
-			}
-			if(msg.embeds[0] != undefined){
-				if(msg.embeds[0].type === 'video' || msg.embeds[0].type === 'image'){
-					msg.react('\u{274c}')
+				if(msg.embeds[0] != undefined){
+					if(msg.embeds[0].type === 'video' || msg.embeds[0].type === 'image'){
+						msg.react('\u{274c}')
+					}
 				}
 			}
 		}
 	})
 	.on('messageReactionAdd', (rea, user) => {
 		if(rea.me === true){
-			if(rea.message.channel.id === '163175631562080256' && rea.count >= 7){
+			if(rea.count >= 7){
 				rea.message.delete();
 			}
 		}
 	})
 	.on('voiceStateUpdate', (oldMember, newMember) => {
-		let voiceAnnounceIDs = client.provider.get(oldMember.guild, 'voiceAnnounceIDs', null);
-		if(voiceAnnounceIDs != null){
+		let voiceChannelIDs = client.provider.get(oldMember.guild, 'voiceChannelIDs', null);
+		if(voiceChannelIDs != null){
 			//compare old channel state to new channel state
 			if(oldMember.voiceChannel === undefined && newMember.voiceChannel != undefined){
-				sendMessages(voiceAnnounceIDs, `**${oldMember.displayName}** joined **${newMember.voiceChannel.name}**.`);
+				sendMessages(voiceChannelIDs, `**${oldMember.displayName}** joined **${newMember.voiceChannel.name}**.`);
 			}
 			else if(oldMember.voiceChannel != undefined && newMember.voiceChannel === undefined){
-				sendMessages(voiceAnnounceIDs, `**${oldMember.displayName}** left **${oldMember.voiceChannel.name}**.`);
+				sendMessages(voiceChannelIDs, `**${oldMember.displayName}** left **${oldMember.voiceChannel.name}**.`);
 			}
 			else if(oldMember.voiceChannel != undefined && newMember.voiceChannel != undefined && newMember.voiceChannel.id != oldMember.voiceChannel.id){
-				sendMessages(voiceAnnounceIDs, `**${oldMember.displayName}** moved to **${newMember.voiceChannel.name}** from **${oldMember.voiceChannel.name}**.`);
+				sendMessages(voiceChannelIDs, `**${oldMember.displayName}** moved to **${newMember.voiceChannel.name}** from **${oldMember.voiceChannel.name}**.`);
 			}
 		}
 	})
