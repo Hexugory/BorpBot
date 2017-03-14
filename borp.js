@@ -3,6 +3,7 @@ const commando = require('discord.js-commando');
 const path = require('path');
 const oneLine = require('common-tags').oneLine;
 const sqlite = require('sqlite');
+const token = require('./auth.js').token;
 
 const client = new commando.Client({
 	owner: '157704875726209025',
@@ -107,4 +108,4 @@ client.registry
 	.registerDefaults()
 	.registerCommandsIn(path.join(__dirname, 'commands'));
 
-client.login('MTY0MjAzODEwMDgyOTE0MzA0.CfhDJA.x2Kg9mUMU-SG0YZGQqX3nDt8OZg');
+client.login(token);
