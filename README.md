@@ -1,2 +1,2 @@
 # BorpBot
-discord bot
+literally who cares
