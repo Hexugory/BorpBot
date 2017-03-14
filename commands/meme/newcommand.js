@@ -32,15 +32,17 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 	
 
 	async run(msg, args) {
-		if(args.name.includes('`')){
-			return msg.reply('Do not use backticks "`" in your command name.');
+		if(args.name.includes('`') || args.name === "'newcommand"){
+			return msg.reply('You have entered an invalid command name.');
 		}
-		let customCommands = this.client.provider.get(msg.guild, 'customCommands', []);
-		customCommands.push({
-			name: args.name,
-			output: args.out
-		});
-		this.client.provider.set(msg.guild, 'customCommands', customCommands);
-		return msg.reply(`\`'${args.name}\` added.`);
+		else{
+			let customCommands = this.client.provider.get(msg.guild, 'customCommands', []);
+			customCommands.push({
+				name: args.name,
+				output: args.out
+			});
+			this.client.provider.set(msg.guild, 'customCommands', customCommands);
+			return msg.reply(`\`'${args.name}\` added.`);
+		}
 	}
 };
