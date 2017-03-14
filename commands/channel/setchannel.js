@@ -42,12 +42,12 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 			if(list.indexOf(msg.channel.id) === -1){
 				list.push(msg.channel.id);
 				this.client.provider.set(msg.guild, args.ac + 'ChannelIDs', list);
-				return msg.reply(`${msg.channel} added to **${args.ac}**.`);
+				return msg.channel.sendMessage(`${msg.channel} added to **${args.ac}**.`);
 			}
 			else{
 				list.splice(list.indexOf(msg.channel.id), 1);
 				this.client.provider.set(msg.guild, args.ac + 'ChannelIDs', list);
-				return msg.reply(`${msg.channel} removed from **${args.ac}**.`);
+				return msg.channel.sendMessage(`${msg.channel} removed from **${args.ac}**.`);
 			}
 		}
 	}
