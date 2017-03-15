@@ -2,7 +2,7 @@ const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
 const mMessages = require('../../perms.js').mMessages;
 
-module.exports = class AnnounceToggleCommand extends commando.Command {
+module.exports = class NewCustomCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
 			name: 'newcommand',
@@ -36,8 +36,8 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 		if(msg.client.isOwner(msg.author)){
 			return true;
 		}
-		else if(msg.client.provider.get(msg.guild, 'commandBlacklistIDs', []).indexOf(msg.channel.id) === -1){
-			return true;
+		else if(msg.client.provider.get(msg.guild, 'commandBlacklistIDs', []).indexOf(msg.author.id) != -1){
+			return false;
 		}
 		else if(msg.client.provider.get(msg.guild, 'memeChannelIDs', []).indexOf(msg.channel.id) > -1){
 			return true

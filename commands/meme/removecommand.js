@@ -2,7 +2,7 @@ const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
 const mMessages = require('../../perms.js').mMessages;
 
-module.exports = class AnnounceToggleCommand extends commando.Command {
+module.exports = class RemoveCustomCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
 			name: 'removecommand',
@@ -42,7 +42,7 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 			return msg.reply('Last command removed.');
 		}
 		else{
-			customCommands.splice(customCommands.indexOf(findCommand), 1);
+			customCommands.splice(customCommands.find(findCommand), 1);
 			this.client.provider.set(msg.guild, 'customCommands', customCommands);
 			return msg.reply(`\`'${args.name}\` removed.`);
 		}
