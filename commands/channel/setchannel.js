@@ -3,7 +3,7 @@ const sqlite = require('sqlite');
 const path =  require('path');
 const mChannels = require('../../perms.js').mChannels;
 
-module.exports = class AnnounceToggleCommand extends commando.Command {
+module.exports = class SetChannelCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
 			name: 'setchannel',
