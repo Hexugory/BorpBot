@@ -29,6 +29,7 @@ client
 	.on('disconnect', () => { console.warn('Disconnected!'); })
 	.on('reconnecting', () => { console.warn('Reconnecting...'); })
 	.on('message', (msg) => {
+		if(!msg.author.bot){
 			let xChannelIDs = client.provider.get(msg.guild, 'xChannelIDs', null);
 			if(xChannelIDs != null){
 				if(xChannelIDs.indexOf(msg.channel.id) > -1){
