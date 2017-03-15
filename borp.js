@@ -19,6 +19,16 @@ function sendMessages(arr, content){
 	}
 }
 
+client.dispatcher.addInhibitor((msg) => {
+	let blacklist = client.provider.get('global', 'blacklist', []);
+	if(!blacklist.includes(msg.author.id)){
+		return false;
+	}
+	else{
+		return `User ${msg.author.username}#${msg.author.discriminator} (${msg.author.id}) has been blacklisted.`;
+	}
+});
+
 client
 	.on('error', console.error)
 	.on('warn', console.warn)
