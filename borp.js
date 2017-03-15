@@ -29,38 +29,39 @@ client
 	.on('disconnect', () => { console.warn('Disconnected!'); })
 	.on('reconnecting', () => { console.warn('Reconnecting...'); })
 	.on('message', (msg) => {
-		let xChannelIDs = client.provider.get(msg.guild, 'xChannelIDs', null);
-		if(xChannelIDs != null){
-			if(xChannelIDs.indexOf(msg.channel.id) > -1){
-				setTimeout(function(){
-					if(msg.attachments.array()[0] != undefined){
-						if(msg.attachments.array()[0].id != undefined){
-							msg.react('\u{274c}')
+			let xChannelIDs = client.provider.get(msg.guild, 'xChannelIDs', null);
+			if(xChannelIDs != null){
+				if(xChannelIDs.indexOf(msg.channel.id) > -1){
+					setTimeout(function(){
+						if(msg.attachments.array()[0] != undefined){
+							if(msg.attachments.array()[0].id != undefined){
+								msg.react('\u{274c}')
+							}
 						}
-					}
-					if(msg.embeds[0] != undefined){
-						if(msg.embeds[0].type === 'video' || msg.embeds[0].type === 'image'){
-							msg.react('\u{274c}')
+						if(msg.embeds[0] != undefined){
+							if(msg.embeds[0].type === 'video' || msg.embeds[0].type === 'image'){
+								msg.react('\u{274c}')
+							}
 						}
-					}
-				}, 1000);
+					}, 1000);
+				}
 			}
-		}
-		let memeChannelIDs = client.provider.get(msg.guild, 'memeChannelIDs', null);
-		if(memeChannelIDs != null){
-			let customCommands = client.provider.get(msg.guild, 'customCommands', []);
-			let commandInput = msg.content;
-			if(commandInput.slice(0,1) === "'"){
-				commandInput = commandInput.slice(1);
-				let commandIndex = customCommands.findIndex(function(element){return element.name === commandInput});
-				if(commandIndex > -1){
-					if(memeChannelIDs.indexOf(msg.channel.id) > -1 || 
-					 msg.client.isOwner(msg.author) ||
-					 msg.member.hasPermission(mMessages)){
-						msg.channel.sendMessage(customCommands[commandIndex].output);
-					}
-					else{
-						msg.reply("You do not have permission to use that in this channel.")
+			let memeChannelIDs = client.provider.get(msg.guild, 'memeChannelIDs', null);
+			if(memeChannelIDs != null){
+				let customCommands = client.provider.get(msg.guild, 'customCommands', []);
+				let commandInput = msg.content;
+				if(commandInput.slice(0,1) === "'"){
+					commandInput = commandInput.slice(1);
+					let commandIndex = customCommands.findIndex(function(element){return element.name === commandInput});
+					if(commandIndex > -1){
+						if(memeChannelIDs.indexOf(msg.channel.id) > -1 || 
+						 msg.client.isOwner(msg.author) ||
+						 msg.member.hasPermission(mMessages)){
+							msg.channel.sendMessage(customCommands[commandIndex].output);
+						}
+						else{
+							msg.reply("You do not have permission to use that in this channel.")
+						}
 					}
 				}
 			}

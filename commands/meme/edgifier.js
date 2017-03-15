@@ -10,6 +10,7 @@ module.exports = class AnnounceToggleCommand extends commando.Command {
 			group: 'meme',
 			memberName: 'edgifier',
 			description: 'Makes you edgier.',
+			guildOnly: true,
 			examples: ["'edgifier"]
 		});
 	}
