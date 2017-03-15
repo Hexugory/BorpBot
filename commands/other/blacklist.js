@@ -41,15 +41,15 @@ module.exports = class BlacklistCommand extends commando.Command {
 
 	async run(msg, args) {
 		//check for a valid argument
-		if(['command'].indexOf(args.bc) > -1){
+		if(['command'].includes(args.bc)){
 			//hello fishy
-			if(msg.client.provider.get(msg.guild, args.bc + 'BlacklistIDs', []).indexOf(msg.author.id) != -1){
+			if(msg.client.provider.get(msg.guild, args.bc + 'BlacklistIDs', []).includes(msg.author.id)){
 				return msg.reply("You are in this blacklist, you cannot manipulate it.");
 			}
 			else{
 				let list = this.client.provider.get(msg.guild, args.bc + 'BlacklistIDs', []);
 				//check if the target isnt already in the list
-				if(list.indexOf(args.user.id) === -1){
+				if(!list.includes(args.user.id)){
 					list.push(args.user.id);
 					this.client.provider.set(msg.guild, args.bc + 'BlacklistIDs', list);
 					return msg.channel.sendMessage(`${args.user} added to **${args.bc}**.`);

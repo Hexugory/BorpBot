@@ -36,10 +36,10 @@ module.exports = class NewCustomCommand extends commando.Command {
 		if(msg.client.isOwner(msg.author)){
 			return true;
 		}
-		else if(msg.client.provider.get(msg.guild, 'commandBlacklistIDs', []).indexOf(msg.author.id) != -1){
+		else if(msg.client.provider.get(msg.guild, 'commandBlacklistIDs', []).includes(msg.author.id)){
 			return false;
 		}
-		else if(msg.client.provider.get(msg.guild, 'memeChannelIDs', []).indexOf(msg.channel.id) > -1){
+		else if(msg.client.provider.get(msg.guild, 'memeChannelIDs', []).includes(msg.channel.id)){
 			return true
 		}
 		else{

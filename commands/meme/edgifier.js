@@ -23,7 +23,7 @@ module.exports = class EdgifierCommand extends commando.Command {
 			return true;
 		}
 		else{
-			return msg.client.provider.get(msg.guild, 'memeChannelIDs', []).indexOf(msg.channel.id) > -1
+			return msg.client.provider.get(msg.guild, 'memeChannelIDs', []).includes(msg.channel.id)
 		}
 	}
 

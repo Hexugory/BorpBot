@@ -36,10 +36,10 @@ module.exports = class SetChannelCommand extends commando.Command {
 	async run(msg, args) {
 
 		//check for a valid argument
-		if(['voice', 'x', 'meme'].indexOf(args.ac) > -1){
+		if(['voice', 'x', 'meme'].includes(args.ac)){
 			let list = this.client.provider.get(msg.guild, args.ac + 'ChannelIDs', []);
 			//check if the channel isnt already in the list
-			if(list.indexOf(msg.channel.id) === -1){
+			if(!list.includes(msg.channel.id)){
 				list.push(msg.channel.id);
 				this.client.provider.set(msg.guild, args.ac + 'ChannelIDs', list);
 				return msg.channel.sendMessage(`${msg.channel} added to **${args.ac}**.`);

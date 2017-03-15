@@ -42,7 +42,7 @@ client
 		if(!msg.author.bot){
 			let xChannelIDs = client.provider.get(msg.guild, 'xChannelIDs', null);
 			if(xChannelIDs != null){
-				if(xChannelIDs.indexOf(msg.channel.id) > -1){
+				if(xChannelIDs.includes(msg.channel.id)){
 					setTimeout(function(){
 						if(msg.attachments.array()[0] != undefined){
 							if(msg.attachments.array()[0].id != undefined){
@@ -65,7 +65,7 @@ client
 					commandInput = commandInput.slice(1);
 					let commandIndex = customCommands.findIndex(function(element){return element.name === commandInput});
 					if(commandIndex > -1){
-						if(memeChannelIDs.indexOf(msg.channel.id) > -1 || 
+						if(memeChannelIDs.includes(msg.channel.id) || 
 						 msg.client.isOwner(msg.author) ||
 						 msg.member.hasPermission(mMessages)){
 							msg.channel.sendMessage(customCommands[commandIndex].output);
