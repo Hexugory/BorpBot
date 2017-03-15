@@ -3,7 +3,7 @@ const sqlite = require('sqlite');
 const jimp = require('jimp');
 const mMessages = require('../../perms.js').mMessages;
 
-module.exports = class AnnounceToggleCommand extends commando.Command {
+module.exports = class EdgifierCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
 			name: 'edgifier',
