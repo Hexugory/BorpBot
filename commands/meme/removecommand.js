@@ -42,7 +42,7 @@ module.exports = class RemoveCustomCommand extends commando.Command {
 			return msg.reply('Last command removed.');
 		}
 		else{
-			customCommands.splice(customCommands.find(findCommand), 1);
+			customCommands.splice(customCommands.findIndex(findCommand), 1);
 			this.client.provider.set(msg.guild, 'customCommands', customCommands);
 			return msg.reply(`\`'${args.name}\` removed.`);
 		}
