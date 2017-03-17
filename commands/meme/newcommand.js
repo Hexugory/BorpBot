@@ -48,17 +48,27 @@ module.exports = class NewCustomCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
-		if(args.name.includes('`') || args.name === "'newcommand"){
+		function findCommand(element){return element.name === args.name};
+		let customCommands = this.client.provider.get(msg.guild, 'customCommands', []);
+		if(args.name.includes('`') || args.name === "newcommand"){
 			return msg.reply('You have entered an invalid command name.');
 		}
 		else{
-			let customCommands = this.client.provider.get(msg.guild, 'customCommands', []);
-			customCommands.push({
-				name: args.name,
-				output: args.out
-			});
-			this.client.provider.set(msg.guild, 'customCommands', customCommands);
-			return msg.reply(`\`'${args.name}\` added.`);
+			if(customCommands.findIndex(findCommand) > -1){
+				return msg.reply("There's already a command with that name.");
+			}
+			else if(args.name === args.out){
+				return msg.reply("Why would you want a command like that?");
+			}
+			else{
+				let customCommands = this.client.provider.get(msg.guild, 'customCommands', []);
+				customCommands.push({
+					name: args.name,
+					output: args.out
+				});
+				this.client.provider.set(msg.guild, 'customCommands', customCommands);
+				return msg.reply(`\`'${args.name}\` added.`);
+			}
 		}
 	}
 };
