@@ -9,7 +9,7 @@ module.exports = class BlacklistCommand extends commando.Command {
 			name: 'blacklist',
 			group: 'util',
 			memberName: 'blacklist',
-			description: 'Adds the mentioned user to the specified blacklist.',
+			description: 'Adds the mentioned user to the specified blacklist. (Manage Roles)',
 			examples: ['\'setchannel voice'],
 			guildOnly: true,
 
