@@ -7,7 +7,7 @@ module.exports = class GlobalBlacklistCommand extends commando.Command {
 			name: 'gblacklist',
 			group: 'util',
 			memberName: 'gblacklist',
-			description: 'Prevents the specified user from using the bot. (Owner)',
+			description: 'Prevents the specified user from using the bot. (Bot Owner)',
 			examples: ['\'gblacklist @Guy Hero#1823'],
 			
 			args: [
