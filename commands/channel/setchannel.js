@@ -9,7 +9,7 @@ module.exports = class SetChannelCommand extends commando.Command {
 			name: 'setchannel',
 			group: 'channel',
 			memberName: 'setchannel',
-			description: 'Adds the channel to the specified automated action.',
+			description: 'Adds the channel to the specified automated action. (Manage Channels)',
 			examples: ['\'setchannel voice'],
 			guildOnly: true,
 
