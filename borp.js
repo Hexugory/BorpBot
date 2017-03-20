@@ -5,6 +5,7 @@ const oneLine = require('common-tags').oneLine;
 const sqlite = require('sqlite');
 const config = require('./config.json');
 const mMessages = require('./perms.js').mMessages;
+const prompt = require('prompt');
 
 const client = new commando.Client({
 	owner: '157704875726209025',
@@ -12,6 +13,8 @@ const client = new commando.Client({
 	unknownCommandResponse: false,
 	invite: 'http://discord.gg/PaZzcx5'
 });
+
+var promptChannel = "";
 
 function sendMessages(arr, content){
 	for(i = 0; i < arr.length; i++){
@@ -35,6 +38,7 @@ client
 	.on('debug', console.log)
 	.on('ready', () => {
 		console.log(`Client ready; logged in as ${client.user.username}#${client.user.discriminator} (${client.user.id})`);
+		speechPrompt();
 	})
 	.on('disconnect', () => { console.warn('Disconnected!'); })
 	.on('reconnecting', () => { console.warn('Reconnecting...'); })
@@ -143,5 +147,24 @@ client.registry
 	])
 	.registerDefaults()
 	.registerCommandsIn(path.join(__dirname, 'commands'));
+
+function speechPrompt(){
+	try{
+		prompt.get(['send'], function (err, result) {
+			if(result.send.startsWith('channel ')){
+				promptChannel = result.send.slice(8);
+				console.log(`Channel set to ${client.channels.get(promptChannel).name}`);
+				return speechPrompt();
+			}
+			else{
+				let promptDest = client.channels.get(promptChannel);
+				promptDest.sendMessage(result.send);
+				console.log(`Sending ${result.send} to ${promptDest.name}`);
+				return speechPrompt();
+			}
+		});
+	}
+	catch(e){console.log(e)};
+}
 
 client.login(config.token);
