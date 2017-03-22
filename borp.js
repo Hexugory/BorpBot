@@ -38,7 +38,6 @@ client
 	.on('debug', console.log)
 	.on('ready', () => {
 		console.log(`Client ready; logged in as ${client.user.username}#${client.user.discriminator} (${client.user.id})`);
-		speechPrompt();
 	})
 	.on('disconnect', () => { console.warn('Disconnected!'); })
 	.on('reconnecting', () => { console.warn('Reconnecting...'); })
@@ -158,6 +157,7 @@ function speechPrompt(){
 			}
 			else{
 				let promptDest = client.channels.get(promptChannel);
+				result.send = result.send.replace("\\r", "\r")
 				promptDest.sendMessage(result.send);
 				console.log(`Sending ${result.send} to ${promptDest.name}`);
 				return speechPrompt();
@@ -168,3 +168,4 @@ function speechPrompt(){
 }
 
 client.login(config.token);
+speechPrompt();
