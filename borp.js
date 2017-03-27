@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 const commando = require('discord.js-commando');
 const path = require('path');
 const oneLine = require('common-tags').oneLine;
@@ -42,24 +41,24 @@ client
 	.on('disconnect', () => { console.warn('Disconnected!'); })
 	.on('reconnecting', () => { console.warn('Reconnecting...'); })
 	.on('message', (msg) => {
-		if(!msg.author.bot){
-			let xChannelIDs = client.provider.get(msg.guild, 'xChannelIDs', null);
-			if(xChannelIDs != null){
-				if(xChannelIDs.includes(msg.channel.id)){
-					setTimeout(function(){
-						if(msg.attachments.array()[0] != undefined){
-							if(msg.attachments.array()[0].id != undefined){
-								msg.react('\u{274c}')
-							}
+		let xChannelIDs = client.provider.get(msg.guild, 'xChannelIDs', null);
+		if(xChannelIDs != null){
+			if(xChannelIDs.includes(msg.channel.id)){
+				setTimeout(function(){
+					if(msg.attachments.array()[0] != undefined){
+						if(msg.attachments.array()[0].id != undefined){
+							msg.react('\u{274c}')
 						}
-						if(msg.embeds[0] != undefined){
-							if(msg.embeds[0].type === 'video' || msg.embeds[0].type === 'image'){
-								msg.react('\u{274c}')
-							}
+					}
+					if(msg.embeds[0] != undefined){
+						if(msg.embeds[0].type === 'video' || msg.embeds[0].type === 'image'){
+							msg.react('\u{274c}')
 						}
-					}, 1000);
-				}
+					}
+				}, 1000);
 			}
+		}
+		if(!msg.author.bot){
 			let memeChannelIDs = client.provider.get(msg.guild, 'memeChannelIDs', null);
 			if(memeChannelIDs != null){
 				let customCommands = client.provider.get(msg.guild, 'customCommands', []);

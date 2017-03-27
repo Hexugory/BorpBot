@@ -8,7 +8,7 @@ module.exports = class RemoveCustomCommand extends commando.Command {
 			name: 'removecommand',
 			group: 'meme',
 			memberName: 'removecommand',
-			description: 'Removes a specified0 custom command. (Manage Messages)',
+			description: 'Removes a specified custom command. (Manage Messages)',
 			examples: ['\'removecommand sumirekt'],
 			guildOnly: true,
 
