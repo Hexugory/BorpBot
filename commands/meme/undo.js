@@ -1,6 +1,5 @@
 const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
-const mMessages = require('../../perms.js').mMessages;
 
 module.exports = class UndoCustomCommand extends commando.Command {
 	constructor(client) {
