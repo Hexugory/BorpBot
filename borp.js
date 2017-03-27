@@ -82,7 +82,7 @@ client
 	})
 	.on('messageReactionAdd', (rea, user) => {
 		if(rea.me === true){
-			if(rea.count >= 7){
+			if(rea.users.get(rea.message.author.id) != undefined || rea.count >= 7){
 				rea.message.delete();
 			}
 		}
