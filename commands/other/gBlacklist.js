@@ -32,7 +32,7 @@ module.exports = class GlobalBlacklistCommand extends commando.Command {
 			let list = this.client.provider.get('global', 'blacklist', []);
 			if(list.includes(args.user.id)){
 				list.splice(list.indexOf(args.user.id), 1);
-				this.client.provider.set(msg.guild, 'blacklist', list);
+				this.client.provider.set('global', 'blacklist', list);
 				return msg.channel.sendMessage(`${args.user} has been removed from the blacklist.`);
 			}
 			else{

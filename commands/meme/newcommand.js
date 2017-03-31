@@ -10,7 +10,7 @@ module.exports = class NewCustomCommand extends commando.Command {
 			memberName: 'newcommand',
 			description: 'Adds a custom command.',
 			guildOnly: true,
-			throttling:{usages:1, duration:30},
+			throttling:{usages:1, duration:20},
 			examples: ['\'newcommand sumirekt http://i.imgur.com/yUKLbuc.jpg'],
 
 			args: [
