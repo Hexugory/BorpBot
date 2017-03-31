@@ -7,7 +7,7 @@ const mMessages = require('./perms.js').mMessages;
 const prompt = require('prompt');
 
 const client = new commando.Client({
-	owner: '157704875726209025',
+	owner: config.owner,
 	commandPrefix: '\'',
 	unknownCommandResponse: false,
 	invite: 'http://discord.gg/PaZzcx5'
