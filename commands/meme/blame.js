@@ -19,8 +19,10 @@ module.exports = class BlameCommand extends commando.Command {
 		msg.channel.fetchMessages({limit: 20})
 		.then(messages => {
 		for(var i = 0; i < messages.array().length; i++){
-			if(!blame.includes(messages.array()[i].member.displayName)){
-				blame.push(messages.array()[i].member.displayName)
+			if(messages.array()[i].member != null){
+				if(!blame.includes(messages.array()[i].member.displayName)){
+					blame.push(messages.array()[i].member.displayName)
+				}
 			}
 		}
 		return msg.reply(`I blame ${blame[Math.floor(Math.random() * blame.length)]}.`);
