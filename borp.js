@@ -65,8 +65,8 @@ client
 				let customCommands = client.provider.get(msg.guild, 'customCommands', []);
 				let commandInput = msg.content;
 				if(commandInput.slice(0,1) === "'"){
-					commandInput = commandInput.slice(1);
-					let commandIndex = customCommands.findIndex(function(element){return element.name === commandInput});
+					commandInput = commandInput.slice(1).toLowerCase();
+					let commandIndex = customCommands.findIndex(function(element){return element.name.toLowerCase() === commandInput});
 					if(commandIndex > -1){
 						if(memeChannelIDs.includes(msg.channel.id) || 
 						 msg.client.isOwner(msg.author) ||
