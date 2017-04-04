@@ -18,10 +18,12 @@ module.exports = class BlameCommand extends commando.Command {
 		var blame = [];
 		msg.channel.fetchMessages({limit: 20})
 		.then(messages => {
-		for(var i = 0; i < messages.array().length; i++){
-			if(messages.array()[i].member != null){
-				if(!blame.includes(messages.array()[i].member.displayName)){
-					blame.push(messages.array()[i].member.displayName)
+		let messageArray = messages.array();
+		for(var i = 0; i < messageArray.length; i++){
+			let member = messageArray[i].member.displayName
+			if(member != null){
+				if(!blame.includes(member)){
+					blame.push(member)
 				}
 			}
 		}
