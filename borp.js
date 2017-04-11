@@ -82,8 +82,13 @@ client
 		}
 	})
 	.on('messageReactionAdd', (rea, user) => {
+		let xBlacklistIDs = client.provider.get(rea.message.guild, 'xBlacklistIDs', []);
 		if(rea.me === true){
-			if(rea.users.get(rea.message.author.id) != undefined || rea.count >= 7){
+			if(xBlacklistIDs.includes(user.id)){
+				rea.remove(user.id)
+				.catch(console.error)
+			}
+			else if(rea.users.get(rea.message.author.id) != undefined || rea.count >= client.provider.get(rea.message.guild, 'xLimit', 7)){
 				rea.message.delete();
 			}
 		}
