@@ -88,7 +88,7 @@ client
 				rea.remove(user.id)
 				.catch(console.error)
 			}
-			else if(rea.users.get(rea.message.author.id) != undefined || rea.count >= client.provider.get(rea.message.guild, 'xLimit', 7)){
+			else if(rea.users.get(rea.message.author.id) != undefined || rea.count >= client.provider.get(rea.message.guild, 'xLimit' + rea.message.channel.id, 7)){
 				rea.message.delete();
 			}
 		}
