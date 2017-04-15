@@ -85,7 +85,7 @@ client
 		let xBlacklistIDs = client.provider.get(rea.message.guild, 'xBlacklistIDs', []);
 		if(rea.me === true){
 			if(xBlacklistIDs.includes(user.id)){
-				rea.remove(user.id)
+				rea.remove(user)
 				.catch(console.error)
 			}
 			else if(rea.users.get(rea.message.author.id) != undefined || rea.count >= client.provider.get(rea.message.guild, 'xLimit' + rea.message.channel.id, 7)){
