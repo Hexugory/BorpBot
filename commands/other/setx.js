@@ -1,7 +1,7 @@
 const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
 const path =  require('path');
-const mRoles = require('../../perms.js').mMessages;
+const mMessages = require('../../perms.js').mMessages;
 
 module.exports = class xLimitCommand extends commando.Command {
 	constructor(client) {
