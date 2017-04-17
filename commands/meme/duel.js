@@ -78,7 +78,7 @@ module.exports = class DuelCommand extends commando.Command {
 				}
 			}
 			else{
-				if(attacker = 0){
+				if(attacker === 0){
 					attacker = 1;
 				}
 				else{
