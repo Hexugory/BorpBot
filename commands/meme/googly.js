@@ -12,6 +12,20 @@ module.exports = class GooglyCommand extends commando.Command {
 		});
 	}
 	
+	hasPermission(msg) {
+		if(msg.client.isOwner(msg.author)){
+			return true;
+		}
+		else if(msg.client.provider.get(msg.guild, 'commandBlacklistIDs', []).includes(msg.author.id)){
+			return false;
+		}
+		else if(msg.client.provider.get(msg.guild, 'memeChannelIDs', []).includes(msg.channel.id)){
+			return true
+		}
+		else{
+			return msg.member.hasPermission(mMessages)
+		}
+	}
 
 	async run(msg, args) {
 		let googs = this.client.provider.get('global', 'googs', []);
