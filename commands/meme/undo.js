@@ -13,6 +13,20 @@ module.exports = class UndoCustomCommand extends commando.Command {
 		});
 	}
 	
+	hasPermission(msg) {
+		if(msg.client.isOwner(msg.author)){
+			return true;
+		}
+		else if(msg.client.provider.get(msg.guild, 'commandBlacklistIDs', []).includes(msg.author.id)){
+			return false;
+		}
+		else if(msg.client.provider.get(msg.guild, 'memeChannelIDs', []).includes(msg.channel.id)){
+			return true
+		}
+		else{
+			return msg.member.hasPermission(mMessages)
+		}
+	}
 
 	async run(msg, args) {
 		function findCommand(element){return element.name === args.name};
