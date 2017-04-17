@@ -9,7 +9,7 @@ module.exports = class DuelCommand extends commando.Command {
 			group: 'meme',
 			memberName: 'duel',
 			description: 'Duels two users.',
-			throttling:{usages:1, duration:20},
+			throttling:{usages:1, duration:30},
 			examples: ['\'duel @Guy Hero#1823 @BorpBot#5498'],
 
 			args: [
@@ -47,7 +47,7 @@ module.exports = class DuelCommand extends commando.Command {
 	async run(msg, args) {
 		var duelsend = "";
 		var hp = [20, 20];
-		var attacker = 0;
+		var attacker = Math.round(Math.random());;
 		var attacked = 1;
 		var users = [args.p1, args.p2];
 		function duel(){
