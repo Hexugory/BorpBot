@@ -51,7 +51,6 @@ module.exports = class DuelCommand extends commando.Command {
 		var attacked = 1;
 		var users = [args.p1, args.p2];
 		function duel(){
-			attacker = Math.round(Math.random());
 			if(attacker === 0){
 				attacked = 1;
 			}
@@ -79,6 +78,12 @@ module.exports = class DuelCommand extends commando.Command {
 				}
 			}
 			else{
+				if(attacker = 0){
+					attacker = 1;
+				}
+				else{
+					attacker = 0;
+				}
 				duel();
 			}
 		}
