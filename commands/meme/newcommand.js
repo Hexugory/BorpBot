@@ -62,7 +62,6 @@ module.exports = class NewCustomCommand extends commando.Command {
 			}
 			else{
 				this.client.provider.set(msg.guild, 'undone', false);
-				let customCommands = this.client.provider.get(msg.guild, 'customCommands', []);
 				customCommands.push({
 					name: args.name,
 					output: args.out
