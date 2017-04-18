@@ -2,6 +2,7 @@ const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
 const path =  require('path');
 const mChannels = require('../../perms.js').mChannels;
+const oneLine = require('common-tags').oneLine;
 
 module.exports = class SetChannelCommand extends commando.Command {
 	constructor(client) {
@@ -10,6 +11,12 @@ module.exports = class SetChannelCommand extends commando.Command {
 			group: 'channel',
 			memberName: 'setchannel',
 			description: 'Adds the channel to the specified automated action. (Manage Channels)',
+			details: oneLine`
+			Designate a channel for certain features.
+			"voice" to announce voice channel joining and leaving.
+			"x" to enable embed deletion using reactions.
+			and "meme" to allow meme commands.
+			`,
 			examples: ['\'setchannel voice'],
 			guildOnly: true,
 

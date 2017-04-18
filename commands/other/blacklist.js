@@ -2,6 +2,7 @@ const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
 const path =  require('path');
 const mRoles = require('../../perms.js').mRoles;
+const oneLine = require('common-tags').oneLine;
 
 module.exports = class BlacklistCommand extends commando.Command {
 	constructor(client) {
@@ -10,7 +11,13 @@ module.exports = class BlacklistCommand extends commando.Command {
 			group: 'util',
 			memberName: 'blacklist',
 			description: 'Adds the mentioned user to the specified blacklist. (Manage Roles)',
-			examples: ['\'setchannel voice'],
+			details: oneLine`
+			Prevents a user from using a specific set of commands.
+			The current sets that you can blacklist are "command" for custom command creation,
+			and "x" for preventing from placing :x: reactions for embed deletion.
+			You can also blacklist them from all commands in the server with "server".
+			`,
+			examples: ['\'blacklist x @Guy Hero#1823'],
 			guildOnly: true,
 
 			args: [
