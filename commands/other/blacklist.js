@@ -41,7 +41,7 @@ module.exports = class BlacklistCommand extends commando.Command {
 
 	async run(msg, args) {
 		//check for a valid argument
-		if(['command', 'x'].includes(args.bc)){
+		if(['command', 'x', 'server'].includes(args.bc)){
 			//hello fishy
 			if(msg.client.provider.get(msg.guild, args.bc + 'BlacklistIDs', []).includes(msg.author.id)){
 				return msg.reply("You are in this blacklist, you cannot manipulate it.");
@@ -52,12 +52,12 @@ module.exports = class BlacklistCommand extends commando.Command {
 				if(!list.includes(args.user.id)){
 					list.push(args.user.id);
 					this.client.provider.set(msg.guild, args.bc + 'BlacklistIDs', list);
-					return msg.channel.sendMessage(`${args.user} added to **${args.bc}**.`);
+					return msg.channel.sendMessage(`${args.user} added to **${args.bc}** blacklist.`);
 				}
 				else{
 					list.splice(list.indexOf(args.user.id), 1);
 					this.client.provider.set(msg.guild, args.bc + 'BlacklistIDs', list);
-					return msg.channel.sendMessage(`${args.user} removed from **${args.bc}**.`);
+					return msg.channel.sendMessage(`${args.user} removed from **${args.bc}** blacklist.`);
 				}
 			}
 		}

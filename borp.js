@@ -23,7 +23,8 @@ function sendMessages(arr, content){
 
 client.dispatcher.addInhibitor((msg) => {
 	let blacklist = client.provider.get('global', 'blacklist', []);
-	if(!blacklist.includes(msg.author.id)){
+	let serverBlacklist = client.provider.get(msg.guild, 'serverBlacklistIDs', []);
+	if(!blacklist.includes(msg.author.id) && !serverBlacklist.includes(msg.author.id)){
 		return false;
 	}
 	else{
