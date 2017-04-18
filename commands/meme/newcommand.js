@@ -50,7 +50,7 @@ module.exports = class NewCustomCommand extends commando.Command {
 	async run(msg, args) {
 		function findCommand(element){return element.name === args.name};
 		let customCommands = this.client.provider.get(msg.guild, 'customCommands', []);
-		if(args.name.includes('`') || args.name === "newcommand"|| args.name === "undo"|| args.name === "removecommand"){
+		if(args.name.includes('`') || msg.client.registry.findCommands(args.name)[0] != undefined){
 			return msg.reply('You have entered an invalid command name.');
 		}
 		else{
