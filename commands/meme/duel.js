@@ -47,7 +47,7 @@ module.exports = class DuelCommand extends commando.Command {
 	async run(msg, args) {
 		var duelsend = "";
 		var hp = [20, 20];
-		var attacker = Math.round(Math.random());;
+		var attacker = Math.round(Math.random());
 		var attacked = 1;
 		var users = [args.p1, args.p2];
 		function duel(){
@@ -57,15 +57,21 @@ module.exports = class DuelCommand extends commando.Command {
 			else{
 				attacked = 0;
 			}
-			let attack = spells[Math.floor(Math.random() * spells.length)];
-			duelsend += `${users[attacker]}[${hp[attacker]}] uses ${attack.name}`;
-			if(attack.dmg != undefined){
-				duelsend += ` on ${users[attacked]}[${hp[attacked]}], deals ${attack.dmg} damage`;
-				hp[attacked] -= attack.dmg;
+			if(Math.floor(Math.random()*1000) === 1){
+				duelsend += `${users[attacker]}[${hp[attacker]}] uses Fedora Tip on ${users[attacked]}[${hp[attacked]}], deals euphoric damage.`
+				hp[attacked] -= 9999;
 			}
-			if(attack.heal != undefined){
-				duelsend += `, heals ${attack.heal} hp`;
-				hp[attacker] += attack.heal;
+			else{
+				let attack = spells[Math.floor(Math.random() * spells.length)];
+				duelsend += `${users[attacker]}[${hp[attacker]}] uses ${attack.name}`
+				if(attack.dmg != undefined){
+					duelsend += ` on ${users[attacked]}[${hp[attacked]}], deals ${attack.dmg} damage`;
+					hp[attacked] -= attack.dmg;
+				}
+				if(attack.heal != undefined){
+					duelsend += `, heals ${attack.heal} hp`;
+					hp[attacker] += attack.heal;
+				}
 			}
 			duelsend += ".\r"
 			if(hp[attacked] <= 0){
