@@ -14,9 +14,11 @@ module.exports = class BlacklistCommand extends commando.Command {
 			details: oneLine`
 			Prevents a user from using a specific set of commands.
 			The current sets that you can blacklist are "command" for custom command creation,
-			and "x" for preventing from placing :x: reactions for embed deletion.
+			"x" for preventing from placing :x: reactions for embed deletion.
+			and "duel" to prevent use of \`'duel\`.
 			You can also blacklist them from all commands in the server with "server".
 			`,
+			//` good syntax highlighting notepad++
 			examples: ['\'blacklist x @Guy Hero#1823'],
 			guildOnly: true,
 
@@ -48,7 +50,7 @@ module.exports = class BlacklistCommand extends commando.Command {
 
 	async run(msg, args) {
 		//check for a valid argument
-		if(['command', 'x', 'server'].includes(args.bc)){
+		if(['command', 'x', 'server', 'duel'].includes(args.bc)){
 			//hello fishy
 			if(msg.client.provider.get(msg.guild, args.bc + 'BlacklistIDs', []).includes(msg.author.id)){
 				return msg.reply("You are in this blacklist, you cannot manipulate it.");
