@@ -1,6 +1,7 @@
 const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
 const spells = require('../../spells.json');
+const mMessages = require('../../perms.js').mMessages;
 
 module.exports = class DuelCommand extends commando.Command {
 	constructor(client) {
