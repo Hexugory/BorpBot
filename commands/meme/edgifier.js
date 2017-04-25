@@ -10,7 +10,6 @@ module.exports = class EdgifierCommand extends commando.Command {
 			group: 'meme',
 			memberName: 'edgifier',
 			description: 'Makes you edgier.',
-			guildOnly: true,
 			examples: ["'edgifier"]
 		});
 	}
@@ -19,7 +18,7 @@ module.exports = class EdgifierCommand extends commando.Command {
 		if(msg.client.isOwner(msg.author)){
 			return true;
 		}
-		else if(msg.member.hasPermission(mMessages)){
+		else if(msg.member != null && msg.member.hasPermission(mMessages)){
 			return true;
 		}
 		else{

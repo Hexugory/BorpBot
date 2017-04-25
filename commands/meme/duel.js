@@ -44,7 +44,7 @@ module.exports = class DuelCommand extends commando.Command {
 			return true
 		}
 		else{
-			return msg.member.hasPermission(mMessages)
+			return msg.member != null && msg.member.hasPermission(mMessages)
 		}
 	}
 
