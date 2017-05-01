@@ -27,6 +27,6 @@ module.exports = class GooglyCommand extends commando.Command {
 
 	async run(msg, args) {
 		let googs = this.client.provider.get('global', 'googs', []);
-		return msg.channel.sendMessage(`${googs[Math.floor(Math.random() * googs.length)]}`);
+		return msg.channel.send(`${googs[Math.floor(Math.random() * googs.length)]}`);
 	}
 };

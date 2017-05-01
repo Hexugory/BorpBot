@@ -19,6 +19,6 @@ module.exports = class ListCustomCommand extends commando.Command {
 		for(var i = 0; i < customCommands.length; i++){
 			commandList += `\`${customCommands[i].name}\` `
 		}
-		return msg.channel.sendMessage(commandList);
+		return msg.channel.send(commandList);
 	}
 };

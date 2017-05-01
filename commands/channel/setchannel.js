@@ -49,12 +49,12 @@ module.exports = class SetChannelCommand extends commando.Command {
 			if(!list.includes(msg.channel.id)){
 				list.push(msg.channel.id);
 				this.client.provider.set(msg.guild, args.ac + 'ChannelIDs', list);
-				return msg.channel.sendMessage(`${msg.channel} added to **${args.ac}**.`);
+				return msg.channel.send(`${msg.channel} added to **${args.ac}**.`);
 			}
 			else{
 				list.splice(list.indexOf(msg.channel.id), 1);
 				this.client.provider.set(msg.guild, args.ac + 'ChannelIDs', list);
-				return msg.channel.sendMessage(`${msg.channel} removed from **${args.ac}**.`);
+				return msg.channel.send(`${msg.channel} removed from **${args.ac}**.`);
 			}
 		}
 	}

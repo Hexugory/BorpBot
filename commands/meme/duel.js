@@ -81,7 +81,7 @@ module.exports = class DuelCommand extends commando.Command {
 			if(hp[attacked] <= 0){
 				duelsend += `${users[attacked]}[${hp[attacked]}] has been defeated, ${users[attacker]}[${hp[attacker]}] wins.`
 				if(duelsend.length < 1999){
-					return msg.channel.sendMessage(`${duelsend}`);
+					return msg.channel.send(`${duelsend}`);
 				}
 				else{
 					return msg.reply("The duel was too long, cant send.")

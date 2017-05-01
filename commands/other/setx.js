@@ -35,6 +35,6 @@ module.exports = class xLimitCommand extends commando.Command {
 
 	async run(msg, args) {
 		this.client.provider.set(msg.guild, 'xLimit' + msg.channel.id, args.xl);
-		return msg.channel.sendMessage(`:x: limit set to ${args.xl} in ${msg.channel}.`);
+		return msg.channel.send(`:x: limit set to ${args.xl} in ${msg.channel}.`);
 	};
 }
