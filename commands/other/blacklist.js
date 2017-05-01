@@ -52,7 +52,7 @@ module.exports = class BlacklistCommand extends commando.Command {
 		//check for a valid argument
 		if(['command', 'x', 'server', 'duel'].includes(args.bc)){
 			//hello fishy
-			if(msg.client.provider.get(msg.guild, args.bc + 'BlacklistIDs', []).includes(msg.author.id)){
+			if(msg.client.provider.get(msg.guild, args.bc + 'BlacklistIDs', []).includes(msg.author.id) && !msg.client.isOwner(msg.author)){
 				return msg.reply("You are in this blacklist, you cannot manipulate it.");
 			}
 			else{
@@ -61,12 +61,12 @@ module.exports = class BlacklistCommand extends commando.Command {
 				if(!list.includes(args.user.id)){
 					list.push(args.user.id);
 					this.client.provider.set(msg.guild, args.bc + 'BlacklistIDs', list);
-					return msg.channel.sendMessage(`${args.user} added to **${args.bc}** blacklist.`);
+					return msg.channel.send(`${args.user} added to **${args.bc}** blacklist.`);
 				}
 				else{
 					list.splice(list.indexOf(args.user.id), 1);
 					this.client.provider.set(msg.guild, args.bc + 'BlacklistIDs', list);
-					return msg.channel.sendMessage(`${args.user} removed from **${args.bc}** blacklist.`);
+					return msg.channel.send(`${args.user} removed from **${args.bc}** blacklist.`);
 				}
 			}
 		}

@@ -26,19 +26,19 @@ module.exports = class GlobalBlacklistCommand extends commando.Command {
 
 	async run(msg, args) {
 		if(msg.client.isOwner(args.user)){
-			return msg.channel.sendMessage('dont blacklist yourself you\'re the bot owner kthnx.');
+			return msg.channel.send('dont blacklist yourself you\'re the bot owner kthnx.');
 		}
 		else{
 			let list = this.client.provider.get('global', 'blacklist', []);
 			if(list.includes(args.user.id)){
 				list.splice(list.indexOf(args.user.id), 1);
 				this.client.provider.set('global', 'blacklist', list);
-				return msg.channel.sendMessage(`${args.user} has been removed from the blacklist.`);
+				return msg.channel.send(`${args.user} has been removed from the blacklist.`);
 			}
 			else{
 				list.push(args.user.id);
 				this.client.provider.set('global', 'blacklist', list);
-				return msg.channel.sendMessage(`${args.user} has been blacklisted.`);
+				return msg.channel.send(`${args.user} has been blacklisted.`);
 			}
 		}
 	}

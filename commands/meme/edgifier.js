@@ -37,7 +37,7 @@ module.exports = class EdgifierCommand extends commando.Command {
 			{ apply: 'green', params: [ -9999 ] }
 			]);
 			ava.getBuffer(jimp.MIME_PNG, function(err, buffer){
-				return msg.channel.sendFile(buffer);
+				return msg.channel.send({files: [{attachment: buffer,name: `Edgy-${msg.author.username}.png`}]});
 			});
 		}).catch(function(err){
 			console.error(err);

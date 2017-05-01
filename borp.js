@@ -17,7 +17,7 @@ var promptChannel = "";
 
 function sendMessages(arr, content){
 	for(i = 0; i < arr.length; i++){
-		client.channels.get(arr[i]).sendMessage(content)
+		client.channels.get(arr[i]).send(content)
 	}
 }
 
@@ -72,7 +72,7 @@ client
 						if(memeChannelIDs.includes(msg.channel.id) || 
 						 msg.client.isOwner(msg.author) ||
 						 msg.member.hasPermission(mMessages)){
-							msg.channel.sendMessage(customCommands[commandIndex].output);
+							msg.channel.send(customCommands[commandIndex].output);
 						}
 						else{
 							msg.reply("You do not have permission to use that in this channel.")
@@ -89,7 +89,7 @@ client
 				rea.remove(user)
 				.catch(console.error)
 			}
-			else if(rea.users.get(rea.message.author.id) != undefined || rea.count >= client.provider.get(rea.message.guild, 'xLimit' + rea.message.channel.id, 7)){
+			else if((rea.message.author.id != client.user.id && rea.users.get(rea.message.author.id) != undefined) || rea.count >= client.provider.get(rea.message.guild, 'xLimit' + rea.message.channel.id, 7)){
 				rea.message.delete();
 			}
 		}
