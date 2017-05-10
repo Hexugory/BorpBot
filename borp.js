@@ -57,7 +57,7 @@ client
 							msg.react('\u{274c}')
 						}
 					}
-				}, 1000);
+				}, 1500);
 			}
 		}
 		if(!msg.author.bot){
@@ -90,6 +90,25 @@ client
 				.catch(console.error)
 			}
 			else if((rea.message.author.id != client.user.id && rea.users.get(rea.message.author.id) != undefined) || rea.count >= client.provider.get(rea.message.guild, 'xLimit' + rea.message.channel.id, 7)){
+				let xlogChannelIDs = client.provider.get(rea.message.guild, 'xlogChannelIDs', null);
+				let logMessage = `Deleted ${rea.message.member.displayName}[${rea.message.author.id}]'s message`
+				let messageAttachments = rea.message.attachments.array();
+				if(messageAttachments[0] != undefined && messageAttachments[0].id != undefined){
+					logMessage += " containing a message attachment";
+				}
+				if(rea.message.embeds[0] != undefined){
+					if(messageAttachments[0] != undefined && messageAttachments[0].id != undefined){
+						logMessage += " and";
+					}
+					else{
+						logMessage += " containing";
+					}
+					logMessage += " the following embeds:\r"
+					for(i = 0; i < rea.message.embeds.length; i++){
+						logMessage += `<${rea.message.embeds[i].url}>\r`;
+					}
+				}
+				sendMessages(xlogChannelIDs, logMessage)
 				rea.message.delete();
 			}
 		}
