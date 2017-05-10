@@ -17,6 +17,7 @@ module.exports = class xLimitCommand extends commando.Command {
 				{
 					key: 'xl',
 					label: 'xl',
+					default: 'a',
 					prompt: 'Specify x limit.',
 					type: 'integer'
 				}
@@ -34,7 +35,12 @@ module.exports = class xLimitCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
-		this.client.provider.set(msg.guild, 'xLimit' + msg.channel.id, args.xl);
-		return msg.channel.send(`:x: limit set to ${args.xl} in ${msg.channel}.`);
+		if(args.xl === 'a'){
+			return msg.reply(`The current :x: limit in ${msg.channel} is ${this.client.provider.get(msg.guild, 'xLimit' + msg.channel.id, 7)}.`)
+		}
+		else{
+			this.client.provider.set(msg.guild, 'xLimit' + msg.channel.id, args.xl);
+			return msg.channel.send(`:x: limit set to ${args.xl} in ${msg.channel}.`);
+		}
 	};
 }
