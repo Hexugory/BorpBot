@@ -20,8 +20,8 @@ module.exports = class BlameCommand extends commando.Command {
 		.then(messages => {
 		let messageArray = messages.array();
 		for(var i = 0; i < messageArray.length; i++){
-			let member = messageArray[i].member.displayName
-			if(member != null){
+			if(messageArray[i].member != null && messageArray[i].member.displayName != null){
+				let member = messageArray[i].member.displayName;
 				if(!blame.includes(member)){
 					blame.push(member)
 				}
