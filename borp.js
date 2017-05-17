@@ -89,7 +89,7 @@ client
 				rea.remove(user)
 				.catch(console.error)
 			}
-			else if((rea.message.author.id != client.user.id && rea.users.get(rea.message.author.id) != undefined) || rea.count >= client.provider.get(rea.message.guild, 'xLimit' + rea.message.channel.id, 7)){
+			else if(rea.count >= client.provider.get(rea.message.guild, 'xLimit' + rea.message.channel.id, 7)){
 				let xlogChannelIDs = client.provider.get(rea.message.guild, 'xlogChannelIDs', null);
 				let logMessage = `Deleted ${rea.message.member.displayName}[${rea.message.author.id}]'s message in ${rea.message.channel}`
 				let messageAttachments = rea.message.attachments.array();
@@ -109,6 +109,9 @@ client
 					}
 				}
 				sendMessages(xlogChannelIDs, logMessage)
+				rea.message.delete();
+			}
+			else if(rea.message.author.id != client.user.id && rea.users.get(rea.message.author.id) != undefined){
 				rea.message.delete();
 			}
 		}
