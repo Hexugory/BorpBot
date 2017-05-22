@@ -46,18 +46,21 @@ client
 		let xChannelIDs = client.provider.get(msg.guild, 'xChannelIDs', null);
 		if(xChannelIDs != null){
 			if(xChannelIDs.includes(msg.channel.id)){
-				setTimeout(function(){
-					if(msg.attachments.array()[0] != undefined){
-						if(msg.attachments.array()[0].id != undefined){
-							msg.react('\u{274c}')
-						}
+				//this totally isnt inefficient at all
+				let xcount = 0;
+				let checkx = setInterval(function(){
+					if(xcount >= 3){
+						clearInterval(checkx);
 					}
-					if(msg.embeds[0] != undefined){
-						if(msg.embeds[0].type === 'video' || msg.embeds[0].type === 'image'){
-							msg.react('\u{274c}')
-						}
+					else if(msg.attachments.array()[0] != undefined && msg.attachments.array()[0].id != undefined){
+						msg.react('\u{274c}');
+						clearInterval(checkx);
 					}
-				}, 1500);
+					else if(msg.embeds[0] != undefined && (msg.embeds[0].type === 'video' || msg.embeds[0].type === 'image')){
+						msg.react('\u{274c}');
+						clearInterval(checkx);
+					}
+				}, 1000);
 			}
 		}
 		if(!msg.author.bot){
