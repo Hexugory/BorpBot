@@ -48,7 +48,7 @@ module.exports = class LeaderboardCommand extends commando.Command {
 				for(var i = 0; i < list.length; i++){
 					send += `${list[i].username}: ${list[i].score} Minutes`
 				}
-				client.provider.set(msg.guild, 'tumbleweedLeaderboard', tumbleweedLeaderboard);
+				this.client.provider.set(msg.guild, 'tumbleweedLeaderboard', list);
 				return msg.channel.send(send + '```');
 			}
 		}
