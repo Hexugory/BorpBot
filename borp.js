@@ -64,6 +64,36 @@ client
 			}
 		}
 		if(!msg.author.bot){
+			if(msg.attachments.array()[0] != undefined && msg.attachments.array()[0].filename.toLowerCase().includes("tumbleweed")){
+				//real mistake hours hit that tumbleweed if you up
+				let prevMessages = msg.channel.messages.array();
+				if(!prevMessages.indexOf(msg) - 1 < 0){
+					let tumbleweedLeaderboard = client.provider.get(msg.guild, 'tumbleweedLeaderboard', []);
+					let tumbleDate = msg.createdAt;
+					let prevDate = prevMessages[prevMessages.indexOf(msg) - 1].createdAt;
+					let minuteDifference = Math.round((tumbleDate-prevDate)/1000/60);
+					let entryIndex = tumbleweedLeaderboard.findIndex(function(element){return element.id === msg.author.id});
+					if(entryIndex > -1){
+						if(minuteDifference > tumbleweedLeaderboard[entryIndex].score){
+							tumbleweedLeaderboard[entryIndex] = {
+								score: minuteDifference,
+								username: msg.author.username,
+								id: msg.author.id
+							}
+						}
+					}
+					else{
+						tumbleweedLeaderboard.push(
+							{
+								score: minuteDifference,
+								username: msg.author.username,
+								id: msg.author.id
+							}
+						);
+					}
+					client.provider.set(msg.guild, 'tumbleweedLeaderboard', tumbleweedLeaderboard);
+				}
+			}
 			let memeChannelIDs = client.provider.get(msg.guild, 'memeChannelIDs', null);
 			if(memeChannelIDs != null){
 				let customCommands = client.provider.get(msg.guild, 'customCommands', []);
