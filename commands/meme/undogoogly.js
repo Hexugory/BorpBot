@@ -5,6 +5,7 @@ const mMessages = require('../../perms.js').mMessages;
 module.exports = class UndoGooglyCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
+			aliases: ['undog'],
 			name: 'undogoogly',
 			group: 'meme',
 			memberName: 'undogoogly',

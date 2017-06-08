@@ -3,25 +3,15 @@ const sqlite = require('sqlite');
 const jimp = require('jimp');
 const mMessages = require('../../perms.js').mMessages;
 
-module.exports = class EdgifierCommand extends commando.Command {
+module.exports = class GreyEdgeCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
-			aliases: ['edge'],
-			name: 'edgifier',
+			aliases: ['grayedge', 'gedge'],
+			name: 'greyedge',
 			group: 'meme',
-			memberName: 'edgifier',
-			description: 'Makes you edgier.',
-			examples: ["'edgifier 180"],
-
-			args: [
-				{
-					key: 'hue',
-					label: 'hue',
-					prompt: 'Enter hue.',
-					type: 'integer',
-					default: 0
-				}
-			]
+			memberName: 'greyedge',
+			description: 'Makes you edgier and grey.',
+			examples: ["'greyedge"],
 		});
 	}
 	
@@ -43,11 +33,6 @@ module.exports = class EdgifierCommand extends commando.Command {
 		jimp.read(url + ".png?size=256").then(function(ava){
 			ava.greyscale()
 			.invert()
-			.color([
-			{ apply: 'blue', params: [ -9999 ] },
-			{ apply: 'green', params: [ -9999 ] },
-			{ apply: 'hue', params: [ args.hue ] }
-			])
 			.getBuffer(jimp.MIME_PNG, function(err, buffer){
 				return msg.channel.send({files: [{attachment: buffer,name: `Edgy-${msg.author.username}.png`}]});
 			});

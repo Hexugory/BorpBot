@@ -7,7 +7,7 @@
     "common-tags": "^1.4.0",
     "discord.js": "^11.1.0",
     "discord.js-commando": "^0.9.0",
-    "jimp": "^0.2.27",
+    "jimp": "^0.2.28",
     "prompt": "^1.0.0",
     "sqlite": "^2.3.0"
   },

@@ -5,6 +5,7 @@ const mMessages = require('../../perms.js').mMessages;
 module.exports = class RemoveGooglyCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
+			aliases: ['removeg'],
 			name: 'removegoogly',
 			group: 'meme',
 			memberName: 'removegoogly',
