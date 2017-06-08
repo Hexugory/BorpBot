@@ -5,6 +5,7 @@ const mMessages = require('../../perms.js').mMessages;
 module.exports = class NewCustomCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
+			aliases: ['newc'],
 			name: 'newcommand',
 			group: 'meme',
 			memberName: 'newcommand',
@@ -18,15 +19,13 @@ module.exports = class NewCustomCommand extends commando.Command {
 					key: 'name',
 					label: 'name',
 					prompt: 'Enter command input.',
-					type: 'string',
-					default: 'blank'
+					type: 'string'
 				},
 				{
 					key: 'out',
 					label: 'output',
 					prompt: 'Enter command output',
-					type: 'string',
-					default: 'blank'
+					type: 'string'
 				}
 			]
 		});

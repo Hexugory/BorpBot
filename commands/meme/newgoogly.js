@@ -5,6 +5,7 @@ const mMessages = require('../../perms.js').mMessages;
 module.exports = class NewGooglyCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
+			aliases: ['newg'],
 			name: 'newgoogly',
 			group: 'meme',
 			memberName: 'newgoogly',
