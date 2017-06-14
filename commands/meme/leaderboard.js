@@ -37,10 +37,9 @@ module.exports = class LeaderboardCommand extends commando.Command {
 				return msg.channel.send('This leaderboard is empty.');
 			}
 			else{
-				list.sort(function(a, b) {
+				list = await list.sort(function(a, b) {
 					return a.score - b.score;
-				});
-				list.reverse();
+				}).reverse();
 				if(list.length > 10){
 					list.length = 10;
 				};
