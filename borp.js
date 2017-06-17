@@ -47,12 +47,8 @@ client
 		if(xChannelIDs != null){
 			if(xChannelIDs.includes(msg.channel.id)){
 				//this totally isnt inefficient at all
-				let xcount = 0;
 				let checkx = setInterval(function(){
-					if(xcount >= 3){
-						clearInterval(checkx);
-					}
-					else if(msg.attachments.array()[0] != undefined && msg.attachments.array()[0].id != undefined){
+					if(msg.attachments.array()[0] != undefined && msg.attachments.array()[0].id != undefined){
 						msg.react('\u{274c}');
 						clearInterval(checkx);
 					}
@@ -139,9 +135,9 @@ client
 					else{
 						logMessage += " containing";
 					}
-					logMessage += " the following embeds:\r"
+					logMessage += " the following embeds:\n"
 					for(i = 0; i < rea.message.embeds.length; i++){
-						logMessage += `<${rea.message.embeds[i].url}>\r`;
+						logMessage += `<${rea.message.embeds[i].url}>\n`;
 					}
 				}
 				sendMessages(xlogChannelIDs, logMessage)
@@ -221,7 +217,7 @@ function speechPrompt(){
 			}
 			else{
 				let promptDest = client.channels.get(promptChannel);
-				result.send = result.send.replace("\\r", "\r")
+				result.send = result.send.replace("\\n", "\n")
 				promptDest.sendMessage(result.send);
 				console.log(`Sending ${result.send} to ${promptDest.name}`);
 				return speechPrompt();

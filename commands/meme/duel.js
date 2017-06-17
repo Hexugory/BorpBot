@@ -49,51 +49,51 @@ module.exports = class DuelCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
-		var duelsend = "";
-		var hp = [20, 20];
-		var attacker = Math.round(Math.random());
-		var attacked = 1;
-		var users = [args.p1, args.p2];
+		function getRandomInt(min, max){
+			return Math.floor(Math.random() * (max - min + 1) + min);
+		}
+		var turn = getRandomInt(0, 1);
+		var notTurn = turn ? 0 : 1;
+		var duelString = "";
+		var duelers = [{
+			name: args.p1,
+			hp: 20
+		},
+		{
+			name: args.p2,
+			hp: 20
+		}];
 		function duel(){
-			if(attacker === 0){
-				attacked = 1;
+			if(getRandomInt(0, 1000) === 1000){
+				duelString += `${duelers[turn].name}[${duelers[turn].hp}] uses Fedora Tip on ${duelers[notTurn].name}[${duelers[notTurn].hp}], deals euphoric damage.`
+				duelers[notTurn].hp -= 9999;
 			}
 			else{
-				attacked = 0;
-			}
-			if(Math.floor(Math.random()*1000) === 1){
-				duelsend += `${users[attacker]}[${hp[attacker]}] uses Fedora Tip on ${users[attacked]}[${hp[attacked]}], deals euphoric damage.`
-				hp[attacked] -= 9999;
-			}
-			else{
-				let attack = spells[Math.floor(Math.random() * spells.length)];
-				duelsend += `${users[attacker]}[${hp[attacker]}] uses ${attack.name}`
+				let attack = spells[getRandomInt(0, spells.length - 1)];
+				duelString += `${duelers[turn].name}[${duelers[turn].hp}] uses ${attack.name}`
 				if(attack.dmg != undefined){
-					duelsend += ` on ${users[attacked]}[${hp[attacked]}], deals ${attack.dmg} damage`;
-					hp[attacked] -= attack.dmg;
+					duelString += ` on ${duelers[notTurn].name}[${duelers[notTurn].hp}], deals ${attack.dmg} damage`;
+					duelers[notTurn].hp -= attack.dmg;
 				}
 				if(attack.heal != undefined){
-					duelsend += `, heals ${attack.heal} hp`;
-					hp[attacker] += attack.heal;
+					duelString += `, heals ${attack.heal} hp`;
+					duelers[turn].hp += attack.heal;
 				}
 			}
-			duelsend += ".\r"
-			if(hp[attacked] <= 0){
-				duelsend += `${users[attacked]}[${hp[attacked]}] has been defeated, ${users[attacker]}[${hp[attacker]}] wins.`
-				if(duelsend.length < 1999){
-					return msg.channel.send(`${duelsend}`);
+			duelString += ".\n"
+			if(duelers[notTurn].hp <= 0){
+				duelString += `${duelers[notTurn].name}[${duelers[notTurn].hp}] has been defeated, ${duelers[turn].name}[${duelers[turn].hp}] wins.`
+				if(duelString.length < 1999){
+					return msg.channel.send(duelString);
 				}
 				else{
-					return msg.reply("The duel was too long, cant send.")
+					let messageBuffer = new Buffer(duelString, 'utf-8')
+					return msg.channel.send({files: [{attachment: messageBuffer,name: `result.txt`}]})
 				}
 			}
 			else{
-				if(attacker === 0){
-					attacker = 1;
-				}
-				else{
-					attacker = 0;
-				}
+				turn = turn ? 0 : 1;
+				notTurn = turn ? 0 : 1;
 				duel();
 			}
 		}
