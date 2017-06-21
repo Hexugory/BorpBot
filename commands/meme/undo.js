@@ -1,6 +1,5 @@
 const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
-const mMessages = require('../../perms.js').mMessages;
 
 module.exports = class UndoCustomCommand extends commando.Command {
 	constructor(client) {
@@ -25,7 +24,7 @@ module.exports = class UndoCustomCommand extends commando.Command {
 			return true
 		}
 		else{
-			return msg.member.hasPermission(mMessages)
+			return msg.member.permissions.has('MANAGE_MESSAGES')
 		}
 	}
 
