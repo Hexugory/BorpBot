@@ -1,7 +1,6 @@
 const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
 const path =  require('path');
-const mChannels = require('../../perms.js').mChannels;
 const oneLine = require('common-tags').oneLine;
 
 module.exports = class SetChannelCommand extends commando.Command {
@@ -38,7 +37,7 @@ module.exports = class SetChannelCommand extends commando.Command {
 			return true;
 		}
 		else{
-			return msg.member.hasPermission(mChannels);
+			return msg.member.permissions.has('MANAGE_CHANNELS');
 		}
 	}
 

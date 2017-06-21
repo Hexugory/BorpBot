@@ -1,7 +1,6 @@
 const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
 const spells = require('../../spells.json');
-const mMessages = require('../../perms.js').mMessages;
 
 module.exports = class DuelCommand extends commando.Command {
 	constructor(client) {
@@ -44,7 +43,7 @@ module.exports = class DuelCommand extends commando.Command {
 			return true
 		}
 		else{
-			return msg.member != null && msg.member.hasPermission(mMessages)
+			return msg.member != null && msg.member.permissions.has('MANAGE_MESSAGES')
 		}
 	}
 

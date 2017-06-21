@@ -3,7 +3,6 @@ const path = require('path');
 const oneLine = require('common-tags').oneLine;
 const sqlite = require('sqlite');
 const config = require('./config.json');
-const mMessages = require('./perms.js').mMessages;
 const prompt = require('prompt');
 
 const client = new commando.Client({
@@ -103,7 +102,7 @@ client
 					if(commandIndex > -1){
 						if(memeChannelIDs.includes(msg.channel.id) || 
 						 msg.client.isOwner(msg.author) ||
-						 msg.member.hasPermission(mMessages)){
+						 msg.member.permissions.has('MANAGE_MESSAGES')){
 							msg.channel.send(customCommands[commandIndex].output);
 						}
 						else{
@@ -218,7 +217,7 @@ function speechPrompt(){
 			else{
 				let promptDest = client.channels.get(promptChannel);
 				result.send = result.send.replace("\\n", "\n")
-				promptDest.sendMessage(result.send);
+				promptDest.send(result.send);
 				console.log(`Sending ${result.send} to ${promptDest.name}`);
 				return speechPrompt();
 			}

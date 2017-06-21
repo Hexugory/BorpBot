@@ -1,7 +1,6 @@
 const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
 const jimp = require('jimp');
-const mMessages = require('../../perms.js').mMessages;
 
 module.exports = class GreyEdgeCommand extends commando.Command {
 	constructor(client) {
@@ -19,7 +18,7 @@ module.exports = class GreyEdgeCommand extends commando.Command {
 		if(msg.client.isOwner(msg.author)){
 			return true;
 		}
-		else if(msg.member != null && msg.member.hasPermission(mMessages)){
+		else if(msg.member != null && msg.member.permissions.has('MANAGE_MESSAGES')){
 			return true;
 		}
 		else{

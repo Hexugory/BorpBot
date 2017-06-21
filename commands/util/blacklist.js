@@ -1,7 +1,6 @@
 const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
 const path =  require('path');
-const mRoles = require('../../perms.js').mRoles;
 const oneLine = require('common-tags').oneLine;
 
 module.exports = class BlacklistCommand extends commando.Command {
@@ -44,7 +43,7 @@ module.exports = class BlacklistCommand extends commando.Command {
 			return true;
 		}
 		else{
-			return msg.member.hasPermission(mRoles);
+			return msg.member.permissions.has('MANAGE_ROLES');
 		}
 	}
 
