@@ -1,0 +1,1 @@
+start cmd.exe /k "node --harmony borpspeak.js"
