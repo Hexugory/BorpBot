@@ -49,7 +49,7 @@ module.exports = class LeaderboardCommand extends commando.Command {
 				};
 				let send = '```';
 				for(var i = 0; i < list.length; i++){
-					send += `${i+1}. ${list[i].username}: ${list[i].score} ${scorenames[args.lb]}\n`
+					send += `${i>0 ? list[i].score === list[i-1].score ? i : i+1 : i+1}. ${list[i].username}: ${list[i].score} ${scorenames[args.lb]}\n`
 				}
 				this.client.provider.set(msg.guild, 'tumbleweedLeaderboard', list);
 				return msg.channel.send(send + '```');
