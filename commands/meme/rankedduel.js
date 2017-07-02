@@ -47,6 +47,9 @@ module.exports = class RankedDuelCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
+		if(args.p1.id === args.p2.id){
+			return msg.channel.send("You can't duel yourself!")
+		}
 		function getRandomInt(min, max){
 			return Math.floor(Math.random() * (max - min + 1) + min);
 		}
