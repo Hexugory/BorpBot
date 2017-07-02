@@ -2,28 +2,29 @@ const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
 const spells = require('../../spells.json');
 
-module.exports = class DuelCommand extends commando.Command {
+module.exports = class RankedDuelCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
-			name: 'duel',
+			aliases: ['rduel'],
+			name: 'rankedduel',
 			group: 'meme',
-			memberName: 'duel',
-			description: 'Duels two inputs.',
+			memberName: 'rankedduel',
+			description: 'Duels two members.',
 			throttling:{usages:1, duration:30},
 			examples: ['\'duel @Guy Hero#1823 @BorpBot#5498'],
 
 			args: [
 				{
 					key: 'p1',
-					label: 'fighter 1',
+					label: 'user 1',
 					prompt: 'Enter combatant 1.',
-					type: 'string'
+					type: 'member'
 				},
 				{
 					key: 'p2',
-					label: 'fighter 2',
+					label: 'user 2',
 					prompt: 'Enter combatant 2',
-					type: 'string'
+					type: 'member'
 				}
 			]
 			
@@ -80,6 +81,25 @@ module.exports = class DuelCommand extends commando.Command {
 			duelString += ".\n"
 			if(duelers[notTurn].hp <= 0){
 				duelString += `${duelers[notTurn].name}[${duelers[notTurn].hp}] has been defeated, ${duelers[turn].name}[${duelers[turn].hp}] wins.`
+				let duelLeaderboard = msg.client.provider.get(msg.guild, 'duelLeaderboard', []);
+				let entryIndex = duelLeaderboard.findIndex(function(element){return element.id === args["p"+(turn+1)].user.id});
+				if(entryIndex > -1){
+					duelLeaderboard[entryIndex] = {
+						score: duelLeaderboard[entryIndex].score+1,
+						username: args["p"+(turn+1)].user.username,
+						id: args["p"+(turn+1)].id
+					}
+				}
+				else{
+					duelLeaderboard.push(
+						{
+							score: 1,
+							username: args["p"+(turn+1)].user.username,
+							id: args["p"+(turn+1)].id
+						}
+					);
+				}
+				msg.client.provider.set(msg.guild, 'duelLeaderboard', duelLeaderboard);
 				if(duelString.length < 1999){
 					return msg.channel.send(duelString);
 				}

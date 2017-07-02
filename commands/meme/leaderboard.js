@@ -11,7 +11,7 @@ module.exports = class LeaderboardCommand extends commando.Command {
 			memberName: 'leaderboard',
 			description: 'Shows the specified leaderboard.',
 			details: oneLine`
-			the only argument is tumbleweed at the moment that's literally it hazu why did you give me this idea
+			tumbleweed leaderboard and duel or smth
 			`,
 			examples: ['\'leaderboard tumbleweed'],
 			guildOnly: true,
@@ -31,7 +31,11 @@ module.exports = class LeaderboardCommand extends commando.Command {
 	async run(msg, args) {
 
 		//check for a valid argument
-		if(['tumbleweed'].includes(args.lb)){
+		if(['tumbleweed', 'duel'].includes(args.lb)){
+			var scorenames = {
+				tumbleweed: 'Minutes',
+				duel: 'Wins'
+			};
 			let list = this.client.provider.get(msg.guild, args.lb + 'Leaderboard', []);
 			if(list[0] === undefined){
 				return msg.channel.send('This leaderboard is empty.');
@@ -45,7 +49,7 @@ module.exports = class LeaderboardCommand extends commando.Command {
 				};
 				let send = '```';
 				for(var i = 0; i < list.length; i++){
-					send += `${i+1}. ${list[i].username}: ${list[i].score} Minutes\r`
+					send += `${i+1}. ${list[i].username}: ${list[i].score} ${scorenames[args.lb]}\n`
 				}
 				this.client.provider.set(msg.guild, 'tumbleweedLeaderboard', list);
 				return msg.channel.send(send + '```');
