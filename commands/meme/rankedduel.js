@@ -64,6 +64,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 			name: args.p2,
 			hp: 20
 		}];
+		duelString += `Coin flip decides that ${duelers[turn].name} will go first.\n`
 		function duel(){
 			if(getRandomInt(0, 1000) === 1000){
 				duelString += `${duelers[turn].name}[${duelers[turn].hp}] uses Fedora Tip on ${duelers[notTurn].name}[${duelers[notTurn].hp}], deals euphoric damage.`
