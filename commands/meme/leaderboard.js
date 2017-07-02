@@ -6,6 +6,7 @@ const oneLine = require('common-tags').oneLine;
 module.exports = class LeaderboardCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
+			aliases: ['lead', 'leader', 'board'],
 			name: 'leaderboard',
 			group: 'meme',
 			memberName: 'leaderboard',
