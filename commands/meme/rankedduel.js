@@ -9,7 +9,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 			name: 'rankedduel',
 			group: 'meme',
 			memberName: 'rankedduel',
-			description: 'Duels two members.',
+			description: 'Duels two members for the leaderboard.',
 			throttling:{usages:1, duration:30},
 			examples: ['\'duel @Guy Hero#1823 @BorpBot#5498'],
 
