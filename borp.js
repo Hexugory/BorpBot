@@ -58,6 +58,9 @@ client
 				}, 1000);
 			}
 		}
+		if(msg.content.toLowerCase().includes("press 🇫 to pay respects") || msg.content.toLowerCase().includes("press f to pay respects")){
+			msg.react('\u{1f1eb}')
+		}
 		if(!msg.author.bot){
 			let tumbleweedChannelIDs = client.provider.get(msg.guild, 'tumbleweedChannelIDs', []);
 			if(tumbleweedChannelIDs.includes(msg.channel.id)){
@@ -115,7 +118,7 @@ client
 	})
 	.on('messageReactionAdd', (rea, user) => {
 		let xBlacklistIDs = client.provider.get(rea.message.guild, 'xBlacklistIDs', []);
-		if(rea.me === true){
+		if(rea.me === true && rea.emoji.name === "❌"){
 			if(xBlacklistIDs.includes(user.id)){
 				rea.remove(user)
 				.catch(console.error)
