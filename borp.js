@@ -46,6 +46,7 @@ client
 		if(xChannelIDs != null){
 			if(xChannelIDs.includes(msg.channel.id)){
 				//this totally isnt inefficient at all
+				let checkcount = 0
 				let checkx = setInterval(function(){
 					if(msg.attachments.array()[0] != undefined && msg.attachments.array()[0].id != undefined){
 						msg.react('\u{274c}');
@@ -55,6 +56,10 @@ client
 						msg.react('\u{274c}');
 						clearInterval(checkx);
 					}
+					else if(checkcount >= 3){
+						clearInterval(checkx);
+					}
+					checkcount++;
 				}, 1000);
 			}
 		}
