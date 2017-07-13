@@ -56,7 +56,7 @@ client
 						xLimit > 1 ? msg.react('\u{274c}') : msg.delete();
 						clearInterval(checkx);
 					}
-					else if(msg.embeds[0] != undefined && (msg.embeds[0].type === 'video' || msg.embeds[0].type === 'image')){
+					else if(msg.embeds[0] != undefined){
 						xLimit > 1 ? msg.react('\u{274c}') : msg.delete();
 						clearInterval(checkx);
 					}
