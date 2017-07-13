@@ -16,7 +16,10 @@ var promptChannel = "";
 
 function sendMessages(arr, content){
 	for(i = 0; i < arr.length; i++){
-		client.channels.get(arr[i]).send(content)
+		try{
+			client.channels.get(arr[i]).send(content)
+		}
+		catch(err){console.log(err)}
 	}
 }
 
@@ -48,12 +51,13 @@ client
 				//this totally isnt inefficient at all
 				let checkcount = 0
 				let checkx = setInterval(function(){
+					let xLimit = client.provider.get(msg.guild, 'xLimit' + msg.channel.id, 7)
 					if(msg.attachments.array()[0] != undefined && msg.attachments.array()[0].id != undefined){
-						msg.react('\u{274c}');
+						xLimit > 1 ? msg.react('\u{274c}') : msg.delete();
 						clearInterval(checkx);
 					}
 					else if(msg.embeds[0] != undefined && (msg.embeds[0].type === 'video' || msg.embeds[0].type === 'image')){
-						msg.react('\u{274c}');
+						xLimit > 1 ? msg.react('\u{274c}') : msg.delete();
 						clearInterval(checkx);
 					}
 					else if(checkcount >= 3){
@@ -128,8 +132,8 @@ client
 				rea.remove(user)
 				.catch(console.error)
 			}
-			else if(rea.count >= client.provider.get(rea.message.guild, 'xLimit' + rea.message.channel.id, 7)){
-				let xlogChannelIDs = client.provider.get(rea.message.guild, 'xlogChannelIDs', null);
+			else if(rea.count-1 >= client.provider.get(rea.message.guild, 'xLimit' + rea.message.channel.id, 7)){
+				let xlogChannelIDs = client.provider.get(rea.message.guild, 'xlogChannelIDs', []);
 				let logMessage = `Deleted ${rea.message.member.displayName}[${rea.message.author.id}]'s message in ${rea.message.channel}`
 				let messageAttachments = rea.message.attachments.array();
 				if(messageAttachments[0] != undefined && messageAttachments[0].id != undefined){
