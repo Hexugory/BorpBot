@@ -36,15 +36,21 @@ module.exports = class RemoveCustomCommand extends commando.Command {
 	async run(msg, args) {
 		function findCommand(element){return element.name === args.name};
 		let customCommands = this.client.provider.get(msg.guild, 'customCommands', []);
+		let foundCommand = customCommands.findIndex(findCommand);
 		if(args.name === 0){
 			customCommands.length -= 1;
 			this.client.provider.set(msg.guild, 'customCommands', customCommands);
 			return msg.reply('Last command removed.');
 		}
 		else{
-			customCommands.splice(customCommands.findIndex(findCommand), 1);
-			this.client.provider.set(msg.guild, 'customCommands', customCommands);
-			return msg.reply(`\`'${args.name}\` removed.`);
+			if(foundCommand > -1 && customCommands.length > 0){
+				customCommands.splice(foundCommand, 1);
+				this.client.provider.set(msg.guild, 'customCommands', customCommands);
+				return msg.reply(`\`${this.client.provider.get(msg.guild, 'prefix', this.client.commandPrefix)}${args.name}\` removed.`);
+			}
+			else{
+				return msg.reply(`Command not found.`);
+			}
 		}
 	}
 };
