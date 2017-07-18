@@ -7,7 +7,7 @@ const prompt = require('prompt');
 
 const client = new commando.Client({
 	owner: config.owner,
-	commandPrefix: '\'',
+	commandPrefix: config.prefix,
 	unknownCommandResponse: false,
 	invite: 'http://discord.gg/PaZzcx5'
 });
@@ -108,8 +108,9 @@ client
 			if(memeChannelIDs != null){
 				let customCommands = client.provider.get(msg.guild, 'customCommands', []);
 				let commandInput = msg.content;
-				if(commandInput.slice(0,1) === "'"){
-					commandInput = commandInput.slice(1).toLowerCase();
+				let prefix = client.provider.get(msg.guild, 'prefix', client.commandPrefix)
+				if(commandInput.slice(0,prefix.length) === prefix){
+					commandInput = commandInput.slice(prefix.length).toLowerCase();
 					let commandIndex = customCommands.findIndex(function(element){return element.name.toLowerCase() === commandInput});
 					if(commandIndex > -1){
 						if(memeChannelIDs.includes(msg.channel.id) || 

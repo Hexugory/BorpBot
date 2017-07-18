@@ -15,10 +15,15 @@ module.exports = class ListCustomCommand extends commando.Command {
 
 	async run(msg, args) {
 		let customCommands = this.client.provider.get(msg.guild, 'customCommands', []);
-		let commandList = "";
-		for(var i = 0; i < customCommands.length; i++){
-			commandList += `\`${customCommands[i].name}\` `
+		if(customCommands.length > 0){
+			let commandList = "";
+			for(var i = 0; i < customCommands.length; i++){
+				commandList += `\`${customCommands[i].name}\` `
+			}
+			return msg.channel.send(commandList);
 		}
-		return msg.channel.send(commandList);
+		else{
+			return msg.reply('This server has no custom commands.');
+		}
 	}
 };

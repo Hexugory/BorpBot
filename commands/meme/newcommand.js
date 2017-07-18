@@ -65,7 +65,7 @@ module.exports = class NewCustomCommand extends commando.Command {
 					output: args.out
 				});
 				this.client.provider.set(msg.guild, 'customCommands', customCommands);
-				return msg.reply(`\`'${args.name}\` added. Undo mistakes with \`'undo\`.`);
+				return msg.reply(`\`${this.client.provider.get(msg.guild, 'prefix', this.client.commandPrefix)}${args.name}\` added. Undo mistakes with \`'undo\`.`);
 			}
 		}
 	}

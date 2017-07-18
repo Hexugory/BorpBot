@@ -1,5 +1,6 @@
 {
-"token": "ur bot's token",
-"owner": "ur id",
-"game": "ur bot's status"
+"token": "bot token",
+"owner": "bot owner id",
+"game": "bot game",
+"prefix": "bot prefix"
 }
