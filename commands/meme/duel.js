@@ -52,7 +52,8 @@ module.exports = class DuelCommand extends commando.Command {
 		"If only we could afford prize money. 🤔",
 		"You werent even good enough to be my fake. 😈🗡",
 		"But they werent even using their full power!",
-		"But it was just a dream."
+		"But it was just a dream.",
+		"Even if you win, you still won't be able to get #1 on the tumbleweed."
 		];
 		function getRandomInt(min, max){
 			return Math.floor(Math.random() * (max - min + 1) + min);
