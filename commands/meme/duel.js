@@ -51,7 +51,7 @@ module.exports = class DuelCommand extends commando.Command {
 		}
 		var turn = getRandomInt(0, 1);
 		var notTurn = turn ? 0 : 1;
-		var duelString = "";
+		var turnDescs = [];
 		var duelers = [{
 			name: args.p1,
 			hp: 20
@@ -60,34 +60,50 @@ module.exports = class DuelCommand extends commando.Command {
 			name: args.p2,
 			hp: 20
 		}];
-		duelString += `Coin flip decides that ${duelers[turn].name} will go first.\n`
 		function duel(){
 			if(getRandomInt(0, 1000) === 1000){
-				duelString += `${duelers[turn].name}[${duelers[turn].hp}] uses Fedora Tip on ${duelers[notTurn].name}[${duelers[notTurn].hp}], deals euphoric damage.`
+				turnDescs.push({
+					name: `${duelers[turn].name}[${duelers[turn].hp}] uses Fedora Tip on ${duelers[notTurn].name}[${duelers[notTurn].hp}]`,
+					value: "The damage is off the charts!"
+				});
 				duelers[notTurn].hp -= 9999;
 			}
 			else{
 				let attack = spells[getRandomInt(0, spells.length - 1)];
-				duelString += `${duelers[turn].name}[${duelers[turn].hp}] uses ${attack.name}`
+				turnDescs.push({
+					name: `${duelers[turn].name}[${duelers[turn].hp}] uses ${attack.name} on ${duelers[notTurn].name}[${duelers[notTurn].hp}]`,
+					value: ''
+				});
 				if(attack.dmg != undefined){
-					duelString += ` on ${duelers[notTurn].name}[${duelers[notTurn].hp}], deals ${attack.dmg} damage`;
+					turnDescs[turnDescs.length-1].value += `🗡${duelers[notTurn].name}[${duelers[notTurn].hp}] takes ${attack.dmg} damage.`;
 					duelers[notTurn].hp -= attack.dmg;
 				}
 				if(attack.heal != undefined){
-					duelString += `, heals ${attack.heal} hp`;
+					if(attack.dmg != undefined){
+						turnDescs[turnDescs.length-1].value += '\n';
+					}
+					turnDescs[turnDescs.length-1].value += `➕${duelers[turn].name}[${duelers[turn].hp}] heals ${attack.heal} hp.`;
 					duelers[turn].hp += attack.heal;
 				}
 			}
-			duelString += ".\n"
 			if(duelers[notTurn].hp <= 0){
-				duelString += `${duelers[notTurn].name}[${duelers[notTurn].hp}] has been defeated, ${duelers[turn].name}[${duelers[turn].hp}] wins.`
-				if(duelString.length < 1999){
-					return msg.channel.send(duelString);
-				}
-				else{
-					let messageBuffer = new Buffer(duelString, 'utf-8')
-					return msg.channel.send({files: [{attachment: messageBuffer,name: `result.txt`}]})
-				}
+				turnDescs.push({
+					name: `${duelers[notTurn].name}[${duelers[notTurn].hp}] has been defeated, ${duelers[turn].name}[${duelers[turn].hp}] wins!`,
+					value: `If only we could afford prize money. 🤔`
+					//possbile random text there later
+				});
+				return msg.channel.send({embed: {
+					thumbnail: {
+						url: "http://i.imgur.com/sMrWQWO.png"
+					},
+					author: {
+						name: `Announcer ${msg.client.user.username}`,
+						icon_url: msg.client.user.avatarURL
+					},
+					color: 0x8c110b,
+					title: `${args.p1} VS ${args.p2}!`,
+					fields: turnDescs
+				}});
 			}
 			else{
 				turn = turn ? 0 : 1;
