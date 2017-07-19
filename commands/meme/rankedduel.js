@@ -47,6 +47,14 @@ module.exports = class RankedDuelCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
+		var duelJokes = [
+		"It looks like we know who the more significant character is now. 😏",
+		"If only it meant anything in the greater scheme of things.",
+		"If only we could afford prize money. 🤔",
+		"You werent even good enough to be my fake. 😈🗡",
+		"But they werent even using their full power!",
+		"But it was just a dream."
+		];
 		if(args.p1.id === args.p2.id){
 			return msg.channel.send("You can't duel yourself!")
 		}
@@ -94,8 +102,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 			if(duelers[notTurn].hp <= 0){
 				turnDescs.push({
 					name: `${duelers[notTurn].name}[${duelers[notTurn].hp}] has been defeated, ${duelers[turn].name}[${duelers[turn].hp}] wins!`,
-					value: `If only we could afford prize money. 🤔`
-					//possbile random text there later
+					value: duelJokes[Math.floor(Math.random() * duelJokes.length)]
 				});
 				let duelLeaderboard = msg.client.provider.get(msg.guild, 'duelLeaderboard', []);
 				let entryIndex = duelLeaderboard.findIndex(function(element){return element.id === args["p"+(turn+1)].user.id});
