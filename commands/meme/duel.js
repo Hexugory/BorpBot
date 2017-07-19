@@ -50,6 +50,7 @@ module.exports = class DuelCommand extends commando.Command {
 			return Math.floor(Math.random() * (max - min + 1) + min);
 		}
 		var turn = getRandomInt(0, 1);
+		var firstTurn = turn;
 		var notTurn = turn ? 0 : 1;
 		var turnDescs = [];
 		var duelers = [{
@@ -102,6 +103,7 @@ module.exports = class DuelCommand extends commando.Command {
 					},
 					color: 0x8c110b,
 					title: `${args.p1} VS ${args.p2}!`,
+					description: `Coin flip decides ${duelers[firstTurn].name} will go first.`,
 					fields: turnDescs
 				}});
 			}
