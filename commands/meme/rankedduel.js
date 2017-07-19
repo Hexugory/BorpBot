@@ -55,39 +55,51 @@ module.exports = class RankedDuelCommand extends commando.Command {
 		}
 		var turn = getRandomInt(0, 1);
 		var notTurn = turn ? 0 : 1;
-		var duelString = "";
+		var turnDescs = [];
 		var duelers = [{
-			name: args.p1,
+			name: args.p1.user.username,
 			hp: 20
 		},
 		{
-			name: args.p2,
+			name: args.p2.user.username,
 			hp: 20
 		}];
-		duelString += `Coin flip decides that ${duelers[turn].name} will go first.\n`
 		function duel(){
 			if(getRandomInt(0, 1000) === 1000){
-				duelString += `${duelers[turn].name}[${duelers[turn].hp}] uses Fedora Tip on ${duelers[notTurn].name}[${duelers[notTurn].hp}], deals euphoric damage.`
+				turnDescs.push({
+					name: `${duelers[turn].name}[${duelers[turn].hp}] uses Fedora Tip on ${duelers[notTurn].name}[${duelers[notTurn].hp}]`,
+					value: "The damage is off the charts!"
+				});
 				duelers[notTurn].hp -= 9999;
 			}
 			else{
 				let attack = spells[getRandomInt(0, spells.length - 1)];
-				duelString += `${duelers[turn].name}[${duelers[turn].hp}] uses ${attack.name}`
+				turnDescs.push({
+					name: `${duelers[turn].name}[${duelers[turn].hp}] uses ${attack.name} on ${duelers[notTurn].name}[${duelers[notTurn].hp}]`,
+					value: ''
+				});
 				if(attack.dmg != undefined){
-					duelString += ` on ${duelers[notTurn].name}[${duelers[notTurn].hp}], deals ${attack.dmg} damage`;
+					turnDescs[turnDescs.length-1].value += `🗡${duelers[notTurn].name}[${duelers[notTurn].hp}] takes ${attack.dmg} damage.`;
 					duelers[notTurn].hp -= attack.dmg;
 				}
 				if(attack.heal != undefined){
-					duelString += `, heals ${attack.heal} hp`;
+					if(attack.dmg != undefined){
+						turnDescs[turnDescs.length-1].value += '\n';
+					}
+					turnDescs[turnDescs.length-1].value += `➕${duelers[turn].name}[${duelers[turn].hp}] heals ${attack.heal} hp.`;
 					duelers[turn].hp += attack.heal;
 				}
 			}
-			duelString += ".\n"
 			if(duelers[notTurn].hp <= 0){
-				duelString += `${duelers[notTurn].name}[${duelers[notTurn].hp}] has been defeated, ${duelers[turn].name}[${duelers[turn].hp}] wins.`
+				turnDescs.push({
+					name: `${duelers[notTurn].name}[${duelers[notTurn].hp}] has been defeated, ${duelers[turn].name}[${duelers[turn].hp}] wins!`,
+					value: `If only we could afford prize money. 🤔`
+					//possbile random text there later
+				});
 				let duelLeaderboard = msg.client.provider.get(msg.guild, 'duelLeaderboard', []);
 				let entryIndex = duelLeaderboard.findIndex(function(element){return element.id === args["p"+(turn+1)].user.id});
 				if(entryIndex > -1){
+					var wins = duelLeaderboard[entryIndex].score+1;
 					duelLeaderboard[entryIndex] = {
 						score: duelLeaderboard[entryIndex].score+1,
 						username: args["p"+(turn+1)].user.username,
@@ -95,6 +107,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 					}
 				}
 				else{
+					var wins = 1;
 					duelLeaderboard.push(
 						{
 							score: 1,
@@ -104,13 +117,22 @@ module.exports = class RankedDuelCommand extends commando.Command {
 					);
 				}
 				msg.client.provider.set(msg.guild, 'duelLeaderboard', duelLeaderboard);
-				if(duelString.length < 1999){
-					return msg.channel.send(duelString);
-				}
-				else{
-					let messageBuffer = new Buffer(duelString, 'utf-8')
-					return msg.channel.send({files: [{attachment: messageBuffer,name: `result.txt`}]})
-				}
+				return msg.channel.send({embed: {
+					thumbnail: {
+						url: "http://i.imgur.com/sMrWQWO.png"
+					},
+					author: {
+						name: `Announcer ${msg.client.user.username}`,
+						icon_url: msg.client.user.avatarURL
+					},
+					"footer": {
+						"icon_url": args["p"+(turn+1)].user.avatarURL,
+						"text": `${args["p"+(turn+1)].user.username}'s wins: ${wins}`
+					},
+					color: 0x8c110b,
+					title: `${args.p1.user.username} VS ${args.p2.user.username}!`,
+					fields: turnDescs
+				}});
 			}
 			else{
 				turn = turn ? 0 : 1;
