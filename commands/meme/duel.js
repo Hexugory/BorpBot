@@ -46,6 +46,14 @@ module.exports = class DuelCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
+		var duelJokes = [
+		"It looks like we know who the more significant character is now. 😏",
+		"If only it meant anything in the greater scheme of things.",
+		"If only we could afford prize money. 🤔",
+		"You werent even good enough to be my fake. 😈🗡",
+		"But they werent even using their full power!",
+		"But it was just a dream."
+		];
 		function getRandomInt(min, max){
 			return Math.floor(Math.random() * (max - min + 1) + min);
 		}
@@ -90,7 +98,7 @@ module.exports = class DuelCommand extends commando.Command {
 			if(duelers[notTurn].hp <= 0){
 				turnDescs.push({
 					name: `${duelers[notTurn].name}[${duelers[notTurn].hp}] has been defeated, ${duelers[turn].name}[${duelers[turn].hp}] wins!`,
-					value: `If only we could afford prize money. 🤔`
+					value: duelJokes[Math.floor(Math.random() * duelJokes.length)]
 					//possbile random text there later
 				});
 				return msg.channel.send({embed: {
