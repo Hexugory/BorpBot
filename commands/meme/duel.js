@@ -1,6 +1,6 @@
 const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
-const spells = require('../../spells.json');
+const duelconfig = require('../../duel.json');
 
 module.exports = class DuelCommand extends commando.Command {
 	constructor(client) {
@@ -46,15 +46,6 @@ module.exports = class DuelCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
-		var duelJokes = [
-		"It looks like we know who the more significant character is now. 😏",
-		"If only it meant anything in the greater scheme of things.",
-		"If only we could afford prize money. 🤔",
-		"You werent even good enough to be my fake. 😈🗡",
-		"But they werent even using their full power!",
-		"But it was just a dream.",
-		"Even if you win, you still won't be able to get #1 on the tumbleweed."
-		];
 		function getRandomInt(min, max){
 			return Math.floor(Math.random() * (max - min + 1) + min);
 		}
@@ -79,7 +70,7 @@ module.exports = class DuelCommand extends commando.Command {
 				duelers[notTurn].hp -= 9999;
 			}
 			else{
-				let attack = spells[getRandomInt(0, spells.length - 1)];
+				let attack = duelconfig.spells[getRandomInt(0, duelconfig.spells.length - 1)];
 				turnDescs.push({
 					name: `${duelers[turn].name}[${duelers[turn].hp}] uses ${attack.name} on ${duelers[notTurn].name}[${duelers[notTurn].hp}]`,
 					value: ''
@@ -99,7 +90,7 @@ module.exports = class DuelCommand extends commando.Command {
 			if(duelers[notTurn].hp <= 0){
 				turnDescs.push({
 					name: `${duelers[notTurn].name}[${duelers[notTurn].hp}] has been defeated, ${duelers[turn].name}[${duelers[turn].hp}] wins!`,
-					value: duelJokes[Math.floor(Math.random() * duelJokes.length)]
+					value: duelconfig.jokes[Math.floor(Math.random() * duelconfig.jokes.length)]
 					//possbile random text there later
 				});
 				return msg.channel.send({embed: {

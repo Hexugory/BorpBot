@@ -45,15 +45,11 @@ module.exports = class LeaderboardCommand extends commando.Command {
 				list = await list.sort(function(a, b) {
 					return a.score - b.score;
 				}).reverse();
-				if(list.length > 10){
-					list.length = 10;
-				};
 				let send = '```';
 				for(var i = 0; i < list.length; i++){
 					list[i].position = i>0 ? list[i].score === list[i-1].score ? list[i].position = list[i-1].position : list[i].position = i+1 : list[i].position = i+1;
 					send += `${list[i].position}. ${list[i].username}: ${list[i].score} ${scorenames[args.lb]}\n`
 				}
-				this.client.provider.set(msg.guild, args.lb + 'Leaderboard', list);
 				return msg.channel.send(send + '```');
 			}
 		}
