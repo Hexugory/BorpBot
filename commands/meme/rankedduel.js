@@ -1,6 +1,6 @@
 const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
-const spells = require('../../spells.json');
+const duelconfig = require('../../duel.json');
 
 module.exports = class RankedDuelCommand extends commando.Command {
 	constructor(client) {
@@ -47,15 +47,6 @@ module.exports = class RankedDuelCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
-		var duelJokes = [
-		"It looks like we know who the more significant character is now. 😏",
-		"If only it meant anything in the greater scheme of things.",
-		"If only we could afford prize money. 🤔",
-		"You werent even good enough to be my fake. 😈🗡",
-		"But they werent even using their full power!",
-		"But it was just a dream.",
-		"Even if you win, you still won't be able to get #1 on the tumbleweed."
-		];
 		if(args.p1.id === args.p2.id){
 			return msg.channel.send("You can't duel yourself!")
 		}
@@ -83,7 +74,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 				duelers[notTurn].hp -= 9999;
 			}
 			else{
-				let attack = spells[getRandomInt(0, spells.length - 1)];
+				let attack = duelconfig.spells[getRandomInt(0, duelconfig.spells.length - 1)];
 				turnDescs.push({
 					name: `${duelers[turn].name}[${duelers[turn].hp}] uses ${attack.name} on ${duelers[notTurn].name}[${duelers[notTurn].hp}]`,
 					value: ''
@@ -103,7 +94,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 			if(duelers[notTurn].hp <= 0){
 				turnDescs.push({
 					name: `${duelers[notTurn].name}[${duelers[notTurn].hp}] has been defeated, ${duelers[turn].name}[${duelers[turn].hp}] wins!`,
-					value: duelJokes[Math.floor(Math.random() * duelJokes.length)]
+					value: duelconfig.jokes[Math.floor(Math.random() * duelconfig.jokes.length)]
 				});
 				let duelLeaderboard = msg.client.provider.get(msg.guild, 'duelLeaderboard', []);
 				let entryIndex = duelLeaderboard.findIndex(function(element){return element.id === args["p"+(turn+1)].user.id});
