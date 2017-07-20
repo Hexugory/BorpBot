@@ -5,6 +5,7 @@ const sqlite = require('sqlite');
 const config = require('./config.json');
 const prompt = require('prompt');
 const emojiRegex = require('emoji-regex');
+const moment = require('moment');
 
 const client = new commando.Client({
 	owner: config.owner,
@@ -42,6 +43,16 @@ client
 	.on('ready', () => {
 		console.log(`Client ready; logged in as ${client.user.username}#${client.user.discriminator} (${client.user.id})`);
 		client.user.setGame(config.game)
+		setInterval(function(){
+			var times = client.provider.get('global', 'times', []);
+			for(var i = 0; i < times.length; i++){
+				if(times[i].time.isBefore(moment.utc())){
+					client.users.get(times[i].user).send(`You asked at ${times[i].time.format('MMMM Do YYYY, h:mm:ss a ZZ')} to be reminded of: ${times[i].message}`)
+					times.splice(i, 1)
+				}
+			}
+			client.provider.set('global', 'times', times);
+		}, 60000)
 	})
 	.on('disconnect', () => { console.warn('Disconnected!'); })
 	.on('reconnecting', () => { console.warn('Reconnecting...'); })
