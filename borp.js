@@ -140,6 +140,43 @@ client
 			}
 		}
 	})
+	.on('messageUpdate', (oldmsg, newmsg) => {
+		let xChannelIDs = client.provider.get(newmsg.guild, 'xChannelIDs', null);
+		if(xChannelIDs != null){
+			if(xChannelIDs.includes(newmsg.channel.id)){
+				let xLimit = client.provider.get(newmsg.guild, 'xLimit' + newmsg.channel.id, 7)
+				let emoji = [];
+				let unicodeEmoji = newmsg.content.match(emojiRegex());
+				let customEmoji = newmsg.content.match(/<:\w\w*:\d\d*>/ig);
+				if(unicodeEmoji){
+					emoji = emoji.concat(unicodeEmoji)
+				}
+				if(customEmoji){
+					emoji = emoji.concat(customEmoji)
+				}
+				if(emoji.length >= 4){
+					xLimit > 1 ? newmsg.react('\u{274c}') : newmsg.delete();
+				}
+				else{
+					let checkcount = 0
+					let checkx = setInterval(function(){
+						if(newmsg.attachments.array()[0] != undefined && newmsg.attachments.array()[0].id != undefined){
+							xLimit > 1 ? newmsg.react('\u{274c}') : newmsg.delete();
+							clearInterval(checkx);
+						}
+						else if(newmsg.embeds[0] != undefined){
+							xLimit > 1 ? newmsg.react('\u{274c}') : newmsg.delete();
+							clearInterval(checkx);
+						}
+						else if(checkcount >= 3){
+							clearInterval(checkx);
+						}
+						checkcount++;
+					}, 1000);
+				}
+			}
+		}
+	})
 	.on('messageReactionAdd', (rea, user) => {
 		let xBlacklistIDs = client.provider.get(rea.message.guild, 'xBlacklistIDs', []);
 		let blacklisted = 0;
