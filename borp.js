@@ -47,7 +47,10 @@ client
 			var times = client.provider.get('global', 'times', []);
 			for(var i = 0; i < times.length; i++){
 				if(times[i].time.isBefore(moment.utc())){
-					client.users.get(times[i].user).send(`You asked at ${times[i].time.format('MMMM Do YYYY, h:mm:ss a ZZ')} to be reminded of: ${times[i].message}`)
+					let recipient = client.users.get(times[i].user);
+					if(recipient != undefined){
+						client.users.get(times[i].user).send(`You asked at ${times[i].time.format('MMMM Do YYYY, h:mm:ss a ZZ')} to be reminded of: ${times[i].message}`)
+					}
 					times.splice(i, 1)
 				}
 			}
