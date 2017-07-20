@@ -4,6 +4,7 @@ const oneLine = require('common-tags').oneLine;
 const sqlite = require('sqlite');
 const config = require('./config.json');
 const prompt = require('prompt');
+const emojiRegex = require('emoji-regex');
 
 const client = new commando.Client({
 	owner: config.owner,
@@ -48,23 +49,36 @@ client
 		let xChannelIDs = client.provider.get(msg.guild, 'xChannelIDs', null);
 		if(xChannelIDs != null){
 			if(xChannelIDs.includes(msg.channel.id)){
-				//this totally isnt inefficient at all
-				let checkcount = 0
-				let checkx = setInterval(function(){
-					let xLimit = client.provider.get(msg.guild, 'xLimit' + msg.channel.id, 7)
-					if(msg.attachments.array()[0] != undefined && msg.attachments.array()[0].id != undefined){
-						xLimit > 1 ? msg.react('\u{274c}') : msg.delete();
-						clearInterval(checkx);
-					}
-					else if(msg.embeds[0] != undefined){
-						xLimit > 1 ? msg.react('\u{274c}') : msg.delete();
-						clearInterval(checkx);
-					}
-					else if(checkcount >= 3){
-						clearInterval(checkx);
-					}
-					checkcount++;
-				}, 1000);
+				let xLimit = client.provider.get(msg.guild, 'xLimit' + msg.channel.id, 7)
+				let emoji = [];
+				let unicodeEmoji = msg.content.match(emojiRegex());
+				let customEmoji = msg.content.match(/<:\w\w*:\d\d*>/ig);
+				if(unicodeEmoji){
+					emoji = emoji.concat(unicodeEmoji)
+				}
+				if(customEmoji){
+					emoji = emoji.concat(customEmoji)
+				}
+				if(emoji.length >= 4){
+					xLimit > 1 ? msg.react('\u{274c}') : msg.delete();
+				}
+				else{
+					let checkcount = 0
+					let checkx = setInterval(function(){
+						if(msg.attachments.array()[0] != undefined && msg.attachments.array()[0].id != undefined){
+							xLimit > 1 ? msg.react('\u{274c}') : msg.delete();
+							clearInterval(checkx);
+						}
+						else if(msg.embeds[0] != undefined){
+							xLimit > 1 ? msg.react('\u{274c}') : msg.delete();
+							clearInterval(checkx);
+						}
+						else if(checkcount >= 3){
+							clearInterval(checkx);
+						}
+						checkcount++;
+					}, 1000);
+				}
 			}
 		}
 		if(msg.content.toLowerCase().includes("press 🇫 to pay respects") || msg.content.toLowerCase().includes("press f to pay respects")){
