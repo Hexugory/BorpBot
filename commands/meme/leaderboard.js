@@ -46,7 +46,7 @@ module.exports = class LeaderboardCommand extends commando.Command {
 					return a.score - b.score;
 				}).reverse();
 				let send = '```';
-				for(var i = 0; i < list.length; i++){
+				for(var i = 0; i < Math.min(list.length, 10); i++){
 					list[i].position = i>0 ? list[i].score === list[i-1].score ? list[i].position = list[i-1].position : list[i].position = i+1 : list[i].position = i+1;
 					send += `${list[i].position}. ${list[i].username}: ${list[i].score} ${scorenames[args.lb]}\n`
 				}
