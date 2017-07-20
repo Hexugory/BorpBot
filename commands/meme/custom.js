@@ -14,7 +14,7 @@ module.exports = class ListCustomCommand extends commando.Command {
 	
 
 	async run(msg, args) {
-		let customCommands = this.client.provider.get(msg.guild, 'customCommands', []);
+		let customCommands = await this.client.provider.get(msg.guild, 'customCommands', []);
 		if(customCommands.length > 0){
 			let commandList = "";
 			for(var i = 0; i < customCommands.length; i++){
