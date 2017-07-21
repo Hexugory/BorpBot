@@ -11,7 +11,7 @@ const client = new commando.Client({
 	owner: config.owner,
 	commandPrefix: config.prefix,
 	unknownCommandResponse: false,
-	invite: 'http://discord.gg/hAj5dY8'
+	invite: 'http://discord.gg/PaZzcx5'
 });
 
 var promptChannel = "";
@@ -50,7 +50,7 @@ client
 					if(moment.utc().isAfter(times[i].time)){
 						let recipient = client.users.get(times[i].user);
 						if(recipient != undefined){
-							client.users.get(times[i].user).send(`You asked to be reminded at ${moment.utc(times[i].time).format('MMMM Do YYYY, h:mm:ss a ZZ')} of: ${times[i].message}`)
+							client.users.get(times[i].user).send(`You asked at ${moment.utc(times[i].time).format('MMMM Do YYYY, h:mm:ss a ZZ')} to be reminded of: ${times[i].message}`)
 						}
 						times.splice(i, 1)
 					}
