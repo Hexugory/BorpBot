@@ -12,6 +12,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 			description: 'Duels two members for the leaderboard.',
 			throttling:{usages:1, duration:30},
 			examples: ['\'duel @Guy Hero#1823 @BorpBot#5498'],
+			guildOnly: true,
 
 			args: [
 				{
