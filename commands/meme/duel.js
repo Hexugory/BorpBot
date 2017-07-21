@@ -55,41 +55,41 @@ module.exports = class DuelCommand extends commando.Command {
 		var turnDescs = [];
 		var duelers = [{
 			name: args.p1,
-			hp: 20
+			hp: 2000
 		},
 		{
 			name: args.p2,
-			hp: 20
+			hp: 2000
 		}];
 		function duel(){
 			if(getRandomInt(0, 1000) === 1000){
 				turnDescs.push({
-					name: `${duelers[turn].name}[${duelers[turn].hp}] uses Fedora Tip on ${duelers[notTurn].name}[${duelers[notTurn].hp}]`,
+					name: `${duelers[turn].name}[${duelers[turn].hp/100}] uses Fedora Tip on ${duelers[notTurn].name}[${duelers[notTurn].hp/100}]`,
 					value: "The damage is off the charts!"
 				});
-				duelers[notTurn].hp -= 9999;
+				duelers[notTurn].hp -= 999900;
 			}
 			else{
 				let attack = duelconfig.spells[getRandomInt(0, duelconfig.spells.length - 1)];
 				turnDescs.push({
-					name: `${duelers[turn].name}[${duelers[turn].hp}] uses ${attack.name} on ${duelers[notTurn].name}[${duelers[notTurn].hp}]`,
+					name: `${duelers[turn].name}[${duelers[turn].hp/100}] uses ${attack.name} on ${duelers[notTurn].name}[${duelers[notTurn].hp/100}]`,
 					value: ''
 				});
 				if(attack.dmg != undefined){
-					turnDescs[turnDescs.length-1].value += `🗡${duelers[notTurn].name}[${duelers[notTurn].hp}] takes ${attack.dmg} damage.`;
+					turnDescs[turnDescs.length-1].value += `🗡${duelers[notTurn].name}[${duelers[notTurn].hp/100}] takes ${attack.dmg/100} damage.`;
 					duelers[notTurn].hp -= attack.dmg;
 				}
 				if(attack.heal != undefined){
 					if(attack.dmg != undefined){
 						turnDescs[turnDescs.length-1].value += '\n';
 					}
-					turnDescs[turnDescs.length-1].value += `➕${duelers[turn].name}[${duelers[turn].hp}] heals ${attack.heal} hp.`;
+					turnDescs[turnDescs.length-1].value += `➕${duelers[turn].name}[${duelers[turn].hp/100}] heals ${attack.heal/100} hp.`;
 					duelers[turn].hp += attack.heal;
 				}
 			}
 			if(duelers[notTurn].hp <= 0){
 				turnDescs.push({
-					name: `${duelers[notTurn].name}[${duelers[notTurn].hp}] has been defeated, ${duelers[turn].name}[${duelers[turn].hp}] wins!`,
+					name: `${duelers[notTurn].name}[${duelers[notTurn].hp/100}] has been defeated, ${duelers[turn].name}[${duelers[turn].hp/100}] wins!`,
 					value: duelconfig.jokes[Math.floor(Math.random() * duelconfig.jokes.length)]
 					//possbile random text there later
 				});
