@@ -44,17 +44,20 @@ client
 		console.log(`Client ready; logged in as ${client.user.username}#${client.user.discriminator} (${client.user.id})`);
 		client.user.setGame(config.game)
 		setInterval(function(){
-			var times = client.provider.get('global', 'times', []);
-			for(var i = 0; i < times.length; i++){
-				if(times[i].time.isBefore(moment.utc())){
-					let recipient = client.users.get(times[i].user);
-					if(recipient != undefined){
-						client.users.get(times[i].user).send(`You asked at ${times[i].time.format('MMMM Do YYYY, h:mm:ss a ZZ')} to be reminded of: ${times[i].message}`)
+			try{
+				var times = client.provider.get('global', 'times', []);
+				for(var i = 0; i < times.length; i++){
+					if(moment.utc().isAfter(times[i].time)){
+						let recipient = client.users.get(times[i].user);
+						if(recipient != undefined){
+							client.users.get(times[i].user).send(`You asked at ${moment.utc(times[i].time).format('MMMM Do YYYY, h:mm:ss a ZZ')} to be reminded of: ${times[i].message}`)
+						}
+						times.splice(i, 1)
 					}
-					times.splice(i, 1)
 				}
+				client.provider.set('global', 'times', times);
 			}
-			client.provider.set('global', 'times', times);
+			catch(err){console.log(err)}
 		}, 60000)
 	})
 	.on('disconnect', () => { console.warn('Disconnected!'); })
