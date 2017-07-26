@@ -206,7 +206,7 @@ client
 			}
 			if(rea.count-1-blacklisted >= client.provider.get(rea.message.guild, 'xLimit' + rea.message.channel.id, 7)){
 				let xlogChannelIDs = client.provider.get(rea.message.guild, 'xlogChannelIDs', []);
-				let logMessage = `Deleted ${rea.message.member.displayName}[${rea.message.author.id}]'s message in ${rea.message.channel}`
+				let logMessage = `Deleted ${rea.message.member.displayName}[${rea.message.author.id}]'s message[${rea.message.id}] in ${rea.message.channel}`
 				let messageAttachments = rea.message.attachments.array();
 				if(messageAttachments[0] != undefined && messageAttachments[0].id != undefined){
 					logMessage += " containing a message attachment";
