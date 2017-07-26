@@ -17,6 +17,7 @@ module.exports = class RequestXCommand extends commando.Command {
 				{
 					key: 'id',
 					label: 'ID',
+					default: '1',
 					prompt: 'Specify ID.',
 					type: 'string'
 				}
