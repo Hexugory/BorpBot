@@ -8,7 +8,7 @@ module.exports = class xLimitCommand extends commando.Command {
 			name: 'setx',
 			group: 'util',
 			memberName: 'setx',
-			description: 'Set the amount of :x:s required to delete a message. (Manage Roles)',
+			description: 'Set the amount of :x:s required to delete a message. (Manage Messages)',
 			examples: ['\'setx 5'],
 			guildOnly: true,
 
