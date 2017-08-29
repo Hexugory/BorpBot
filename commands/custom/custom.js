@@ -5,7 +5,7 @@ module.exports = class ListCustomCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
 			name: 'custom',
-			group: 'meme',
+			group: 'custom',
 			memberName: 'custom',
 			description: 'Lists custom commands.',
 			guildOnly: true

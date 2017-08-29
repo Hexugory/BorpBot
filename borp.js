@@ -32,7 +32,7 @@ client.dispatcher.addInhibitor((msg) => {
 		return false;
 	}
 	else{
-		return `User ${msg.author.username}#${msg.author.discriminator} (${msg.author.id}) has been blacklisted.`;
+		return true;
 	}
 });
 
@@ -96,6 +96,7 @@ client
 						checkcount++;
 					}, 1000);
 				}
+				console.log(emoji.length, msg.content);
 			}
 		}
 		if(msg.content.toLowerCase().includes("press 🇫 to pay respects") || msg.content.toLowerCase().includes("press f to pay respects")){
@@ -285,7 +286,8 @@ client.registry
 	.registerGroups([
 	['meme', 'Meme commands'],
 	['channel', 'Channel settings'],
-	['other', 'Not meme commands']
+	['other', 'Not meme commands'],
+	['custom', 'Custom command commands']
 	])
 	.registerDefaults()
 	.registerCommandsIn(path.join(__dirname, 'commands'));

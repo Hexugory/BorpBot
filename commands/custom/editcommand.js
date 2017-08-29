@@ -6,7 +6,7 @@ module.exports = class EditCustomCommand extends commando.Command {
 		super(client, {
 			aliases: ['editc'],
 			name: 'editcommand',
-			group: 'meme',
+			group: 'custom',
 			memberName: 'editcommand',
 			description: 'Edits a specified custom command. Essentially a shortcut for removecommand and newcommand. (Manage Messages)',
 			examples: ['\'editcommand sumirekt sumishrekt http://i.imgur.com/No0PVAX.png'],

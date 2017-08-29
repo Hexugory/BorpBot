@@ -6,7 +6,7 @@ module.exports = class NewCustomCommand extends commando.Command {
 		super(client, {
 			aliases: ['newc'],
 			name: 'newcommand',
-			group: 'meme',
+			group: 'custom',
 			memberName: 'newcommand',
 			description: 'Adds a custom command.',
 			guildOnly: true,
@@ -48,7 +48,7 @@ module.exports = class NewCustomCommand extends commando.Command {
 	async run(msg, args) {
 		function findCommand(element){return element.name === args.name};
 		let customCommands = this.client.provider.get(msg.guild, 'customCommands', []);
-		if(args.name.includes('`') || msg.client.registry.findCommands(args.name)[0] != undefined){
+		if(args.name.includes('`') || args.name.includes(' ') || msg.client.registry.findCommands(args.name)[0] != undefined){
 			return msg.reply('You have entered an invalid command name.');
 		}
 		else{

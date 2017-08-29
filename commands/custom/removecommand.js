@@ -6,7 +6,7 @@ module.exports = class RemoveCustomCommand extends commando.Command {
 		super(client, {
 			aliases: ['removec'],
 			name: 'removecommand',
-			group: 'meme',
+			group: 'custom',
 			memberName: 'removecommand',
 			description: 'Removes a specified custom command. (Manage Messages)',
 			examples: ['\'removecommand sumirekt'],
