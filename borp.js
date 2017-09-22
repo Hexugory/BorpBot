@@ -96,7 +96,6 @@ client
 						checkcount++;
 					}, 1000);
 				}
-				console.log(emoji.length, msg.content);
 			}
 		}
 		if(msg.content.toLowerCase().includes("press 🇫 to pay respects") || msg.content.toLowerCase().includes("press f to pay respects")){
