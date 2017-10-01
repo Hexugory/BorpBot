@@ -21,13 +21,13 @@ module.exports = class SuggestCommand extends commando.Command {
 			args: [
 				{
 					key: 'gi',
-					label: 'server',
-					prompt: 'Please enter a server.',
+					label: 'server name',
+					prompt: 'Please enter a server name.',
 					type: 'guild'
 				},
 				{
 					key: 'an',
-					label: 'anonymous',
+					label: 'anonymous yes/no',
 					prompt: 'Do you want to send anonymously? [y/n]',
 					type: 'boolean'
 				},
