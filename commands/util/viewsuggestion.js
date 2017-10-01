@@ -10,14 +10,14 @@ module.exports = class ViewSuggestionCommand extends commando.Command {
 			name: 'viewsuggestion',
 			group: 'util',
 			memberName: 'viewsuggestion',
-			description: oneLine`View a suggestion using it's id. (Manage Messages)`,
+			description: oneLine`View a suggestion using it's index. (Manage Messages)`,
 			examples: ['\'viewsuggestion 5'],
 
 			args: [
 				{
 					key: 'id',
-					label: 'id',
-					prompt: 'Please enter a suggestion id.',
+					label: 'index',
+					prompt: 'Please enter a suggestion index.',
 					type: 'integer'
 				}
 			]

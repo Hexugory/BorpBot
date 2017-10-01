@@ -72,7 +72,7 @@ module.exports = class SuggestCommand extends commando.Command {
 					else{
 						var suggestions = this.client.provider.get(args.gi, 'suggestions', []);
 						var fromstr = args.an ? "[Anonymous]" : msg.author.toString();
-						sendMessages(suggestionChannels, `${fromstr} suggested: ${args.sg}\nSuggestion id: ${suggestions.length}`);
+						sendMessages(suggestionChannels, `${fromstr} suggested: ${args.sg}\nSuggestion index: ${suggestions.length}`);
 						suggestions.push({
 							suggestion: args.sg,
 							user: msg.author.id,
