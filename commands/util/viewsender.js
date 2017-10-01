@@ -9,14 +9,14 @@ module.exports = class ViewSenderCommand extends commando.Command {
 			name: 'viewsender',
 			group: 'util',
 			memberName: 'viewsender',
-			description: oneLine`View the sender of a suggestion using it's id. (Manage Messages)`,
+			description: oneLine`View the sender of a suggestion using it's index. (Manage Messages)`,
 			examples: ['\'viewsender 5'],
 
 			args: [
 				{
 					key: 'id',
-					label: 'id',
-					prompt: 'Please enter a suggestion id.',
+					label: 'index',
+					prompt: 'Please enter a suggestion index.',
 					type: 'integer'
 				}
 			]

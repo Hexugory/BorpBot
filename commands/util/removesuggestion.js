@@ -10,14 +10,14 @@ module.exports = class RemoveSuggestionCommand extends commando.Command {
 			name: 'removesuggestion',
 			group: 'util',
 			memberName: 'removesuggestion',
-			description: oneLine`Remove a suggestion using it's id. (Manage Messages)`,
+			description: oneLine`Remove a suggestion using it's index. (Manage Messages)`,
 			examples: ['\'removesuggestion 5'],
 
 			args: [
 				{
 					key: 'id',
-					label: 'id',
-					prompt: 'Please enter a suggestion id.',
+					label: 'index',
+					prompt: 'Please enter a suggestion index.',
 					type: 'integer'
 				}
 			]

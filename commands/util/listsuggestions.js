@@ -10,8 +10,8 @@ module.exports = class ListSuggestionsCommand extends commando.Command {
 			name: 'listsuggestions',
 			group: 'util',
 			memberName: 'listsuggestions',
-			description: oneLine`List all suggestion ids and the person who submitted them (If they're not anonymous.).
-			\`'listsuggestions full\` will list all full suggestions along with the id and who submitted it. (Manage Messages)`,
+			description: oneLine`List all suggestion indexes and the person who submitted them (If they're not anonymous.).
+			\`'listsuggestions full\` will list all full suggestions along with the index and who submitted it. (Manage Messages)`,
 			examples: ['\'listsuggestions', '\'listsuggestions full'],
 
 			args: [
@@ -47,7 +47,7 @@ module.exports = class ListSuggestionsCommand extends commando.Command {
 		else{
 			for(var i = 0; i < suggestions.length; i++){
 				var fromstr = suggestions[i].anonymous ? "[Anonymous]" : `<@${suggestions[i].user}>`;
-				sendstr += `${fromstr} suggested: ${suggestions[i].suggestion}\nSuggestion id: ${i}\n`
+				sendstr += `${fromstr} suggested: ${suggestions[i].suggestion}\nSuggestion index: ${i}\n`
 			}
 		}
 		if(sendstr.length > 1999){
