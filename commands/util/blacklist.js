@@ -49,8 +49,7 @@ module.exports = class BlacklistCommand extends commando.Command {
 
 	async run(msg, args) {
 		//check for a valid argument
-		if(['command', 'x', 'server', 'duel'].includes(args.bc)){
-			//hello fishy
+		if(['command', 'x', 'server', 'duel', 'suggest'].includes(args.bc)){
 			if(msg.client.provider.get(msg.guild, args.bc + 'BlacklistIDs', []).includes(msg.author.id) && !msg.client.isOwner(msg.author)){
 				return msg.reply("You are in this blacklist, you cannot manipulate it.");
 			}

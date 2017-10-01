@@ -17,7 +17,7 @@ const client = new commando.Client({
 var promptChannel = "";
 
 function sendMessages(arr, content){
-	for(i = 0; i < arr.length; i++){
+	for(var i = 0; i < arr.length; i++){
 		try{
 			client.channels.get(arr[i]).send(content)
 		}
@@ -289,6 +289,7 @@ client.registry
 	['custom', 'Custom command commands']
 	])
 	.registerDefaults()
+	.registerType(require("./guild.js"))
 	.registerCommandsIn(path.join(__dirname, 'commands'));
 
 client.login(config.token);
