@@ -286,7 +286,8 @@ client.registry
 	['meme', 'Meme commands'],
 	['channel', 'Channel settings'],
 	['other', 'Not meme commands'],
-	['custom', 'Custom command commands']
+	['custom', 'Custom command commands'],
+	['role', 'Role commands']
 	])
 	.registerDefaults()
 	.registerType(require("./guild.js"))
