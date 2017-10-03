@@ -70,11 +70,11 @@ module.exports = class GetLocationRoleCommand extends commando.Command {
 				msg.reply(`Given role ${args.rn}.`)
 				let IDIndex = cooldownTimes.findIndex(searchArrayForID);
 				if(IDIndex>-1){
-					cooldownTimes[IDIndex].time = moment.utc().add(10, "second");
+					cooldownTimes[IDIndex].time = moment.utc().add(1, "week");
 					msg.client.provider.set(msg.guild, "cooldownTimes", cooldownTimes);
 				}
 				else{
-					cooldownTimes.push({time: moment.utc().add(10, "second"), id: msg.author.id});
+					cooldownTimes.push({time: moment.utc().add(1, "week"), id: msg.author.id});
 					msg.client.provider.set(msg.guild, "cooldownTimes", cooldownTimes);
 				}
 			}
