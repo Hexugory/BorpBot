@@ -12,7 +12,9 @@ module.exports = class GetLocationRoleCommand extends commando.Command {
 			group: 'role',
 			memberName: 'getlocationrole',
 			description: oneLine`Get a location color role.
-			Ratelimit of 2 per week.`,
+			Ratelimit of 2 per week.
+			Exclusive to Touhou Discord.
+			Roles: "Scarlet Devil Mansion" "Netherworld" "Eientei" "Garden of the Sun" "Youkai Mountain" "Chireiden" "Myourenji" "Senkai" "Shining Needle Castle" "Dream World" "Heaven" "Hell" "Hakurei Shrine" "Forest of Magic" "Human Village" "Outside World"`,
 			examples: ['\'getlocationrole "Scarlet Devil Mansion"'],
 
 			args: [
@@ -55,7 +57,16 @@ module.exports = class GetLocationRoleCommand extends commando.Command {
 		}
 		var roles = ["Scarlet Devil Mansion", "Netherworld", "Eientei", "Garden of the Sun", "Youkai Mountain", "Chireiden", "Myourenji", "Senkai", "Shining Needle Castle", "Dream World", "Heaven", "Hell", "Hakurei Shrine", "Forest of Magic", "Human Village", "Outside World"];
 		let cooldownTimes = msg.client.provider.get(msg.guild, "cooldownTimes", []);
-		if(!roles.includes(args.rn)){
+		if(args.rn === "none"){
+			for(var i = 0; i < roles.length; i++){
+				let foundLocationRole = msg.member.roles.find("name", roles[i]);
+				if(foundLocationRole){
+					msg.reply(`Role removed.`);
+					msg.member.removeRole(foundLocationRole, "Removed location roles");
+				}
+			}
+		}
+		else if(!roles.includes(args.rn)){
 			msg.reply("That's not a location role.");
 		}
 		else{
