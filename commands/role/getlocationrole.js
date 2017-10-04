@@ -14,7 +14,7 @@ module.exports = class GetLocationRoleCommand extends commando.Command {
 			description: oneLine`Get a location color role.
 			Ratelimit of 2 per week.
 			Exclusive to Touhou Discord.
-			Roles: "Scarlet Devil Mansion" "Netherworld" "Eientei" "Garden of the Sun" "Youkai Mountain" "Chireiden" "Myourenji" "Senkai" "Shining Needle Castle" "Dream World" "Heaven" "Hell" "Hakurei Shrine" "Forest of Magic" "Human Village" "Outside World"`,
+			Roles: https://i.imgur.com/3yReOai.png`,
 			examples: ['\'getlocationrole "Scarlet Devil Mansion"'],
 
 			args: [
