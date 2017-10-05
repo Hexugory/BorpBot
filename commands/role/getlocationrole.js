@@ -12,7 +12,7 @@ module.exports = class GetLocationRoleCommand extends commando.Command {
 			group: 'role',
 			memberName: 'getlocationrole',
 			description: oneLine`Get a location color role.
-			Ratelimit of 2 per week.
+			Ratelimit of 1 per week.
 			Exclusive to Touhou Discord.
 			Roles: https://i.imgur.com/3yReOai.png`,
 			examples: ['\'getlocationrole "Scarlet Devil Mansion"'],
