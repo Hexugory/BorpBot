@@ -26,7 +26,6 @@ module.exports = class RequestXCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
-		msg.delete();
 		function sendMessages(arr, content){
 			for(var i = 0; i < arr.length; i++){
 				try{
@@ -37,10 +36,15 @@ module.exports = class RequestXCommand extends commando.Command {
 		}
 		var xLimit = msg.client.provider.get(msg.guild, 'xLimit' + msg.channel.id, 7)
 		var xlogChannelIDs = msg.client.provider.get(msg.guild, 'xlogChannelIDs', []);
-		var xmsg = msg.channel.messages.get(args.id);
-		if(xmsg != null && !msg.client.provider.get(msg.guild, 'xBlacklistIDs', []).includes(msg.author.id)){
-			sendMessages(xlogChannelIDs, `Placed an ❌ on ${xmsg.author.username}[${xmsg.author.id}]'s message[${xmsg.id}] by request of ${msg.author.username}[${msg.author.id}].`)
-			xLimit > 1 ? xmsg.react('\u{274c}') : xmsg.delete();
-		}
+		msg.channel.fetchMessage(args.id).then(xmsg => {
+			if(xmsg != null && !msg.client.provider.get(msg.guild, 'xBlacklistIDs', []).includes(msg.author.id)){
+				sendMessages(xlogChannelIDs, `Placed an ❌ on ${xmsg.author.username}[${xmsg.author.id}]'s message[${xmsg.id}] by request of ${msg.author.username}[${msg.author.id}].`)
+				xLimit > 1 ? xmsg.react('\u{274c}') : xmsg.delete();
+			}
+			msg.delete();
+		}).catch(function(){
+			msg.author.send("Could not find message/something broke.")
+			msg.delete();
+		});
 	};
 }
