@@ -196,6 +196,7 @@ client
 	})
 	.on('messageReactionAdd', (rea, user) => {
 		let xBlacklistIDs = client.provider.get(rea.message.guild, 'xBlacklistIDs', []);
+		let xChannelIDs = client.provider.get(rea.message.guild, 'xChannelIDs', []);
 		let blacklisted = 0;
 		let reactUsers = rea.users.array()
 		if(rea.me === true && rea.emoji.name === "❌"){
@@ -204,7 +205,7 @@ client
 					blacklisted++;
 				}
 			}
-			if(rea.count-1-blacklisted >= client.provider.get(rea.message.guild, 'xLimit' + rea.message.channel.id, 7)){
+			if(rea.count-1-blacklisted >= client.provider.get(rea.message.guild, 'xLimit' + rea.message.channel.id, 7) && xChannelIDs.includes(rea.message.channel.id)){
 				let xlogChannelIDs = client.provider.get(rea.message.guild, 'xlogChannelIDs', []);
 				let logMessage = `Deleted ${rea.message.member.displayName}[${rea.message.author.id}]'s message[${rea.message.id}] in ${rea.message.channel}`
 				let messageAttachments = rea.message.attachments.array();
