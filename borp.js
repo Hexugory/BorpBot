@@ -28,11 +28,13 @@ function sendMessages(arr, content){
 client.dispatcher.addInhibitor((msg) => {
 	let gblacklist = client.provider.get('global', 'blacklist', []);
 	let blacklist = client.provider.get(msg.guild, 'blacklist', {});
-	if(((blacklist[msg.command.group.id] != undefined && blacklist[msg.command.group.id].includes(msg.author.id)) || (blacklist[msg.command.name] != undefined && blacklist[msg.command.name].includes(msg.author.id)) || (blacklist.server != undefined && blacklist.server.includes(msg.author.id)) || gblacklist.includes(msg.author.id)) && !msg.client.isOwner(msg.author)){
-		return true;
-	}
-	else{
-		return false;
+	if(msg.command){
+		if(((blacklist[msg.command.group.id] != undefined && blacklist[msg.command.group.id].includes(msg.author.id)) || (blacklist[msg.command.name] != undefined && blacklist[msg.command.name].includes(msg.author.id)) || (blacklist.server != undefined && blacklist.server.includes(msg.author.id)) || gblacklist.includes(msg.author.id)) && !msg.client.isOwner(msg.author)){
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 });
 
@@ -195,10 +197,13 @@ client
 		}
 	})
 	.on('messageReactionAdd', (rea, user) => {
-		let xBlacklistIDs = client.provider.get(rea.message.guild, 'blacklist', []).x;
+		let xBlacklistIDs = client.provider.get(rea.message.guild, 'blacklist', {}).x;
 		let xChannelIDs = client.provider.get(rea.message.guild, 'xChannelIDs', []);
 		let blacklisted = 0;
 		let reactUsers = rea.users.array()
+		if(!Array.isArray(xBlacklistIDs)){
+			xBlacklistIDs = [];
+		}
 		if(rea.me === true && rea.emoji.name === "❌"){
 			for(var i = 0; i < xBlacklistIDs.length; i++){
 				if(typeof reactUsers.find(function(element){return element.name === xBlacklistIDs[i]}) === 'string'){
