@@ -28,7 +28,6 @@ function sendMessages(arr, content){
 client.dispatcher.addInhibitor((msg) => {
 	let gblacklist = client.provider.get('global', 'blacklist', []);
 	let blacklist = client.provider.get(msg.guild, 'blacklist', {});
-	console.log(msg.command.group.id, msg.command.name)
 	if(((blacklist[msg.command.group.id] != undefined && blacklist[msg.command.group.id].includes(msg.author.id)) || (blacklist[msg.command.name] != undefined && blacklist[msg.command.name].includes(msg.author.id)) || (blacklist.server != undefined && blacklist.server.includes(msg.author.id)) || gblacklist.includes(msg.author.id)) && !msg.client.isOwner(msg.author)){
 		return true;
 	}
@@ -285,14 +284,13 @@ client.setProvider(
 
 client.registry
 	.registerGroups([
-	['meme', 'Meme commands'],
-	['channel', 'Channel settings'],
-	['other', 'Not meme commands'],
-	['custom', 'Custom command commands'],
-	['role', 'Role commands'],
-	['x', 'Embed flagging commands'],
-	['suggest', 'Suggestion commands'],
-	['mod', 'Moderator commands']
+	['meme', 'Meme commands || group name "meme"'],
+	['channel', 'Channel settings || group name "channel"'],
+	['custom', 'Custom command commands || group name "custom"'],
+	['role', 'Role commands || group name "role"'],
+	['x', 'Embed flagging commands || group name "x"'],
+	['suggest', 'Suggestion commands || group name "suggest"'],
+	['mod', 'Moderator commands || group name "mod"']
 	])
 	.registerDefaults()
 	.registerType(require("./guild.js"))
