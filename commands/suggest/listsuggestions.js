@@ -8,7 +8,7 @@ module.exports = class ListSuggestionsCommand extends commando.Command {
 		super(client, {
 			aliases: ['listsuggest'],
 			name: 'listsuggestions',
-			group: 'util',
+			group: 'suggest',
 			memberName: 'listsuggestions',
 			description: oneLine`List all suggestion indexes and the person who submitted them (If they're not anonymous.).
 			\`'listsuggestions full\` will list all full suggestions along with the index and who submitted it. (Manage Messages)`,

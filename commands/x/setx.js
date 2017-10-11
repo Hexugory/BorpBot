@@ -6,7 +6,7 @@ module.exports = class xLimitCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
 			name: 'setx',
-			group: 'util',
+			group: 'x',
 			memberName: 'setx',
 			description: 'Set the amount of :x:s required to delete a message. (Manage Messages)',
 			examples: ['\'setx 5'],
