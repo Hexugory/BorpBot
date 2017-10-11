@@ -12,10 +12,7 @@ module.exports = class BlacklistCommand extends commando.Command {
 			description: 'Adds the mentioned user to the specified blacklist. (Manage Roles)',
 			details: oneLine`
 			Prevents a user from using a specific set of commands.
-			The current sets that you can blacklist are "command" for custom command creation,
-			"x" for preventing from placing :x: reactions for embed deletion.
-			"suggest" to prevent the user sending suggestions to your server.
-			and "duel" to prevent use of \`'duel\`.
+			A command or a command group can be specified.
 			You can also blacklist them from all commands in the server with "server".
 			`,
 			//` good syntax highlighting notepad++
