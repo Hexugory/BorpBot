@@ -7,7 +7,7 @@ module.exports = class SuggestCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
 			name: 'suggest',
-			group: 'util',
+			group: 'suggest',
 			memberName: 'suggest',
 			description: oneLine`Sends a suggestion to the staff for future viewing.
 			Can send anonymously. However if you do send anonymously, the staff can view who you are, but you will be notified if they do so.
@@ -60,8 +60,8 @@ module.exports = class SuggestCommand extends commando.Command {
 			}
 			else{
 				args.gi.fetchMember(msg.author).then(author => {
-				if(this.client.provider.get(args.gi, 'suggestBlacklistIDs', []).includes(msg.author.id)
-				|| this.client.provider.get(args.gi, 'serverBlacklistIDs', []).includes(msg.author.id)
+				if((this.client.provider.get(args.gi, 'blacklist', {}).suggest && this.client.provider.get(args.gi, 'blacklist', {}).suggest.includes(msg.author.id))
+				|| (this.client.provider.get(args.gi, 'blacklist', {}).server && this.client.provider.get(args.gi, 'blacklist', {}).server.includes(msg.author.id))
 				|| author === undefined){
 					msg.reply("You cannot suggest to that server.");
 				}

@@ -26,13 +26,14 @@ function sendMessages(arr, content){
 }
 
 client.dispatcher.addInhibitor((msg) => {
-	let blacklist = client.provider.get('global', 'blacklist', []);
-	let serverBlacklist = client.provider.get(msg.guild, 'serverBlacklistIDs', []);
-	if(!blacklist.includes(msg.author.id) && !serverBlacklist.includes(msg.author.id)){
-		return false;
+	let gblacklist = client.provider.get('global', 'blacklist', []);
+	let blacklist = client.provider.get(msg.guild, 'blacklist', {});
+	console.log(msg.command.group.id, msg.command.name)
+	if(((blacklist[msg.command.group.id] != undefined && blacklist[msg.command.group.id].includes(msg.author.id)) || (blacklist[msg.command.name] != undefined && blacklist[msg.command.name].includes(msg.author.id)) || (blacklist.server != undefined && blacklist.server.includes(msg.author.id)) || gblacklist.includes(msg.author.id)) && !msg.client.isOwner(msg.author)){
+		return true;
 	}
 	else{
-		return true;
+		return false;
 	}
 });
 
@@ -195,7 +196,7 @@ client
 		}
 	})
 	.on('messageReactionAdd', (rea, user) => {
-		let xBlacklistIDs = client.provider.get(rea.message.guild, 'xBlacklistIDs', []);
+		let xBlacklistIDs = client.provider.get(rea.message.guild, 'blacklist', []).x;
 		let xChannelIDs = client.provider.get(rea.message.guild, 'xChannelIDs', []);
 		let blacklisted = 0;
 		let reactUsers = rea.users.array()
@@ -288,7 +289,10 @@ client.registry
 	['channel', 'Channel settings'],
 	['other', 'Not meme commands'],
 	['custom', 'Custom command commands'],
-	['role', 'Role commands']
+	['role', 'Role commands'],
+	['x', 'Embed flagging commands'],
+	['suggest', 'Suggestion commands'],
+	['mod', 'Moderator commands']
 	])
 	.registerDefaults()
 	.registerType(require("./guild.js"))

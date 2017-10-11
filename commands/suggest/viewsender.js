@@ -3,15 +3,14 @@ const sqlite = require('sqlite');
 const path =  require('path');
 const oneLine = require('common-tags').oneLine;
 
-module.exports = class RemoveSuggestionCommand extends commando.Command {
+module.exports = class ViewSenderCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
-			aliases: ['removesuggest'],
-			name: 'removesuggestion',
-			group: 'util',
-			memberName: 'removesuggestion',
-			description: oneLine`Remove a suggestion using it's index. (Manage Messages)`,
-			examples: ['\'removesuggestion 5'],
+			name: 'viewsender',
+			group: 'suggest',
+			memberName: 'viewsender',
+			description: oneLine`View the sender of a suggestion using it's index. (Manage Messages)`,
+			examples: ['\'viewsender 5'],
 
 			args: [
 				{
@@ -39,9 +38,10 @@ module.exports = class RemoveSuggestionCommand extends commando.Command {
 			msg.reply("That suggestion does not exist.");
 		}
 		else{
-			suggestions.splice(args.id, 1);
-			this.client.provider.set(msg.guild, 'suggestions', suggestions);
-			msg.channel.send(`Suggestion #${args.id} removed.`);
+			msg.reply(`<@${suggestions[args.id].user}> sent this suggestion.\nThey have been notified of their name being viewed.`);
+			msg.guild.fetchMember(suggestions[args.id].user).then(sender => {
+				sender.send(`The staff of ${msg.guild.name} have requested your name on one of your suggestions.`)
+			});
 		}
 	};
 }

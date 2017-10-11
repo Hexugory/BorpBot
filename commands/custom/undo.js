@@ -5,7 +5,7 @@ module.exports = class UndoCustomCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
 			name: 'undo',
-			group: 'meme',
+			group: 'custom',
 			memberName: 'undo',
 			description: 'Removes the last custom command.',
 			examples: ['\'undo'],
@@ -16,9 +16,6 @@ module.exports = class UndoCustomCommand extends commando.Command {
 	hasPermission(msg) {
 		if(msg.client.isOwner(msg.author)){
 			return true;
-		}
-		else if(msg.client.provider.get(msg.guild, 'commandBlacklistIDs', []).includes(msg.author.id)){
-			return false;
 		}
 		else if(msg.client.provider.get(msg.guild, 'memeChannelIDs', []).includes(msg.channel.id)){
 			return true

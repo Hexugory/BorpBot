@@ -36,9 +36,6 @@ module.exports = class RankedDuelCommand extends commando.Command {
 		if(msg.client.isOwner(msg.author)){
 			return true;
 		}
-		else if(msg.client.provider.get(msg.guild, 'duelBlacklistIDs', []).includes(msg.author.id)){
-			return false;
-		}
 		else if(msg.client.provider.get(msg.guild, 'memeChannelIDs', []).includes(msg.channel.id)){
 			return true
 		}
