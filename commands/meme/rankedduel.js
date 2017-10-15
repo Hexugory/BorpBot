@@ -9,22 +9,16 @@ module.exports = class RankedDuelCommand extends commando.Command {
 			name: 'rankedduel',
 			group: 'meme',
 			memberName: 'rankedduel',
-			description: 'Duels two members for the leaderboard.',
+			description: 'Duels yourself and another member for the leaderboard.',
 			throttling:{usages:1, duration:30},
-			examples: ['\'duel @Guy Hero#1823 @BorpBot#5498'],
+			examples: ['\'duel @BorpBot#5498'],
 			guildOnly: true,
 
 			args: [
 				{
-					key: 'p1',
-					label: 'user 1',
-					prompt: 'Enter combatant 1.',
-					type: 'member'
-				},
-				{
 					key: 'p2',
-					label: 'user 2',
-					prompt: 'Enter combatant 2',
+					label: 'member',
+					prompt: 'Choose who you want to fight.',
 					type: 'member'
 				}
 			]
@@ -45,7 +39,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
-		if(args.p1.id === args.p2.id){
+		if(msg.author.id === args.p2.id){
 			return msg.channel.send("You can't duel yourself!")
 		}
 		function getRandomInt(min, max){
@@ -56,12 +50,16 @@ module.exports = class RankedDuelCommand extends commando.Command {
 		var notTurn = turn ? 0 : 1;
 		var turnDescs = [];
 		var duelers = [{
-			name: args.p1.user.username,
-			hp: 20
+			name: msg.author.username,
+			hp: 20,
+			id: msg.author.id,
+			avatar: msg.author.avatarURL
 		},
 		{
 			name: args.p2.user.username,
-			hp: 20
+			hp: 20,
+			id: args.p2.user.id,
+			avatar: args.p2.user.avatarURL
 		}];
 		function duel(){
 			if(getRandomInt(0, 1000) === 1000){
@@ -95,13 +93,13 @@ module.exports = class RankedDuelCommand extends commando.Command {
 					value: duelconfig.jokes[Math.floor(Math.random() * duelconfig.jokes.length)]
 				});
 				let duelLeaderboard = msg.client.provider.get(msg.guild, 'duelLeaderboard', []);
-				let entryIndex = duelLeaderboard.findIndex(function(element){return element.id === args["p"+(turn+1)].user.id});
+				let entryIndex = duelLeaderboard.findIndex(function(element){return element.id === duelers[turn].id});
 				if(entryIndex > -1){
 					var wins = duelLeaderboard[entryIndex].score+1;
 					duelLeaderboard[entryIndex] = {
 						score: duelLeaderboard[entryIndex].score+1,
-						username: args["p"+(turn+1)].user.username,
-						id: args["p"+(turn+1)].id
+						username: duelers[turn].name,
+						id: duelers[turn].id
 					}
 				}
 				else{
@@ -109,8 +107,8 @@ module.exports = class RankedDuelCommand extends commando.Command {
 					duelLeaderboard.push(
 						{
 							score: 1,
-							username: args["p"+(turn+1)].user.username,
-							id: args["p"+(turn+1)].id
+							username: duelers[turn].name,
+							id: duelers[turn].id
 						}
 					);
 				}
@@ -124,11 +122,11 @@ module.exports = class RankedDuelCommand extends commando.Command {
 						icon_url: msg.client.user.avatarURL
 					},
 					"footer": {
-						"icon_url": args["p"+(turn+1)].user.avatarURL,
-						"text": `${args["p"+(turn+1)].user.username}'s wins: ${wins}`
+						"icon_url": duelers[turn].avatar,
+						"text": `${duelers[turn].name}'s wins: ${wins}`
 					},
 					color: 0x8c110b,
-					title: `${args.p1.user.username} VS ${args.p2.user.username}!`,
+					title: `${msg.author.username} VS ${args.p2.user.username}!`,
 					description: `Coin flip decides ${duelers[firstTurn].name} will go first.`,
 					fields: turnDescs
 				}});
