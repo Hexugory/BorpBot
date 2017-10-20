@@ -4,6 +4,7 @@ const sqlite = require('sqlite');
 module.exports = class OptItemNotifyCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
+			aliases: ['fuckurmum'],
 			name: 'optitemnotify',
 			group: 'meme',
 			memberName: 'optitemnotify',
