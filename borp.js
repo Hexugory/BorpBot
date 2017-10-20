@@ -23,7 +23,8 @@ var types = [
 	{name: "healsteallegendary", max: 1, min: 1, ordinary: false, epic: false, legendary: true, template: "Steal all healing done by the enemy (after modifiers)."},
 	{name: "doubledamage", max: 20, min: 5, ordinary: true, epic: false, legendary: false, template: "{mag}% chance to double damage dealt."},
 	{name: "halfdamage", max: 20, min: 5, ordinary: true, epic: false, legendary: false, template: "{mag}% chance to halve damage taken."},
-	{name: "skipcooldown", max: 5, min: 5, ordinary: false, epic: false, legendary: true, template: "{mag}% chance to skip your fight cooldown when you lose."}
+	{name: "skipcooldown", max: 5, min: 5, ordinary: false, epic: false, legendary: true, template: "{mag}% chance to skip your fight cooldown when you lose."},
+	{name: "fedoratip", max: 1, min: 1, ordinary: false, epic: true, legendary: false, template: "0.1% chance to use Fedora Tip."}
 ]
 
 function sendMessages(arr, content){

@@ -23,6 +23,12 @@ module.exports = class GrantItemCommand extends commando.Command {
 					label: 'quality',
 					prompt: 'Specify quality.',
 					type: 'string'
+				},
+				{
+					key: 'ty',
+					label: 'type',
+					prompt: 'Specify type.',
+					type: 'string'
 				}
 			]
 		});
@@ -42,7 +48,8 @@ module.exports = class GrantItemCommand extends commando.Command {
 			{name: "healsteallegendary", max: 1, min: 1, ordinary: false, epic: false, legendary: true, template: "Steal all healing done by the enemy (after modifiers)."},
 			{name: "doubledamage", max: 20, min: 5, ordinary: true, epic: false, legendary: false, template: "{mag}% chance to double damage dealt."},
 			{name: "halfdamage", max: 20, min: 5, ordinary: true, epic: false, legendary: false, template: "{mag}% chance to halve damage taken."},
-			{name: "skipcooldown", max: 5, min: 5, ordinary: false, epic: false, legendary: true, template: "{mag}% chance to skip your fight cooldown when you lose."}
+			{name: "skipcooldown", max: 5, min: 5, ordinary: false, epic: false, legendary: true, template: "{mag}% chance to skip your fight cooldown when you lose."},
+			{name: "fedoratip", max: 1, min: 1, ordinary: false, epic: true, legendary: false, template: "0.1% chance to use Fedora Tip."}
 		]
 		
 		function getRandomInt(min, max){
@@ -53,7 +60,10 @@ module.exports = class GrantItemCommand extends commando.Command {
 			let item = {};
 			item.quality = ['Ordinary', 'Epic', 'Legendary'].includes(args.qu) ? args.qu : 'Ordinary';
 			let filteredtypes = types.filter(function(element){return element[item.quality.toLowerCase()]})
-			let type = filteredtypes[getRandomInt(0,filteredtypes.length-1)];
+			let type = types.find(function(element){return element.name === args.ty});
+			if(!type){
+				type = filteredtypes[getRandomInt(0,filteredtypes.length-1)]
+			}
 			item.type = type.name;
 			item.template = type.template;
 			item.mag = item.quality === "Legendary" ? getRandomInt(type.max*2,type.max*3) : (item.quality === "Epic" ? getRandomInt(type.max,type.max*2) : getRandomInt(type.min,type.max));

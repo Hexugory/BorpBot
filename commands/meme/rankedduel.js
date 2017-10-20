@@ -118,6 +118,10 @@ module.exports = class RankedDuelCommand extends commando.Command {
 				duelers[turn].heal = 0;
 				duelers[notTurn].heal = 0;
 				let attack = duelconfig.spells[getRandomInt(0, duelconfig.spells.length - 1)];
+				let tipitem = duelers[turn].equipped.find(function(element){return element.type.includes('fedoratip')});
+				if(tipitem && getRandomInt(1, 1000) === 500){
+					attack = {name: "Fedora Tip", dmg: 9999};
+				}
 				duelers[notTurn].dmg = attack.dmg;
 				let healitem = duelers[notTurn].equipped.find(function(element){return element.type.includes('healsteal')});
 				if(attack.heal){
