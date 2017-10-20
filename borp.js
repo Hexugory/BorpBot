@@ -15,13 +15,13 @@ const client = new commando.Client({
 });
 
 var types = [
-	{name: "damage", max: 20, min: 5, ordinary: true, epic: true, legendary: true, template: "Increase damage dealt by {mag}%."},
+	{name: "damage", max: 30, min: 5, ordinary: true, epic: true, legendary: true, template: "Increase damage dealt by {mag}%."},
 	{name: "drain", max: 15, min: 5, ordinary: true, epic: true, legendary: true, template: "Heal yourself for {mag}% of all damage you deal."},
 	{name: "defense", max: 15, min: 5, ordinary: true, epic: true, legendary: true, template: "Decrease damage taken by {mag}%."},
-	{name: "extraturn", max: 7, min: 1, ordinary: true, epic: true, legendary: true, template: "{mag}% chance to take an extra turn."},
+	{name: "extraturn", max: 10, min: 1, ordinary: true, epic: true, legendary: true, template: "{mag}% chance to take an extra turn."},
 	{name: "healsteal", max: 1, min: 1, ordinary: true, epic: false, legendary: false, template: "Steal all healing done by the enemy (before modifiers)."},
 	{name: "healsteallegendary", max: 1, min: 1, ordinary: false, epic: false, legendary: true, template: "Steal all healing done by the enemy (after modifiers)."},
-	{name: "doubledamage", max: 20, min: 5, ordinary: true, epic: false, legendary: false, template: "{mag}% chance to double damage dealt."},
+	{name: "doubledamage", max: 30, min: 5, ordinary: true, epic: false, legendary: false, template: "{mag}% chance to double damage dealt."},
 	{name: "halfdamage", max: 20, min: 5, ordinary: true, epic: false, legendary: false, template: "{mag}% chance to halve damage taken."},
 	{name: "skipcooldown", max: 5, min: 5, ordinary: false, epic: false, legendary: true, template: "{mag}% chance to skip your fight cooldown when you lose."},
 	{name: "fedoratip", max: 1, min: 1, ordinary: false, epic: true, legendary: false, template: "0.1% chance to use Fedora Tip."}
