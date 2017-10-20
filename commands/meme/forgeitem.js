@@ -74,13 +74,19 @@ module.exports = class ForgeItemCommand extends commando.Command {
 		}
 		let duelstats = msg.client.provider.get(msg.guild, "duelstats" + msg.author.id, null);
 		if(duelstats){
-			duelstats.items.push(generateNewItem());
-			msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
+			console.log(!duelstats.borpdust, duelstats.borpdust < (ucFirst(args.qu) === "Legendary" ? 40000 : (ucFirst(args.qu) === "Epic" ? 10000 : 1000)))
+			if(!duelstats.borpdust || duelstats.borpdust < (ucFirst(args.qu) === "Legendary" ? 40000 : (ucFirst(args.qu) === "Epic" ? 10000 : 1000))){
+				return msg.reply("```diff\n- You don't have enough Borpdust -```")
+			}
+			else{
+				duelstats.borpdust -= ucFirst(args.qu) === "Legendary" ? 40000 : (ucFirst(args.qu) === "Epic" ? 10000 : 1000)
+				duelstats.items.push(generateNewItem());
+				msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
+				msg.reply(`\`\`\`diff\n! You forged: ${createDescString(duelstats.items[duelstats.items.length-1])} !\`\`\``);
+			}
 		}
 		else{
-			duelstats = {items: [generateNewItem()], equipped: [null, null, null]};
-			msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
+			return msg.reply("```diff\n- You don't have enough Borpdust -```")
 		}
-		msg.reply(`\`\`\`diff\n! You forged: ${createDescString(duelstats.items[duelstats.items.length-1])} !\`\`\``)
 	}
 };
