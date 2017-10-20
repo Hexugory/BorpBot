@@ -119,7 +119,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 				duelers[notTurn].heal = 0;
 				let attack = duelconfig.spells[getRandomInt(0, duelconfig.spells.length - 1)];
 				duelers[notTurn].dmg = attack.dmg;
-				let healitem = duelers[notTurn].equipped.find(function(element){return element.type === 'healsteal'});
+				let healitem = duelers[notTurn].equipped.find(function(element){return element.type.includes('healsteal')});
 				if(attack.heal){
 					if(healitem && healitem.quality != 'Legendary'){
 						duelers[notTurn].heal = attack.heal;
@@ -163,14 +163,26 @@ module.exports = class RankedDuelCommand extends commando.Command {
 				duelers[notTurn].hp += duelers[notTurn].heal;
 				if(duelers[notTurn].hp <= 0){
 					if(notTurn === 0){
-						let IDIndex = duelCooldown.findIndex(searchArrayForID);
-						if(IDIndex>-1){
-							duelCooldown[IDIndex].time = moment.utc().add(1, "hour");
-							msg.client.provider.set(msg.guild, "duelCooldown", duelCooldown);
+						let skipCooldownArray = duelers[notTurn].equipped.filter(function(element){return element.type === 'skipcooldown'});
+						var skipCooldownBool = false;
+						if(skipCooldownArray[0]){
+							for(var i = 0; i < skipCooldownArray.length; i++){
+								if(getRandomInt(1, 100) <= skipCooldownArray[i].mag){
+									skipCooldownBool = true;
+									turnDescs[turnDescs.length-1].value += `❤${duelers[notTurn].name}[${duelers[notTurn].hp}] is still ready to fight again.`
+								}
+							}
 						}
-						else{
-							duelCooldown.push({time: moment.utc().add(1, "hour"), id: msg.author.id});
-							msg.client.provider.set(msg.guild, "duelCooldown", duelCooldown);
+						if(!skipCooldownBool){
+							let IDIndex = duelCooldown.findIndex(searchArrayForID);
+							if(IDIndex>-1){
+								duelCooldown[IDIndex].time = moment.utc().add(1, "hour");
+								msg.client.provider.set(msg.guild, "duelCooldown", duelCooldown);
+							}
+							else{
+								duelCooldown.push({time: moment.utc().add(1, "hour"), id: msg.author.id});
+								msg.client.provider.set(msg.guild, "duelCooldown", duelCooldown);
+							}
 						}
 					}
 					turnDescs.push({

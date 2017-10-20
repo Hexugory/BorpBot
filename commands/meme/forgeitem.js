@@ -1,23 +1,17 @@
 const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
 
-module.exports = class GrantItemCommand extends commando.Command {
+module.exports = class ForgeItemCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
-			name: 'grantitem',
+			name: 'forgeitem',
 			group: 'meme',
-			memberName: 'grantitem',
-			description: 'Grant somebody an item. (Bot Owner)',
+			memberName: 'forgeitem',
+			description: 'Forge an item out of Borpdust. 1,000 for Ordinary, 10,000 for Epic, 40,000 for Legendary.',
 			examples: ['\'grantitem Guy Hero'],
 			guildOnly: true,
 			
 			args: [
-				{
-					key: 'member',
-					label: 'member',
-					prompt: 'Specify member.',
-					type: 'member'
-				},
 				{
 					key: 'qu',
 					label: 'quality',
@@ -33,6 +27,9 @@ module.exports = class GrantItemCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
+		function ucFirst(string) {
+			return string.charAt(0).toUpperCase() + string.slice(1);
+		}
 		var types = [
 			{name: "damage", max: 20, min: 5, ordinary: true, epic: true, legendary: true, template: "Increase damage dealt by {mag}%."},
 			{name: "drain", max: 15, min: 5, ordinary: true, epic: true, legendary: true, template: "Heal yourself for {mag}% of all damage you deal."},
@@ -51,7 +48,7 @@ module.exports = class GrantItemCommand extends commando.Command {
 		
 		function generateNewItem(){
 			let item = {};
-			item.quality = ['Ordinary', 'Epic', 'Legendary'].includes(args.qu) ? args.qu : 'Ordinary';
+			item.quality = ['Ordinary', 'Epic', 'Legendary'].includes(ucFirst(args.qu)) ? ucFirst(args.qu) : 'Ordinary';
 			let filteredtypes = types.filter(function(element){return element[item.quality.toLowerCase()]})
 			let type = filteredtypes[getRandomInt(0,filteredtypes.length-1)];
 			item.type = type.name;
@@ -75,17 +72,15 @@ module.exports = class GrantItemCommand extends commando.Command {
 				return `${item.quality} quality: ${createStringFromTemplate(item.template, {mag: item.mag})}`;
 			}
 		}
-		let duelstats = msg.client.provider.get(msg.guild, "duelstats" + args.member.user.id, null);
+		let duelstats = msg.client.provider.get(msg.guild, "duelstats" + msg.author.id, null);
 		if(duelstats){
 			duelstats.items.push(generateNewItem());
-			msg.client.provider.set(msg.guild, "duelstats" + args.member.user.id, duelstats);
+			msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
 		}
 		else{
 			duelstats = {items: [generateNewItem()], equipped: [null, null, null]};
-			msg.client.provider.set(msg.guild, "duelstats" + args.member.user.id, duelstats);
+			msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
 		}
-		if(msg.client.provider.get(msg.guild, 'optlist', []).includes(args.member.user.id)){
-			args.member.user.send(`You have gained an item: ${createDescString(duelstats.items[duelstats.items.length-1])}`)
-		}
+		msg.reply(`\`\`\`diff\n! You forged: ${createDescString(duelstats.items[duelstats.items.length-1])} !\`\`\``)
 	}
 };
