@@ -132,8 +132,8 @@ module.exports = class RankedDuelCommand extends commando.Command {
 						applyItemAttackModifier(i, o === 0 ? notTurn : turn);
 					}
 				}
-				duelers[notTurn].dmg = Math.round(duelers[notTurn].dmg);
-				duelers[turn].dmg = Math.round(duelers[turn].dmg);
+				duelers[notTurn].dmg = Math.ceil(duelers[notTurn].dmg);
+				duelers[turn].dmg = Math.ceil(duelers[turn].dmg);
 				duelers[turn].heal = Math.round(duelers[turn].heal);
 				duelers[notTurn].heal = Math.round(duelers[notTurn].heal);
 				turnDescs.push({
