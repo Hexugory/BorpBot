@@ -35,7 +35,7 @@ module.exports = class EquipItemCommand extends commando.Command {
 			return msg.reply("You have no items or equipped items.")
         }
         else{
-            if(args.id > duelstats.items.length || args.id < 0){
+            if(args.id > duelstats.items.length-1 || args.id < 0){
                 return msg.reply("Invalid index.")
             }
             else if(args.sl > 3 || args.sl < 1){
