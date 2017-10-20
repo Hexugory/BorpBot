@@ -19,7 +19,7 @@ var types = [
 	{name: "drain", max: 15, min: 5, improvable: true, template: "Heal yourself for {mag}% of all damage you deal."},
 	{name: "defense", max: 15, min: 5, improvable: true, template: "Decrease damage taken by {mag}%."},
 	{name: "extraturn", max: 5, min: 1, improvable: true, template: "{mag}% chance to take an extra turn."},
-	{name: "healsteal", max: 1, min: 1, improvable: false, template: "Steal all healing done by the enemy (before modifiers)."},
+	{name: "healsteal", max: 1, min: 1, improvable: true, template: "Steal all healing done by the enemy (before modifiers)."},
 	{name: "doubledamage", max: 20, min: 5, improvable: false, template: "{mag}% chance to double damage dealt."},
 	{name: "halfdamage", max: 20, min: 5, improvable: false, template: "{mag}% chance to halve damage taken."}
 ]
@@ -41,9 +41,20 @@ function generateNewItem(){
 	let item = {};
 	let type = types[getRandomInt(0,types.length-1)];
 	item.type = type.name;
+	item.template = type.template;
 	if(type.improvable){
 		item.quality = getRandomInt(0, 100) > 90 ? (getRandomInt(0, 100) > 90 ? "Legendary" : "Epic") : "Ordinary";
-		item.mag = item.quality === "Legendary" ? getRandomInt(type.max*2,type.max*3) : item.quality === "Epic" ? getRandomInt(type.max,type.max*2) : getRandomInt(type.min,type.max);
+		if(item.type === 'healsteal' && item.quality === 'Epic'){
+			item.quality = 'Ordinary';
+			item.mag = 1
+		}
+		else if(item.type === 'healsteal' && item.quality === 'Legendary'){
+			item.mag = 2;
+			item.template = "Steal all healing done by the enemy (after modifiers).";
+		}
+		else{
+			item.mag = item.quality === "Legendary" ? getRandomInt(type.max*2,type.max*3) : item.quality === "Epic" ? getRandomInt(type.max,type.max*2) : getRandomInt(type.min,type.max);
+		}
 	}
 	else{
 		item.quality = "Ordinary";
@@ -63,7 +74,6 @@ function createDescString(item){
 		return "None";
 	}
 	else{
-		item.template = types.find(function(element){return element.name === item.type}).template;
 		return `${item.quality} quality: ${createStringFromTemplate(item.template, {mag: item.mag})}`;
 	}
 }

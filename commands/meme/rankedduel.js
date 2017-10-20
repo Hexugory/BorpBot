@@ -93,22 +93,22 @@ module.exports = class RankedDuelCommand extends commando.Command {
 			//time to contract cancer
 			function applyItemAttackModifier(slot, dueler){
 				if(duelers[dueler].equipped[slot].type === "damage" && dueler === turn){
-					duelers[notTurn].dmg = (duelers[notTurn].dmg ? duelers[notTurn].dmg : 0) * ((duelers[dueler].equipped[slot].mag/100)+1);
+					duelers[notTurn].dmg *= ((duelers[dueler].equipped[slot].mag/100)+1);
 				}
 				else if(duelers[dueler].equipped[slot].type === "drain" && dueler === turn){
-					duelers[turn].heal = (duelers[turn].heal ? duelers[turn].heal : 0) + ((duelers[dueler].equipped[slot].mag/100)+1);
+					duelers[turn].heal += (duelers[notTurn].dmg*(duelers[dueler].equipped[slot].mag/100));
 				}
 				else if(duelers[dueler].equipped[slot].type === "defense" && dueler === notTurn){
-					duelers[notTurn].dmg = (duelers[notTurn].dmg ? duelers[notTurn].dmg : 0) * (1-(duelers[dueler].equipped[slot].mag/100));
+					duelers[notTurn].dmg *= (1-(duelers[dueler].equipped[slot].mag/100));
 				}
 				else if(duelers[dueler].equipped[slot].type === "doubledamage" && dueler === turn){
 					if(getRandomInt(1, 100) <= duelers[dueler].equipped[slot].mag){
-						duelers[notTurn].dmg = (duelers[notTurn].dmg ? duelers[notTurn].dmg : 0) * 2;
+						duelers[notTurn].dmg *= 2;
 					}
 				}
 				else if(duelers[dueler].equipped[slot].type === "halfdamage" && dueler === notTurn){
 					if(getRandomInt(1, 100) <= duelers[dueler].equipped[slot].mag){
-						duelers[notTurn].dmg = (duelers[notTurn].dmg ? duelers[notTurn].dmg : 0) / 2;
+						duelers[notTurn].dmg /= 2;
 					}
 				}
 			}
@@ -119,18 +119,23 @@ module.exports = class RankedDuelCommand extends commando.Command {
 				duelers[notTurn].heal = 0;
 				let attack = duelconfig.spells[getRandomInt(0, duelconfig.spells.length - 1)];
 				duelers[notTurn].dmg = attack.dmg;
+				let healitem = duelers[notTurn].equipped.find(function(element){return element.type === 'healsteal'});
 				if(attack.heal){
-					if(duelers[notTurn].equipped.find(function(element){return element.type === 'healsteal'})){
+					if(healitem && healitem.quality != 'Legendary'){
 						duelers[notTurn].heal = attack.heal;
 					}
 					else{
 						duelers[turn].heal = attack.heal;
 					}
 				}
-				for(var i = 0; i < 2; i++){
-					for(var o = 0; o < 1; o++){
-						applyItemAttackModifier(i, o === 0 ? notTurn : turn);
+				for(var i = 0; i <= 2; i++){
+					for(var o = 0; o <= 1; o++){
+						applyItemAttackModifier(i, o);
 					}
+				}
+				if(healitem && healitem.quality === 'Legendary'){
+					duelers[notTurn].heal += duelers[turn].heal;
+					duelers[turn].heal = 0;
 				}
 				duelers[notTurn].dmg = Math.ceil(duelers[notTurn].dmg);
 				duelers[turn].dmg = Math.ceil(duelers[turn].dmg);

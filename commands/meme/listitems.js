@@ -34,7 +34,9 @@ module.exports = class ListItemsCommand extends commando.Command {
 				return "None";
 			}
 			else{
-				item.template = types.find(function(element){return element.name === item.type}).template;
+				if(!item.template){
+					item.template = types.find(function(element){return element.name === item.type}).template;
+				}
 				return `${item.quality} quality: ${createStringFromTemplate(item.template, {mag: item.mag})}`;
 			}
 		};
