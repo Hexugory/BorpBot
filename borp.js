@@ -132,12 +132,10 @@ client
 			if(duelstats){
 				duelstats.items.push(generateNewItem());
 				msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
-				console.log(duelstats)
 			}
 			else{
 				duelstats = {items: [generateNewItem()], equipped: [null, null, null]};
 				msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
-				console.log(duelstats)
 			}
 		}
 		if(msg.content.toLowerCase().includes("press 🇫 to pay respects") || msg.content.toLowerCase().includes("press f to pay respects")){
