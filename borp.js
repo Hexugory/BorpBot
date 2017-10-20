@@ -15,13 +15,13 @@ const client = new commando.Client({
 });
 
 var types = [
-	{name: "damage", max: 15, min: 5, improvable: true},
-	{name: "drain", max: 15, min: 5, improvable: true},
-	{name: "defense", max: 15, min: 5, improvable: true},
-	{name: "extraturn", max: 5, min: 1, improvable: true},
-	{name: "healsteal", max: 1, min: 1, improvable: false},
-	{name: "doubledamage", max: 20, min: 5, improvable: false},
-	{name: "halfdamage", max: 20, min: 5, improvable: false}
+	{name: "damage", max: 15, min: 5, improvable: true, template: "Increase damage dealt by {mag}%."},
+	{name: "drain", max: 15, min: 5, improvable: true, template: "Heal yourself for {mag}% of all damage you deal."},
+	{name: "defense", max: 15, min: 5, improvable: true, template: "Decrease damage taken by {mag}%."},
+	{name: "extraturn", max: 5, min: 1, improvable: true, template: "{mag}% chance to take an extra turn."},
+	{name: "healsteal", max: 1, min: 1, improvable: false, template: "Steal all healing done by the enemy (before modifiers)."},
+	{name: "doubledamage", max: 20, min: 5, improvable: false, template: "{mag}% chance to double damage dealt."},
+	{name: "halfdamage", max: 20, min: 5, improvable: false, template: "{mag}% chance to halve damage taken."}
 ]
 
 function sendMessages(arr, content){
@@ -50,6 +50,22 @@ function generateNewItem(){
 		item.mag = getRandomInt(type.min,type.max);
 	}
 	return item;
+}
+
+function createStringFromTemplate(template, variables) {
+	return template.replace(new RegExp("\{([^\{]+)\}", "g"), function(_unused, varName){
+		return variables[varName];
+	});
+}
+
+function createDescString(item){
+	if(!item){
+		return "None";
+	}
+	else{
+		item.template = types.find(function(element){return element.name === item.type}).template;
+		return `${item.quality} quality: ${createStringFromTemplate(item.template, {mag: item.mag})}`;
+	}
 }
 
 client.dispatcher.addInhibitor((msg) => {
@@ -136,6 +152,9 @@ client
 			else{
 				duelstats = {items: [generateNewItem()], equipped: [null, null, null]};
 				msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
+			}
+			if(msg.client.provider.get(msg.guild, 'optlist', []).includes(msg.author.id)){
+				msg.author.send(`You have gained an item: ${createDescString(duelstats.items[duelstats.items.length-1])}`)
 			}
 		}
 		if(msg.content.toLowerCase().includes("press 🇫 to pay respects") || msg.content.toLowerCase().includes("press f to pay respects")){
