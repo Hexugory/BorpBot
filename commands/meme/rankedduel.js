@@ -10,7 +10,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 			name: 'rankedduel',
 			group: 'meme',
 			memberName: 'rankedduel',
-			description: 'Duels yourself and another member for the leaderboard.',
+			description: 'Duels yourself and another member for the leaderboard. Can only use if you have three duel items equipped. You gain duel items at random whenever you send a message.',
 			throttling:{usages:1, duration:30},
 			examples: ['\'duel @BorpBot#5498'],
 			guildOnly: true,
