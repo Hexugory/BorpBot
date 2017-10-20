@@ -40,19 +40,21 @@ module.exports = class ListItemsCommand extends commando.Command {
 				return `${item.quality} quality: ${createStringFromTemplate(item.template, {mag: item.mag})}`;
 			}
 		};
-		var equippedsend = "Equipped items:\n";
-		var itemssend = "Unequipped items:\n";
+		var equippedsend = "```diff\n- Equipped items -\n";
+		var itemssend = "```diff\n- Unequipped items -\n";
 		let duelstats = msg.client.provider.get(msg.guild, "duelstats" + msg.author.id, null);
 		if(!duelstats){
-			return msg.reply("You have no items or equipped items.")
+			return msg.reply("```diff\n- You have no items or equipped items -```")
 		}
 		else{
 			for(var i = 0; i < duelstats.equipped.length; i++){
-				equippedsend += `Slot ${i+1}: ${createDescString(duelstats.equipped[i])}\n`;
+				equippedsend += `+ Slot ${i+1}: ${createDescString(duelstats.equipped[i])}\n`;
 			};
+			equippedsend += '```'
 			for(var i = 0; i < duelstats.items.length; i++){
-				itemssend += `Index ${i}: ${createDescString(duelstats.items[i])}\n`;
+				itemssend += `+ Index ${i}: ${createDescString(duelstats.items[i])}\n`;
 			};
+			itemssend += '```'
 			if(equippedsend.length > 1999){
 				let equippedBuffer = new Buffer(equippedsend, 'utf-8');
 				msg.channel.send({files: [{attachment: equippedBuffer,name: `equipped.txt`}]});
@@ -62,7 +64,7 @@ module.exports = class ListItemsCommand extends commando.Command {
 			}
 			if(itemssend.length > 1999){
 				let itemsBuffer = new Buffer(itemssend, 'utf-8');
-				return msg.channel.send({files: [{attachment: equippedBuffer,name: `items.txt`}]});
+				return msg.channel.send({files: [{attachment: itemsBuffer,name: `items.txt`}]});
 			}
 			else{
 				return msg.channel.send(itemssend)

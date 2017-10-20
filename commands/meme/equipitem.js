@@ -32,14 +32,14 @@ module.exports = class EquipItemCommand extends commando.Command {
 	async run(msg, args) {
         let duelstats = msg.client.provider.get(msg.guild, "duelstats" + msg.author.id, null);
         if(!duelstats){
-			return msg.reply("You have no items or equipped items.")
+			return msg.reply("```diff\n- You have no items or equipped items -```")
         }
         else{
             if(args.id > duelstats.items.length-1 || args.id < 0){
-                return msg.reply("Invalid index.")
+                return msg.reply("```diff\n- Invalid index -```")
             }
             else if(args.sl > 3 || args.sl < 1){
-                return msg.reply("Invalid slot.")
+                return msg.reply("```diff\n- Invalid slot -```")
             }
             else{
                 if(duelstats.equipped[args.sl-1] != null){
@@ -48,7 +48,7 @@ module.exports = class EquipItemCommand extends commando.Command {
                 duelstats.equipped[args.sl-1] = duelstats.items[args.id];
                 duelstats.items.splice(args.id, 1);
                 msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
-                return msg.reply(`Equipped item to slot ${args.sl}.`)
+                return msg.reply(`\`\`\`diff\n! Equipped item to slot ${args.sl} !\`\`\``)
             }
         }
 	}

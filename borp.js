@@ -15,13 +15,15 @@ const client = new commando.Client({
 });
 
 var types = [
-	{name: "damage", max: 15, min: 5, improvable: true, template: "Increase damage dealt by {mag}%."},
-	{name: "drain", max: 15, min: 5, improvable: true, template: "Heal yourself for {mag}% of all damage you deal."},
-	{name: "defense", max: 15, min: 5, improvable: true, template: "Decrease damage taken by {mag}%."},
-	{name: "extraturn", max: 5, min: 1, improvable: true, template: "{mag}% chance to take an extra turn."},
-	{name: "healsteal", max: 1, min: 1, improvable: true, template: "Steal all healing done by the enemy (before modifiers)."},
-	{name: "doubledamage", max: 20, min: 5, improvable: false, template: "{mag}% chance to double damage dealt."},
-	{name: "halfdamage", max: 20, min: 5, improvable: false, template: "{mag}% chance to halve damage taken."}
+	{name: "damage", max: 20, min: 5, ordinary: true, epic: true, legendary: true, template: "Increase damage dealt by {mag}%."},
+	{name: "drain", max: 15, min: 5, ordinary: true, epic: true, legendary: true, template: "Heal yourself for {mag}% of all damage you deal."},
+	{name: "defense", max: 15, min: 5, ordinary: true, epic: true, legendary: true, template: "Decrease damage taken by {mag}%."},
+	{name: "extraturn", max: 7, min: 1, ordinary: true, epic: true, legendary: true, template: "{mag}% chance to take an extra turn."},
+	{name: "healsteal", max: 1, min: 1, ordinary: true, epic: false, legendary: false, template: "Steal all healing done by the enemy (before modifiers)."},
+	{name: "healsteallegendary", max: 1, min: 1, ordinary: false, epic: false, legendary: true, template: "Steal all healing done by the enemy (after modifiers)."},
+	{name: "doubledamage", max: 20, min: 5, ordinary: true, epic: false, legendary: false, template: "{mag}% chance to double damage dealt."},
+	{name: "halfdamage", max: 20, min: 5, ordinary: true, epic: false, legendary: false, template: "{mag}% chance to halve damage taken."},
+	{name: "skipcooldown", max: 5, min: 5, ordinary: false, epic: false, legendary: true, template: "{mag}% chance to skip your fight cooldown when you lose."}
 ]
 
 function sendMessages(arr, content){
@@ -39,27 +41,12 @@ function getRandomInt(min, max){
 
 function generateNewItem(){
 	let item = {};
-	let type = types[getRandomInt(0,types.length-1)];
+	item.quality = getRandomInt(0, 100) > 90 ? (getRandomInt(0, 100) > 90 ? "Legendary" : "Epic") : "Ordinary";
+	let filteredtypes = types.filter(function(element){return element[item.quality.toLowerCase()]})
+	let type = filteredtypes[getRandomInt(0,filteredtypes.length-1)];
 	item.type = type.name;
 	item.template = type.template;
-	if(type.improvable){
-		item.quality = getRandomInt(0, 100) > 90 ? (getRandomInt(0, 100) > 90 ? "Legendary" : "Epic") : "Ordinary";
-		if(item.type === 'healsteal' && item.quality === 'Epic'){
-			item.quality = 'Ordinary';
-			item.mag = 1
-		}
-		else if(item.type === 'healsteal' && item.quality === 'Legendary'){
-			item.mag = 2;
-			item.template = "Steal all healing done by the enemy (after modifiers).";
-		}
-		else{
-			item.mag = item.quality === "Legendary" ? getRandomInt(type.max*2,type.max*3) : item.quality === "Epic" ? getRandomInt(type.max,type.max*2) : getRandomInt(type.min,type.max);
-		}
-	}
-	else{
-		item.quality = "Ordinary";
-		item.mag = getRandomInt(type.min,type.max);
-	}
+	item.mag = item.quality === "Legendary" ? getRandomInt(type.max*2,type.max*3) : (item.quality === "Epic" ? getRandomInt(type.max,type.max*2) : getRandomInt(type.min,type.max));
 	return item;
 }
 
