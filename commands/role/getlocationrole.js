@@ -47,7 +47,7 @@ module.exports = class GetLocationRoleCommand extends commando.Command {
 					return true;
 				}
 				else if(cooldownTimes[i].id === msg.author.id && moment.utc().isBefore(cooldownTimes[i].time)){
-					msg.reply(`You cannot use this command again until ${moment.utc(cooldownTimes[i].time).format('MMMM Do YYYY, h:mm:ss a ZZ')}`);
+					msg.reply(`You cannot use this command again until ${moment.utc(cooldownTimes[i].time).format('MMMM Do YYYY, h:mm:ss a ZZ')}, one week from when you used the command last.`);
 					return false;
 				}
 			}

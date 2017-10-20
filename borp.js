@@ -14,7 +14,15 @@ const client = new commando.Client({
 	invite: 'http://discord.gg/hAj5dY8'
 });
 
-var promptChannel = "";
+var types = [
+	{name: "damage", max: 15, min: 5, improvable: true},
+	{name: "drain", max: 15, min: 5, improvable: true},
+	{name: "defense", max: 15, min: 5, improvable: true},
+	{name: "extraturn", max: 5, min: 1, improvable: true},
+	{name: "healsteal", max: 1, min: 1, improvable: false},
+	{name: "doubledamage", max: 20, min: 5, improvable: false},
+	{name: "halfdamage", max: 20, min: 5, improvable: false}
+]
 
 function sendMessages(arr, content){
 	for(var i = 0; i < arr.length; i++){
@@ -23,6 +31,25 @@ function sendMessages(arr, content){
 		}
 		catch(err){console.log(err)}
 	}
+}
+
+function getRandomInt(min, max){
+	return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function generateNewItem(){
+	let item = {};
+	let type = types[getRandomInt(0,types.length-1)];
+	item.type = type.name;
+	if(type.improvable){
+		item.quality = getRandomInt(0, 100) > 90 ? (getRandomInt(0, 100) > 90 ? "Legendary" : "Epic") : "Ordinary";
+		item.mag = item.quality === "Legendary" ? getRandomInt(type.max*2,type.max*3) : item.quality === "Epic" ? getRandomInt(type.max,type.max*2) : getRandomInt(type.min,type.max);
+	}
+	else{
+		item.quality = "Ordinary";
+		item.mag = getRandomInt(type.min,type.max);
+	}
+	return item;
 }
 
 client.dispatcher.addInhibitor((msg) => {
@@ -98,6 +125,19 @@ client
 						checkcount++;
 					}, 1000);
 				}
+			}
+		}
+		if(getRandomInt(0, 100) === 100){
+			let duelstats = msg.client.provider.get(msg.guild, "duelstats" + msg.author.id, null);
+			if(duelstats){
+				duelstats.items.push(generateNewItem());
+				msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
+				console.log(duelstats)
+			}
+			else{
+				duelstats = {items: [generateNewItem()], equipped: [null, null, null]};
+				msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
+				console.log(duelstats)
 			}
 		}
 		if(msg.content.toLowerCase().includes("press 🇫 to pay respects") || msg.content.toLowerCase().includes("press f to pay respects")){
