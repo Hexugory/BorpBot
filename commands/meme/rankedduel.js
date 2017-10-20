@@ -82,7 +82,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 						return true;
 					}
 					else if(duelCooldown[i].id === msg.author.id && moment.utc().isBefore(duelCooldown[i].time)){
-						msg.reply(`You lost a duel you initiated, so you cannot use this command again until ${moment.utc(duelCooldown[i].time).format('MMMM Do YYYY, h:mm:ss a ZZ')}, one hour from when you lost.`);
+						msg.reply(`You lost a duel you initiated, so you cannot use this command again until ${moment.utc(duelCooldown[i].time).format('MMMM Do YYYY, h:mm:ss a ZZ')}, \`${Math.round((parseInt(moment.utc(duelCooldown[i].time).format('x'))-parseInt(moment.utc().format('x')))/1000/60)}\` minutes from now.`);
 						return false;
 					}
 				}
