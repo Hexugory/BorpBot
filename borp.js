@@ -24,7 +24,9 @@ var types = [
 	{name: "doubledamage", max: 30, min: 5, ordinary: true, epic: false, legendary: false, template: "{mag}% chance to double damage dealt."},
 	{name: "halfdamage", max: 20, min: 5, ordinary: true, epic: false, legendary: false, template: "{mag}% chance to halve damage taken."},
 	{name: "skipcooldown", max: 5, min: 5, ordinary: false, epic: false, legendary: true, template: "{mag}% chance to skip your fight cooldown when you lose."},
-	{name: "fedoratip", max: 1, min: 1, ordinary: false, epic: true, legendary: false, template: "0.1% chance to use Fedora Tip."}
+	{name: "fedoratip", max: 1, min: 1, ordinary: false, epic: true, legendary: false, template: "0.1% chance to use Fedora Tip."},
+	{name: "flatdamageafter", max: 2, min: 1, ordinary: true, epic: true, legendary: true, template: "Add {mag} damage to all of your attacks (after modifiers)."},
+	{name: "flatdamage", max: 2, min: 1, ordinary: true, epic: true, legendary: true, template: "Add {mag} damage to all of your attacks."}
 ]
 
 function sendMessages(arr, content){
@@ -47,7 +49,7 @@ function generateNewItem(){
 	let type = filteredtypes[getRandomInt(0,filteredtypes.length-1)];
 	item.type = type.name;
 	item.template = type.template;
-	item.mag = item.quality === "Legendary" ? getRandomInt(type.max*2,type.max*3) : (item.quality === "Epic" ? getRandomInt(type.max,type.max*2) : getRandomInt(type.min,type.max));
+	item.mag = item.quality === "Legendary" ? getRandomInt(type.max*2+1,type.max*3) : (item.quality === "Epic" ? getRandomInt(type.max+1,type.max*2) : getRandomInt(type.min,type.max));
 	return item;
 }
 
