@@ -57,7 +57,8 @@ module.exports = class RankedDuelCommand extends commando.Command {
 			avatar: msg.author.avatarURL,
 			equipped: msg.client.provider.get(msg.guild, "duelstats" + msg.author.id, {items: [], equipped: [null, null, null]}).equipped,
 			heal: 0,
-			dmg: 0
+			dmg: 0,
+			fdmg: 0
 		},
 		{
 			name: args.p2.user.username,
@@ -66,7 +67,8 @@ module.exports = class RankedDuelCommand extends commando.Command {
 			avatar: args.p2.user.avatarURL,
 			equipped: msg.client.provider.get(msg.guild, "duelstats" + args.p2.user.id, {items: [], equipped: [null, null, null]}).equipped,
 			heal: 0,
-			dmg: 0
+			dmg: 0,
+			fdmg: 0
 		}];
 		if(duelers[0].equipped.includes(null) || duelers[1].equipped.includes(null)){
 			return msg.reply("One (or more) of you cannot use 'rankedduel.\nYou cannot use 'rankedduel if you do not have 3 items equipped.");
@@ -111,12 +113,20 @@ module.exports = class RankedDuelCommand extends commando.Command {
 						duelers[notTurn].dmg /= 2;
 					}
 				}
+				else if(duelers[dueler].equipped[slot].type === "flatdamageafter" && dueler === turn){
+					duelers[notTurn].fdmg += duelers[dueler].equipped[slot].mag;
+				}
+				else if(duelers[dueler].equipped[slot].type === "flatdamage" && dueler === turn){
+					duelers[notTurn].dmg += duelers[dueler].equipped[slot].mag;
+				}
 			}
 			function duel(){
 				duelers[notTurn].dmg = 0;
 				duelers[turn].dmg = 0;
 				duelers[turn].heal = 0;
 				duelers[notTurn].heal = 0;
+				duelers[turn].fdmg = 0;
+				duelers[notTurn].fdmg = 0;
 				let attack = duelconfig.spells[getRandomInt(0, duelconfig.spells.length - 1)];
 				let tipitem = duelers[turn].equipped.find(function(element){return element.type.includes('fedoratip')});
 				if(tipitem && getRandomInt(1, 1000) === 500){
@@ -145,6 +155,8 @@ module.exports = class RankedDuelCommand extends commando.Command {
 				duelers[turn].dmg = Math.ceil(duelers[turn].dmg);
 				duelers[turn].heal = Math.round(duelers[turn].heal);
 				duelers[notTurn].heal = Math.round(duelers[notTurn].heal);
+				duelers[notTurn].dmg += duelers[notTurn].fdmg;
+				duelers[turn].dmg += duelers[turn].fdmg;
 				turnDescs.push({
 					name: `${duelers[turn].name}[${duelers[turn].hp}] uses ${attack.name} on ${duelers[notTurn].name}[${duelers[notTurn].hp}]`,
 					value: ''

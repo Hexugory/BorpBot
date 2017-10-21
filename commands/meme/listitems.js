@@ -26,8 +26,13 @@ module.exports = class ListItemsCommand extends commando.Command {
 			{name: "defense", template: "Decrease damage taken by {mag}%."},
 			{name: "extraturn", template: "{mag}% chance to take an extra turn."},
 			{name: "healsteal", template: "Steal all healing done by the enemy (before modifiers)."},
+			{name: "healsteallegendary", template: "Steal all healing done by the enemy (after modifiers)."},
 			{name: "doubledamage", template: "{mag}% chance to double damage dealt."},
-			{name: "halfdamage", template: "{mag}% chance to halve damage taken."}
+			{name: "halfdamage", template: "{mag}% chance to halve damage taken."},
+			{name: "skipcooldown", template: "{mag}% chance to skip your fight cooldown when you lose."},
+			{name: "fedoratip", template: "0.1% chance to use Fedora Tip."},
+			{name: "flatdamageafter", template: "Add {mag} damage to all of your attacks (after modifiers)."},
+			{name: "flatdamage", template: "Add {mag} damage to all of your attacks."}
 		];
 		function createDescString(item){
 			if(!item){
