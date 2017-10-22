@@ -44,7 +44,7 @@ module.exports = class SetChannelCommand extends commando.Command {
 	async run(msg, args) {
 
 		//check for a valid argument
-		if(['voice', 'x', 'meme', 'xlog', 'tumbleweed', 'suggestion'].includes(args.ac)){
+		if(['voice', 'x', 'meme', 'xlog', 'tumbleweed', 'suggestion', 'item'].includes(args.ac)){
 			let list = this.client.provider.get(msg.guild, args.ac + 'ChannelIDs', []);
 			//check if the channel isnt already in the list
 			if(!list.includes(msg.channel.id)){

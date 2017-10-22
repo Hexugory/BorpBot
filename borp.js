@@ -143,18 +143,21 @@ client
 				}
 			}
 		}
-		if(getRandomInt(0, 100) === 100){
-			let duelstats = msg.client.provider.get(msg.guild, "duelstats" + msg.author.id, null);
-			if(duelstats){
-				duelstats.items.push(generateNewItem());
-				msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
-			}
-			else{
-				duelstats = {items: [generateNewItem()], equipped: [null, null, null]};
-				msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
-			}
-			if(msg.client.provider.get(msg.guild, 'optlist', []).includes(msg.author.id)){
-				msg.author.send(`You have gained an item: ${createDescString(duelstats.items[duelstats.items.length-1])}`)
+		let itemChannelIDs = client.provider.get(msg.guild, 'itemChannelIDs', null);
+		if(itemChannelIDs && itemChannelIDs.includes(msg.channel.id)){
+			if(getRandomInt(0, 100) === 100){
+				let duelstats = msg.client.provider.get(msg.guild, "duelstats" + msg.author.id, null);
+				if(duelstats){
+					duelstats.items.push(generateNewItem());
+					msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
+				}
+				else{
+					duelstats = {items: [generateNewItem()], equipped: [null, null, null]};
+					msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
+				}
+				if(msg.client.provider.get(msg.guild, 'optlist', []).includes(msg.author.id)){
+					msg.author.send(`You have gained an item: ${createDescString(duelstats.items[duelstats.items.length-1])}`)
+				}
 			}
 		}
 		if(msg.content.toLowerCase().includes("press 🇫 to pay respects") || msg.content.toLowerCase().includes("press f to pay respects")){
