@@ -8,7 +8,7 @@ module.exports = class ForgeItemCommand extends commando.Command {
 			group: 'meme',
 			memberName: 'forgeitem',
 			description: 'Forge an item out of Borpdust. 1,000 for Ordinary, 5,000 for Epic, 20,000 for Legendary.',
-			examples: ['\'grantitem Guy Hero'],
+			examples: ['\'forgeitem legendary'],
 			guildOnly: true,
 			
 			args: [
