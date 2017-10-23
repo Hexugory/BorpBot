@@ -36,12 +36,7 @@ module.exports = class EditCustomCommand extends commando.Command {
 	}
 	
 	hasPermission(msg) {
-		if(msg.client.isOwner(msg.author)){
-			return true;
-		}
-		else{
-			return msg.member.permissions.has('MANAGE_MESSAGES');
-		}
+		return msg.client.isOwner(msg.author) || (msg.guild && msg.member.permissions.has('MANAGE_MESSAGES'))
 	}
 
 	async run(msg, args) {

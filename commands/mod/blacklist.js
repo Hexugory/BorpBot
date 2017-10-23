@@ -37,12 +37,7 @@ module.exports = class BlacklistCommand extends commando.Command {
 	}
 	
 	hasPermission(msg) {
-		if(msg.client.isOwner(msg.author)){
-			return true;
-		}
-		else{
-			return msg.member.permissions.has('MANAGE_ROLES');
-		}
+		return msg.client.isOwner(msg.author) || (msg.member && msg.member.permissions.has('MANAGE_ROLES'));
 	}
 
 	async run(msg, args) {

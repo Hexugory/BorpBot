@@ -29,12 +29,7 @@ module.exports = class GetLocationRoleCommand extends commando.Command {
 	}
 	
 	hasPermission(msg) {
-		if(msg.client.isOwner(msg.author)){
-			return true;
-		}
-		else{
-			return msg.guild.id === "163175631562080256";
-		}
+		return msg.client.isOwner(msg.author) || (msg.guild && msg.guild.id === "163175631562080256");
 	}
 
 	async run(msg, args) {
