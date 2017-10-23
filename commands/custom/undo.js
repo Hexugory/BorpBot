@@ -14,15 +14,7 @@ module.exports = class UndoCustomCommand extends commando.Command {
 	}
 	
 	hasPermission(msg) {
-		if(msg.client.isOwner(msg.author)){
-			return true;
-		}
-		else if(msg.client.provider.get(msg.guild, 'memeChannelIDs', []).includes(msg.channel.id)){
-			return true
-		}
-		else{
-			return msg.member.permissions.has('MANAGE_MESSAGES')
-		}
+		return msg.client.isOwner(msg.author) || (msg.guild && (msg.member.permissions.has('MANAGE_MESSAGES') || msg.client.provider.get(msg.guild, 'memeChannelIDs', []).includes(msg.channel.id)))
 	}
 
 	async run(msg, args) {

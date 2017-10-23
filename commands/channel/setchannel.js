@@ -33,12 +33,7 @@ module.exports = class SetChannelCommand extends commando.Command {
 	}
 	
 	hasPermission(msg) {
-		if(msg.client.isOwner(msg.author)){
-			return true;
-		}
-		else{
-			return msg.member.permissions.has('MANAGE_CHANNELS');
-		}
+		return msg.client.isOwner(msg.author) || (msg.guild && msg.member.permissions.has('MANAGE_CHANNELS'))
 	}
 
 	async run(msg, args) {

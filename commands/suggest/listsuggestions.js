@@ -27,12 +27,7 @@ module.exports = class ListSuggestionsCommand extends commando.Command {
 	}
 	
 	hasPermission(msg) {
-		if(msg.client.isOwner(msg.author)){
-			return true;
-		}
-		else{
-			return msg.member.permissions.has('MANAGE_MESSAGES')
-		}
+		return msg.client.isOwner(msg.author) || (msg.member && msg.member.permissions.has('MANAGE_MESSAGES'));
 	}
 
 	async run(msg, args) {
