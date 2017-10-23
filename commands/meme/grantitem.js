@@ -35,7 +35,7 @@ module.exports = class GrantItemCommand extends commando.Command {
 	}
 	
 	hasPermission(msg) {
-		return this.client.isOwner(msg.author) || msg.guild.owner.id === msg.author.id;
+		return this.client.isOwner(msg.author) || (msg.guild && msg.guild.owner.id === msg.author.id);
 	}
 
 	async run(msg, args) {

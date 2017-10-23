@@ -128,9 +128,13 @@ module.exports = class RankedDuelCommand extends commando.Command {
 				duelers[turn].fdmg = 0;
 				duelers[notTurn].fdmg = 0;
 				let attack = duelconfig.spells[getRandomInt(0, duelconfig.spells.length - 1)];
-				let tipitem = duelers[turn].equipped.find(function(element){return element.type.includes('fedoratip')});
-				if(tipitem && getRandomInt(1, 1000) === 500){
-					attack = {name: "Fedora Tip", dmg: 9999};
+				let tipitems = duelers[turn].equipped.filter(function(element){return element.type.includes('fedoratip')});
+				if(Array.isArray(tipitems)){
+					for(var i = 0; i < tipitems.length; i++){
+						if(getRandomInt(1, 1000) === 69){
+							attack = {name: "Fedora Tip", dmg: 9999};
+						}
+					}
 				}
 				duelers[notTurn].dmg = attack.dmg;
 				let healitem = duelers[notTurn].equipped.find(function(element){return element.type.includes('healsteal')});
@@ -178,6 +182,10 @@ module.exports = class RankedDuelCommand extends commando.Command {
 				duelers[turn].hp += duelers[turn].heal;
 				duelers[notTurn].hp += duelers[notTurn].heal;
 				if(duelers[notTurn].hp <= 0){
+					turnDescs.push({
+						name: `${duelers[notTurn].name}[${duelers[notTurn].hp}] has been defeated, ${duelers[turn].name}[${duelers[turn].hp}] wins!`,
+						value: duelconfig.jokes[Math.floor(Math.random() * duelconfig.jokes.length)]
+					});
 					if(notTurn === 0){
 						let skipCooldownArray = duelers[notTurn].equipped.filter(function(element){return element.type === 'skipcooldown'});
 						var skipCooldownBool = false;
@@ -201,10 +209,6 @@ module.exports = class RankedDuelCommand extends commando.Command {
 							}
 						}
 					}
-					turnDescs.push({
-						name: `${duelers[notTurn].name}[${duelers[notTurn].hp}] has been defeated, ${duelers[turn].name}[${duelers[turn].hp}] wins!`,
-						value: duelconfig.jokes[Math.floor(Math.random() * duelconfig.jokes.length)]
-					});
 					let duelLeaderboard = msg.client.provider.get(msg.guild, 'duelLeaderboard', []);
 					let entryIndex = duelLeaderboard.findIndex(function(element){return element.id === duelers[turn].id});
 					if(entryIndex > -1){
