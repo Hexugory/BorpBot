@@ -3,21 +3,27 @@ const sqlite = require('sqlite');
 const path =  require('path');
 const oneLine = require('common-tags').oneLine;
 
-module.exports = class LeaderboardCommand extends commando.Command {
+module.exports = class ViewPositionCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
-			aliases: ['lead', 'leader', 'board'],
-			name: 'leaderboard',
+			aliases: ['viewpos', 'vposition', 'vpos'],
+			name: 'viewposition',
 			group: 'meme',
-			memberName: 'leaderboard',
-			description: oneLine`Shows the specified leaderboard.
+			memberName: 'viewposition',
+			description: oneLine`Shows the user's position on the specified leaderboard.
 			"tumbleweed" for the tumbleweed leaderboard,
 			"wins" for rankedduel wins,
 			"rank" for rankedduel rank.`,
-			examples: ['\'leaderboard tumbleweed'],
+			examples: ['\'viewposition @Guy Hero#1823 tumbleweed'],
 			guildOnly: true,
 
 			args: [
+				{
+					key: 'mb',
+					label: 'member',
+					prompt: 'What member?',
+					type: 'member'
+				},
 				{
 					key: 'lb',
 					label: 'leaderboard',
@@ -47,11 +53,17 @@ module.exports = class LeaderboardCommand extends commando.Command {
 					return a.score - b.score;
 				}).reverse();
 				let send = '```';
-				for(var i = 0; i < Math.min(list.length, 10); i++){
-					list[i].position = i>0 ? list[i].score === list[i-1].score ? list[i].position = list[i-1].position : list[i].position = i+1 : list[i].position = i+1;
-					send += `${list[i].position}. ${list[i].username}: ${list[i].score} ${scorenames[args.lb]}\n`
+				let memberIndex = list.findIndex(function(element){return element.id === args.mb.id});
+				if(memberIndex > -1){
+					for(var i = 0; i < list.length; i++){
+						list[i].position = i>0 ? list[i].score === list[i-1].score ? list[i].position = list[i-1].position : list[i].position = i+1 : list[i].position = i+1;
+					}
+					send += `${list[memberIndex].position}. ${list[memberIndex].username}: ${list[memberIndex].score} ${scorenames[args.lb]}\n`
+					return msg.channel.send(send + '```');
 				}
-				return msg.channel.send(send + '```');
+				else{
+					return msg.reply('This person is not on that leaderboard.');
+				}
 			}
 		}
 	}

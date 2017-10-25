@@ -201,19 +201,19 @@ module.exports = class RankedDuelCommand extends commando.Command {
 							}
 						}
 					}
-					let duelLeaderboard = msg.client.provider.get(msg.guild, 'duelLeaderboard', []);
-					let entryIndex = duelLeaderboard.findIndex(function(element){return element.id === duelers[turn].id});
+					let winsLeaderboard = msg.client.provider.get(msg.guild, 'winsLeaderboard', []);
+					let entryIndex = winsLeaderboard.findIndex(function(element){return element.id === duelers[turn].id});
 					if(entryIndex > -1){
-						var wins = duelLeaderboard[entryIndex].score+1;
-						duelLeaderboard[entryIndex] = {
-							score: duelLeaderboard[entryIndex].score+1,
+						var wins = winsLeaderboard[entryIndex].score+1;
+						winsLeaderboard[entryIndex] = {
+							score: winsLeaderboard[entryIndex].score+1,
 							username: duelers[turn].name,
 							id: duelers[turn].id
 						}
 					}
 					else{
 						var wins = 1;
-						duelLeaderboard.push(
+						winsLeaderboard.push(
 							{
 								score: 1,
 								username: duelers[turn].name,
@@ -221,7 +221,50 @@ module.exports = class RankedDuelCommand extends commando.Command {
 							}
 						);
 					}
-					msg.client.provider.set(msg.guild, 'duelLeaderboard', duelLeaderboard);
+					msg.client.provider.set(msg.guild, 'winsLeaderboard', winsLeaderboard);
+					let rankLeaderboard = msg.client.provider.get(msg.guild, 'rankLeaderboard', []);
+					let winnerIndex = rankLeaderboard.findIndex(function(element){return element.id === duelers[turn].id});
+					let loserIndex = rankLeaderboard.findIndex(function(element){return element.id === duelers[notTurn].id});
+					if(winnerIndex > -1){
+						rankLeaderboard[winnerIndex] = {
+							score: rankLeaderboard[winnerIndex].score,
+							username: duelers[turn].name,
+							id: duelers[turn].id
+						}
+					}
+					else{
+						rankLeaderboard.push(
+							{
+								score: 1000,
+								username: duelers[turn].name,
+								id: duelers[turn].id
+							}
+						);
+						winnerIndex = rankLeaderboard.length-1;
+					}
+					if(loserIndex > -1){
+						rankLeaderboard[loserIndex] = {
+							score: rankLeaderboard[loserIndex].score,
+							username: duelers[notTurn].name,
+							id: duelers[notTurn].id
+						}
+					}
+					else{
+						rankLeaderboard.push(
+							{
+								score: 1000,
+								username: duelers[notTurn].name,
+								id: duelers[notTurn].id
+							}
+						);
+						loserIndex = rankLeaderboard.length-1;
+					}
+					var rankDiff = rankLeaderboard[loserIndex].score-rankLeaderboard[winnerIndex].score;
+					var rankGained = Math.round(Math.min(Math.pow(1.002, rankDiff)*100, 2000)/2);
+					rankLeaderboard[winnerIndex].score += rankGained;
+					rankLeaderboard[loserIndex].score -= rankGained;
+					var rank = rankLeaderboard[winnerIndex].score;
+					msg.client.provider.set(msg.guild, 'rankLeaderboard', rankLeaderboard);
 					return msg.channel.send({embed: {
 						thumbnail: {
 							url: "http://i.imgur.com/sMrWQWO.png"
@@ -232,7 +275,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 						},
 						"footer": {
 							"icon_url": duelers[turn].avatar,
-							"text": `${duelers[turn].name}'s wins: ${wins}`
+							"text": `${duelers[turn].name}'s wins/rank: ${wins}/${rank}`
 						},
 						color: 0x8c110b,
 						title: `${msg.author.username} VS ${args.p2.user.username}!`,
@@ -264,7 +307,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 					}
 				}
 			}
-			if(checkCooldown()){
+			if(true){
 				duel();
 			}
 		}
