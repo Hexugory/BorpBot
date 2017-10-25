@@ -25,8 +25,8 @@ var types = [
 	{name: "halfdamage", max: 20, min: 5, ordinary: true, epic: false, legendary: false, template: "{mag}% chance to halve damage taken."},
 	{name: "skipcooldown", max: 5, min: 5, ordinary: false, epic: false, legendary: true, template: "{mag}% chance to skip your fight cooldown when you lose."},
 	{name: "fedoratip", max: 1, min: 1, ordinary: false, epic: true, legendary: false, template: "0.1% chance to use Fedora Tip."},
-	{name: "flatdamageafter", max: 2, min: 1, ordinary: true, epic: true, legendary: true, template: "Add {mag} damage to all of your attacks (after modifiers)."},
-	{name: "flatdamage", max: 2, min: 1, ordinary: true, epic: true, legendary: true, template: "Add {mag} damage to all of your attacks."}
+	{name: "flatdamageafter", max: 20, min: 1, ordinary: true, epic: true, legendary: true, template: "Add {mag} damage to all of your attacks (after modifiers)."},
+	{name: "flatdamage", max: 20, min: 1, ordinary: true, epic: true, legendary: true, template: "Add {mag} damage to all of your attacks."}
 ]
 
 function sendMessages(arr, content){
