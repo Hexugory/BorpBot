@@ -261,6 +261,9 @@ module.exports = class RankedDuelCommand extends commando.Command {
 					}
 					var rankDiff = rankLeaderboard[loserIndex].score-rankLeaderboard[winnerIndex].score;
 					var rankGained = Math.round(Math.min(Math.pow(1.002, rankDiff)*400, 2000)/2);
+					if(rankGained > rankLeaderboard[loserIndex].score){
+						rankGained = rankLeaderboard[loserIndex].score;
+					}
 					rankLeaderboard[winnerIndex].score += rankGained;
 					rankLeaderboard[loserIndex].score -= rankGained;
 					var rank = rankLeaderboard[winnerIndex].score;
