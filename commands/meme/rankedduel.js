@@ -260,7 +260,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 						loserIndex = rankLeaderboard.length-1;
 					}
 					var rankDiff = rankLeaderboard[loserIndex].score-rankLeaderboard[winnerIndex].score;
-					var rankGained = Math.round(Math.min(Math.pow(1.002, rankDiff)*100, 2000)/2);
+					var rankGained = Math.round(Math.min(Math.pow(1.002, rankDiff)*200, 2000)/2);
 					rankLeaderboard[winnerIndex].score += rankGained;
 					rankLeaderboard[loserIndex].score -= rankGained;
 					var rank = rankLeaderboard[winnerIndex].score;
@@ -307,7 +307,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 					}
 				}
 			}
-			if(true){
+			if(checkCooldown()){
 				duel();
 			}
 		}
