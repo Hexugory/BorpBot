@@ -44,7 +44,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 		var turnDescs = [];
 		var duelers = [{
 			name: msg.author.username,
-			hp: 20,
+			hp: 200,
 			id: msg.author.id,
 			avatar: msg.author.avatarURL,
 			equipped: msg.client.provider.get(msg.guild, "duelstats" + msg.author.id, {items: [], equipped: [null, null, null]}).equipped,
@@ -54,7 +54,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 		},
 		{
 			name: args.p2.user.username,
-			hp: 20,
+			hp: 200,
 			id: args.p2.user.id,
 			avatar: args.p2.user.avatarURL,
 			equipped: msg.client.provider.get(msg.guild, "duelstats" + args.p2.user.id, {items: [], equipped: [null, null, null]}).equipped,
@@ -124,7 +124,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 				if(Array.isArray(tipitems)){
 					for(var i = 0; i < tipitems.length; i++){
 						if(getRandomInt(1, 1000) === 69){
-							attack = {name: "Fedora Tip", dmg: 9999};
+							attack = {name: "Fedora Tip", dmg: 99999};
 						}
 					}
 				}
