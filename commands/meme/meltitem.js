@@ -4,6 +4,7 @@ const sqlite = require('sqlite');
 module.exports = class MeltItemCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
+            aliases: ['melt'],
 			name: 'meltitem',
 			group: 'meme',
 			memberName: 'meltitem',

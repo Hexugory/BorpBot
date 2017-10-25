@@ -1,9 +1,11 @@
 const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
+var duelconfig = require('../../duel.json');
 
 module.exports = class GrantItemCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
+			aliases: ['grant'],
 			name: 'grantitem',
 			group: 'meme',
 			memberName: 'grantitem',
@@ -39,28 +41,29 @@ module.exports = class GrantItemCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
-		var types = [
-			{name: "damage", max: 30, min: 5, ordinary: true, epic: true, legendary: true, template: "Increase damage dealt by {mag}%."},
-			{name: "drain", max: 15, min: 5, ordinary: true, epic: true, legendary: true, template: "Heal yourself for {mag}% of all damage you deal."},
-			{name: "defense", max: 15, min: 5, ordinary: true, epic: true, legendary: true, template: "Decrease damage taken by {mag}%."},
-			{name: "extraturn", max: 10, min: 1, ordinary: true, epic: true, legendary: true, template: "{mag}% chance to take an extra turn."},
-			{name: "healsteal", max: 1, min: 1, ordinary: true, epic: false, legendary: false, template: "Steal all healing done by the enemy (before modifiers)."},
-			{name: "healsteallegendary", max: 1, min: 1, ordinary: false, epic: false, legendary: true, template: "Steal all healing done by the enemy (after modifiers)."},
-			{name: "doubledamage", max: 30, min: 5, ordinary: true, epic: false, legendary: false, template: "{mag}% chance to double damage dealt."},
-			{name: "halfdamage", max: 20, min: 5, ordinary: true, epic: false, legendary: false, template: "{mag}% chance to halve damage taken."},
-			{name: "skipcooldown", max: 5, min: 5, ordinary: false, epic: false, legendary: true, template: "{mag}% chance to skip your fight cooldown when you lose."},
-			{name: "fedoratip", max: 1, min: 1, ordinary: false, epic: true, legendary: false, template: "0.1% chance to use Fedora Tip."},
-			{name: "flatdamageafter", max: 20, min: 1, ordinary: true, epic: true, legendary: true, template: "Add {mag} damage to all of your attacks (after modifiers)."},
-			{name: "flatdamage", max: 20, min: 1, ordinary: true, epic: true, legendary: true, template: "Add {mag} damage to all of your attacks."}
-		]
-		
+		function ucFirst(string) {
+			return string.charAt(0).toUpperCase() + string.slice(1);
+		}
 		function getRandomInt(min, max){
 			return Math.floor(Math.random() * (max - min + 1) + min);
 		}
 		
 		function generateNewItem(){
 			let item = {};
-			item.quality = ['Ordinary', 'Epic', 'Legendary'].includes(args.qu) ? args.qu : 'Ordinary';
+			item.quality = ['Ordinary', 'Epic', 'Legendary', 'Genuine'].includes(ucFirst(args.qu)) ? ucFirst(args.qu) : 'Ordinary';
+			let types = duelconfig.types;
+			for(var i = 0; i < duelconfig.itemmovesets.length; i++){
+				types.push({
+					name: duelconfig.itemmovesets[i].name,
+					max: 1,
+					min: 1,
+					ordinary: false,
+					epic: true,
+					legendary: false,
+					moveset: true,
+					template: `Change your attacks to attacks from ${duelconfig.itemmovesets[i].name}.`
+				})
+			}
 			let filteredtypes = types.filter(function(element){return element[item.quality.toLowerCase()]})
 			let type = types.find(function(element){return element.name === args.ty});
 			if(!type){
@@ -68,6 +71,9 @@ module.exports = class GrantItemCommand extends commando.Command {
 			}
 			item.type = type.name;
 			item.template = type.template;
+			if(type.moveset){
+				item.moveset = type.moveset;
+			}
 			item.mag = item.quality === "Legendary" ? getRandomInt(type.max*2+1,type.max*3) : (item.quality === "Epic" ? getRandomInt(type.max+1,type.max*2) : getRandomInt(type.min,type.max));
 			return item;
 		}
@@ -83,7 +89,6 @@ module.exports = class GrantItemCommand extends commando.Command {
 				return "None";
 			}
 			else{
-				item.template = types.find(function(element){return element.name === item.type}).template;
 				return `${item.quality} quality: ${createStringFromTemplate(item.template, {mag: item.mag})}`;
 			}
 		}

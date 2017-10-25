@@ -4,6 +4,7 @@ const sqlite = require('sqlite');
 module.exports = class UnequipItemCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
+            aliases: ['unequip'],
 			name: 'unequipitem',
 			group: 'meme',
 			memberName: 'unequipitem',
@@ -29,18 +30,31 @@ module.exports = class UnequipItemCommand extends commando.Command {
 			return msg.reply("```diff\n- You have no items or equipped items -```")
         }
         else{
-            if(args.sl > 3 || args.sl < 1){
+            if(args.sl > 4 || args.sl < 1){
                 return msg.reply("```diff\n- Invalid slot -```")
             }
             else{
-                if(duelstats.equipped[args.sl-1]){
-                    duelstats.items.push(duelstats.equipped[args.sl-1]);
-                    duelstats.equipped[args.sl-1] = null;
-                    msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
-                    return msg.reply(`\`\`\`diff\n! Unequipped item !\`\`\``)
+                if(args.sl === 4){
+                    if(duelstats.moveset){
+                        duelstats.items.push(duelstats.moveset);
+                        duelstats.moveset = null;
+                        msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
+                        return msg.reply(`\`\`\`diff\n! Unequipped item !\`\`\``)
+                    }
+                    else{
+                        return msg.reply(`\`\`\`diff\n- There's no item in that slot -\`\`\``)
+                    }
                 }
                 else{
-                    return msg.reply(`\`\`\`diff\n- There's no item in that slot -\`\`\``)
+                    if(duelstats.equipped[args.sl-1]){
+                        duelstats.items.push(duelstats.equipped[args.sl-1]);
+                        duelstats.equipped[args.sl-1] = null;
+                        msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
+                        return msg.reply(`\`\`\`diff\n! Unequipped item !\`\`\``)
+                    }
+                    else{
+                        return msg.reply(`\`\`\`diff\n- There's no item in that slot -\`\`\``)
+                    }
                 }
             }
         }
