@@ -47,7 +47,8 @@ module.exports = class RankedDuelCommand extends commando.Command {
 			hp: 200,
 			id: msg.author.id,
 			avatar: msg.author.avatarURL,
-			equipped: msg.client.provider.get(msg.guild, "duelstats" + msg.author.id, {items: [], equipped: [null, null, null]}).equipped,
+			equipped: msg.client.provider.get(msg.guild, "duelstats" + msg.author.id, {equipped: [null, null, null]}).equipped,
+			moveset: msg.client.provider.get(msg.guild, "duelstats" + msg.author.id, {moveset: null}).moveset,
 			heal: 0,
 			dmg: 0,
 			fdmg: 0
@@ -57,7 +58,8 @@ module.exports = class RankedDuelCommand extends commando.Command {
 			hp: 200,
 			id: args.p2.user.id,
 			avatar: args.p2.user.avatarURL,
-			equipped: msg.client.provider.get(msg.guild, "duelstats" + args.p2.user.id, {items: [], equipped: [null, null, null]}).equipped,
+			equipped: msg.client.provider.get(msg.guild, "duelstats" + args.p2.user.id, {equipped: [null, null, null]}).equipped,
+			moveset: msg.client.provider.get(msg.guild, "duelstats" + args.p2.user.id, {moveset: null}).moveset,
 			heal: 0,
 			dmg: 0,
 			fdmg: 0
@@ -85,31 +87,53 @@ module.exports = class RankedDuelCommand extends commando.Command {
 				return element.id === msg.author.id;
 			}
 			//time to contract cancer
-			function applyItemAttackModifier(slot, dueler){
-				if(duelers[dueler].equipped[slot].type === "damage" && dueler === turn){
-					duelers[notTurn].dmg *= ((duelers[dueler].equipped[slot].mag/100)+1);
-				}
-				else if(duelers[dueler].equipped[slot].type === "drain" && dueler === turn){
-					duelers[turn].heal += (duelers[notTurn].dmg*(duelers[dueler].equipped[slot].mag/100));
-				}
-				else if(duelers[dueler].equipped[slot].type === "defense" && dueler === notTurn){
-					duelers[notTurn].dmg *= (1-(duelers[dueler].equipped[slot].mag/100));
-				}
-				else if(duelers[dueler].equipped[slot].type === "doubledamage" && dueler === turn){
-					if(getRandomInt(1, 100) <= duelers[dueler].equipped[slot].mag){
-						duelers[notTurn].dmg *= 2;
+			var sortOrder = {
+				defense: 0,
+				halfdamage: 1,
+				damage: 2,
+				doubledamage: 3,
+				flatdamage: 4,
+				drain: 5,
+				flatdamageafter: 6
+			}
+			function applyItemAttackModifiers(){
+				let effectsToApply = [];
+				for(var i = 0; i < 3; i++){
+					for(var o = 0; o < 2; o++){
+						duelers[o].equipped[i].turn = turn === o ? turn : notTurn;
+						effectsToApply.push(duelers[o].equipped[i]);
 					}
 				}
-				else if(duelers[dueler].equipped[slot].type === "halfdamage" && dueler === notTurn){
-					if(getRandomInt(1, 100) <= duelers[dueler].equipped[slot].mag){
-						duelers[notTurn].dmg /= 2;
+				effectsToApply = effectsToApply.sort(function(a,b){
+					return sortOrder[a.type] - sortOrder[b.type]
+				})
+				console.log(effectsToApply)
+				for(var i = 0; i < effectsToApply.length; i++){
+					if(effectsToApply[i].type === "damage" && effectsToApply[i].turn === turn){
+						duelers[notTurn].dmg *= ((effectsToApply[i].mag/100)+1);
 					}
-				}
-				else if(duelers[dueler].equipped[slot].type === "flatdamageafter" && dueler === turn){
-					duelers[notTurn].fdmg += duelers[dueler].equipped[slot].mag;
-				}
-				else if(duelers[dueler].equipped[slot].type === "flatdamage" && dueler === turn){
-					duelers[notTurn].dmg += duelers[dueler].equipped[slot].mag;
+					else if(effectsToApply[i].type === "drain" && effectsToApply[i].turn === turn){
+						duelers[turn].heal += (duelers[notTurn].dmg*(effectsToApply[i].mag/100));
+					}
+					else if(effectsToApply[i].type === "defense" && effectsToApply[i].turn === notTurn){
+						duelers[notTurn].dmg *= (1-(effectsToApply[i].mag/100));
+					}
+					else if(effectsToApply[i].type === "doubledamage" && effectsToApply[i].turn === turn){
+						if(getRandomInt(1, 100) <= effectsToApply[i].mag){
+							duelers[notTurn].dmg *= 2;
+						}
+					}
+					else if(effectsToApply[i].type === "halfdamage" && effectsToApply[i].turn === notTurn){
+						if(getRandomInt(1, 100) <= effectsToApply[i].mag){
+							duelers[notTurn].dmg /= 2;
+						}
+					}
+					else if(effectsToApply[i].type === "flatdamageafter" && effectsToApply[i].turn === turn){
+						duelers[notTurn].fdmg += effectsToApply[i].mag;
+					}
+					else if(effectsToApply[i].type === "flatdamage" && effectsToApply[i].turn === turn){
+						duelers[notTurn].dmg += effectsToApply[i].mag;
+					}
 				}
 			}
 			function duel(){
@@ -119,7 +143,15 @@ module.exports = class RankedDuelCommand extends commando.Command {
 				duelers[notTurn].heal = 0;
 				duelers[turn].fdmg = 0;
 				duelers[notTurn].fdmg = 0;
-				let attack = duelconfig.spells[getRandomInt(0, duelconfig.spells.length - 1)];
+				duelers[turn].selfdmg = 0;
+				duelers[notTurn].selfdmg = 0;
+				if(duelers[turn].moveset){
+					let moveset = duelconfig.itemmovesets.find(function(element){return element.name === duelers[turn].moveset.type})
+					var attack = moveset.moves[getRandomInt(0, moveset.moves.length - 1)];
+				}
+				else{
+					var attack = duelconfig.spells[getRandomInt(0, duelconfig.spells.length - 1)];
+				}
 				let tipitems = duelers[turn].equipped.filter(function(element){return element.type.includes('fedoratip')});
 				if(Array.isArray(tipitems)){
 					for(var i = 0; i < tipitems.length; i++){
@@ -138,11 +170,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 						duelers[turn].heal = attack.heal;
 					}
 				}
-				for(var i = 0; i <= 2; i++){
-					for(var o = 0; o <= 1; o++){
-						applyItemAttackModifier(i, o);
-					}
-				}
+				applyItemAttackModifiers();
 				if(healitem && healitem.quality === 'Legendary'){
 					duelers[notTurn].heal += duelers[turn].heal;
 					duelers[turn].heal = 0;

@@ -6,6 +6,7 @@ const config = require('./config.json');
 const prompt = require('prompt');
 const emojiRegex = require('emoji-regex');
 const moment = require('moment');
+var duelconfig = require('./duel.json');
 
 const client = new commando.Client({
 	owner: config.owner,
@@ -13,21 +14,6 @@ const client = new commando.Client({
 	unknownCommandResponse: false,
 	invite: 'http://discord.gg/hAj5dY8'
 });
-
-var types = [
-	{name: "damage", max: 30, min: 5, ordinary: true, epic: true, legendary: true, template: "Increase damage dealt by {mag}%."},
-	{name: "drain", max: 15, min: 5, ordinary: true, epic: true, legendary: true, template: "Heal yourself for {mag}% of all damage you deal."},
-	{name: "defense", max: 15, min: 5, ordinary: true, epic: true, legendary: true, template: "Decrease damage taken by {mag}%."},
-	{name: "extraturn", max: 10, min: 1, ordinary: true, epic: true, legendary: true, template: "{mag}% chance to take an extra turn."},
-	{name: "healsteal", max: 1, min: 1, ordinary: true, epic: false, legendary: false, template: "Steal all healing done by the enemy (before modifiers)."},
-	{name: "healsteallegendary", max: 1, min: 1, ordinary: false, epic: false, legendary: true, template: "Steal all healing done by the enemy (after modifiers)."},
-	{name: "doubledamage", max: 30, min: 5, ordinary: true, epic: false, legendary: false, template: "{mag}% chance to double damage dealt."},
-	{name: "halfdamage", max: 20, min: 5, ordinary: true, epic: false, legendary: false, template: "{mag}% chance to halve damage taken."},
-	{name: "skipcooldown", max: 5, min: 5, ordinary: false, epic: false, legendary: true, template: "{mag}% chance to skip your fight cooldown when you lose."},
-	{name: "fedoratip", max: 1, min: 1, ordinary: false, epic: true, legendary: false, template: "0.1% chance to use Fedora Tip."},
-	{name: "flatdamageafter", max: 20, min: 1, ordinary: true, epic: true, legendary: true, template: "Add {mag} damage to all of your attacks (after modifiers)."},
-	{name: "flatdamage", max: 20, min: 1, ordinary: true, epic: true, legendary: true, template: "Add {mag} damage to all of your attacks."}
-]
 
 function sendMessages(arr, content){
 	for(var i = 0; i < arr.length; i++){
@@ -45,10 +31,26 @@ function getRandomInt(min, max){
 function generateNewItem(){
 	let item = {};
 	item.quality = getRandomInt(0, 100) > 90 ? (getRandomInt(0, 100) > 90 ? "Legendary" : "Epic") : "Ordinary";
+	let types = duelconfig.types;
+	for(var i = 0; i < duelconfig.itemmovesets.length; i++){
+		types.push({
+			name: duelconfig.itemmovesets[i].name,
+			max: 1,
+			min: 1,
+			ordinary: false,
+			epic: true,
+			legendary: false,
+			moveset: true,
+			template: `Change your attacks to attacks from ${duelconfig.itemmovesets[i].name}.`
+		})
+	}
 	let filteredtypes = types.filter(function(element){return element[item.quality.toLowerCase()]})
 	let type = filteredtypes[getRandomInt(0,filteredtypes.length-1)];
 	item.type = type.name;
 	item.template = type.template;
+	if(type.moveset){
+		item.moveset = type.moveset;
+	}
 	item.mag = item.quality === "Legendary" ? getRandomInt(type.max*2+1,type.max*3) : (item.quality === "Epic" ? getRandomInt(type.max+1,type.max*2) : getRandomInt(type.min,type.max));
 	return item;
 }
