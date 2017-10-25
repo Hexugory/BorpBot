@@ -44,11 +44,11 @@ module.exports = class DuelCommand extends commando.Command {
 		var turnDescs = [];
 		var duelers = [{
 			name: args.p1,
-			hp: 20
+			hp: 200
 		},
 		{
 			name: args.p2,
-			hp: 20
+			hp: 200
 		}];
 		function duel(){
 			if(getRandomInt(0, 1000) === 1000){
@@ -56,7 +56,7 @@ module.exports = class DuelCommand extends commando.Command {
 					name: `${duelers[turn].name}[${duelers[turn].hp}] uses Fedora Tip on ${duelers[notTurn].name}[${duelers[notTurn].hp}]`,
 					value: "The damage is off the charts!"
 				});
-				duelers[notTurn].hp -= 9999;
+				duelers[notTurn].hp -= 99999;
 			}
 			else{
 				let attack = duelconfig.spells[getRandomInt(0, duelconfig.spells.length - 1)];
