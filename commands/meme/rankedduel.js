@@ -218,11 +218,11 @@ module.exports = class RankedDuelCommand extends commando.Command {
 						if(!skipCooldownBool){
 							let IDIndex = duelCooldown.findIndex(searchArrayForID);
 							if(IDIndex>-1){
-								duelCooldown[IDIndex].time = moment.utc().add(1, "hour");
+								duelCooldown[IDIndex].time = moment.utc().add(30, "minute");
 								msg.client.provider.set(msg.guild, "duelCooldown", duelCooldown);
 							}
 							else{
-								duelCooldown.push({time: moment.utc().add(1, "hour"), id: msg.author.id});
+								duelCooldown.push({time: moment.utc().add(30, "minute"), id: msg.author.id});
 								msg.client.provider.set(msg.guild, "duelCooldown", duelCooldown);
 							}
 						}
@@ -336,7 +336,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 					}
 				}
 			}
-			if(true){
+			if(checkCooldown()){
 				duel();
 			}
 		}
