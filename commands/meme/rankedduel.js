@@ -107,7 +107,6 @@ module.exports = class RankedDuelCommand extends commando.Command {
 				effectsToApply = effectsToApply.sort(function(a,b){
 					return sortOrder[a.type] - sortOrder[b.type]
 				})
-				console.log(effectsToApply)
 				for(var i = 0; i < effectsToApply.length; i++){
 					if(effectsToApply[i].type === "damage" && effectsToApply[i].turn === turn){
 						duelers[notTurn].dmg *= ((effectsToApply[i].mag/100)+1);
@@ -143,8 +142,6 @@ module.exports = class RankedDuelCommand extends commando.Command {
 				duelers[notTurn].heal = 0;
 				duelers[turn].fdmg = 0;
 				duelers[notTurn].fdmg = 0;
-				duelers[turn].selfdmg = 0;
-				duelers[notTurn].selfdmg = 0;
 				if(duelers[turn].moveset){
 					let moveset = duelconfig.itemmovesets.find(function(element){return element.name === duelers[turn].moveset.type})
 					var attack = moveset.moves[getRandomInt(0, moveset.moves.length - 1)];
@@ -160,7 +157,8 @@ module.exports = class RankedDuelCommand extends commando.Command {
 						}
 					}
 				}
-				duelers[notTurn].dmg = attack.dmg;
+				duelers[notTurn].dmg = attack.dmg ? attack.dmg : 0;
+				duelers[turn].dmg = attack.selfdmg ? attack.selfdmg : 0;
 				let healitem = duelers[notTurn].equipped.find(function(element){return element.type.includes('healsteal')});
 				if(attack.heal){
 					if(healitem && healitem.quality != 'Legendary'){
@@ -175,8 +173,8 @@ module.exports = class RankedDuelCommand extends commando.Command {
 					duelers[notTurn].heal += duelers[turn].heal;
 					duelers[turn].heal = 0;
 				}
-				duelers[notTurn].dmg = Math.ceil(duelers[notTurn].dmg);
-				duelers[turn].dmg = Math.ceil(duelers[turn].dmg);
+				duelers[notTurn].dmg = Math.round(duelers[notTurn].dmg);
+				duelers[turn].dmg = Math.round(duelers[turn].dmg);
 				duelers[turn].heal = Math.round(duelers[turn].heal);
 				duelers[notTurn].heal = Math.round(duelers[notTurn].heal);
 				duelers[notTurn].dmg += duelers[notTurn].fdmg;
@@ -338,7 +336,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 					}
 				}
 			}
-			if(checkCooldown()){
+			if(true){
 				duel();
 			}
 		}
