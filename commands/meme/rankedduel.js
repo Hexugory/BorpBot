@@ -90,9 +90,9 @@ module.exports = class RankedDuelCommand extends commando.Command {
 			var sortOrder = {
 				defense: 0,
 				halfdamage: 1,
-				damage: 2,
+				flatdamage: 2,
 				doubledamage: 3,
-				flatdamage: 4,
+				damage: 4,
 				drain: 5,
 				flatdamageafter: 6
 			}
