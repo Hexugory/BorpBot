@@ -58,7 +58,13 @@ module.exports = class ViewPositionCommand extends commando.Command {
 					for(var i = 0; i < list.length; i++){
 						list[i].position = i>0 ? list[i].score === list[i-1].score ? list[i].position = list[i-1].position : list[i].position = i+1 : list[i].position = i+1;
 					}
+					if(list[memberIndex-1]){
+						send += `${list[memberIndex-1].position}. ${list[memberIndex-1].username}: ${list[memberIndex-1].score} ${scorenames[args.lb]}\n`
+					}
 					send += `${list[memberIndex].position}. ${list[memberIndex].username}: ${list[memberIndex].score} ${scorenames[args.lb]}\n`
+					if(list[memberIndex+1]){
+						send += `${list[memberIndex+1].position}. ${list[memberIndex+1].username}: ${list[memberIndex+1].score} ${scorenames[args.lb]}\n`
+					}
 					return msg.channel.send(send + '```');
 				}
 				else{
