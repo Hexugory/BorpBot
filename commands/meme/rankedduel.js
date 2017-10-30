@@ -88,11 +88,11 @@ module.exports = class RankedDuelCommand extends commando.Command {
 			}
 			//time to contract cancer
 			var sortOrder = {
-				defense: 0,
-				halfdamage: 1,
-				flatdamage: 2,
-				doubledamage: 3,
-				damage: 4,
+				flatdamage: 0,
+				doubledamage: 1,
+				damage: 2,
+				defense: 3,
+				halfdamage: 4,
 				drain: 5,
 				flatdamageafter: 6
 			}
