@@ -22,10 +22,10 @@ module.exports = class ListCustomCommand extends commando.Command {
 			}
 			if(commandList.length > 1999){
 				var messageBuffer = new Buffer(commandList, 'utf-8')
-				return msg.reply({files: [{attachment: messageBuffer,name: `result.txt`}]})
+				return msg.channel.send({files: [{attachment: messageBuffer,name: `result.txt`}]})
 			}
 			else{
-				return msg.reply(commandList)
+				return msg.channel.send(commandList)
 			}
 		}
 		else{
