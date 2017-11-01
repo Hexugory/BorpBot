@@ -20,7 +20,13 @@ module.exports = class ListCustomCommand extends commando.Command {
 			for(var i = 0; i < customCommands.length; i++){
 				commandList += `\`${customCommands[i].name}\` `
 			}
-			return msg.channel.send(commandList);
+			if(commandList.length > 1999){
+				var messageBuffer = new Buffer(commandList, 'utf-8')
+				return msg.reply({files: [{attachment: messageBuffer,name: `result.txt`}]})
+			}
+			else{
+				return msg.reply(commandList)
+			}
 		}
 		else{
 			return msg.reply('This server has no custom commands.');
