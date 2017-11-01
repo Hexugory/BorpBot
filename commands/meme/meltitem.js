@@ -53,7 +53,7 @@ module.exports = class MeltItemCommand extends commando.Command {
                     }
                     duelstats.items.splice(args.id, 1);
                     msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
-                    return msg.reply(`\`\`\`diff\n! Gained ${gaineddust} Borpdust !\`\`\``)
+                    return msg.reply(`\`\`\`diff\n! Gained ${gaineddust} Borpdust !\n! You have ${duelstats.borpdust} Borpdust !\`\`\``)
                 }
             }
         }
