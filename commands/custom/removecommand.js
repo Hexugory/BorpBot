@@ -48,7 +48,13 @@ module.exports = class RemoveCustomCommand extends commando.Command {
 				}
 			}
 			msg.client.provider.set(msg.guild, 'customCommands', customCommands);
-			return msg.reply(sendstr);
+			if(sendstr.length > 1999){
+				var messageBuffer = new Buffer(sendstr, 'utf-8')
+				return msg.reply({files: [{attachment: messageBuffer,name: `result.txt`}]})
+			}
+			else{
+				return msg.reply(sendstr)
+			}
 		}
 	}
 };
