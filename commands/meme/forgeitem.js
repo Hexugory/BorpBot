@@ -9,7 +9,7 @@ module.exports = class ForgeItemCommand extends commando.Command {
 			name: 'forgeitem',
 			group: 'meme',
 			memberName: 'forgeitem',
-			description: 'Forge an item out of Borpdust. 1,000 for Ordinary, 5,000 for Epic, 20,000 for Legendary.',
+			description: 'Forge an item out of Borpdust. 300 for Ordinary, 1,500 for Epic, 6,000 for Legendary.',
 			examples: ['\'forgeitem legendary'],
 			guildOnly: true,
 			
@@ -75,11 +75,11 @@ module.exports = class ForgeItemCommand extends commando.Command {
 		}
 		let duelstats = msg.client.provider.get(msg.guild, "duelstats" + msg.author.id, null);
 		if(duelstats){
-			if(!duelstats.borpdust || duelstats.borpdust < (ucFirst(args.qu) === "Legendary" ? 20000 : (ucFirst(args.qu) === "Epic" ? 5000 : 1000))){
+			if(!duelstats.borpdust || duelstats.borpdust < (ucFirst(args.qu) === "Legendary" ? 6000 : (ucFirst(args.qu) === "Epic" ? 1500 : 300))){
 				return msg.reply("```diff\n- You don't have enough Borpdust -```")
 			}
 			else{
-				duelstats.borpdust -= ucFirst(args.qu) === "Legendary" ? 20000 : (ucFirst(args.qu) === "Epic" ? 5000 : 1000)
+				duelstats.borpdust -= ucFirst(args.qu) === "Legendary" ? 6000 : (ucFirst(args.qu) === "Epic" ? 1500 : 300)
 				duelstats.items.push(generateNewItem());
 				msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
 				msg.reply(`\`\`\`diff\n! You forged: ${createDescString(duelstats.items[duelstats.items.length-1])} !\`\`\``);
