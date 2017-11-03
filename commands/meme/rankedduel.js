@@ -94,7 +94,8 @@ module.exports = class RankedDuelCommand extends commando.Command {
 				defense: 3,
 				halfdamage: 4,
 				drain: 5,
-				flatdamageafter: 6
+				flatdamageafter: 6,
+				flatdamageheal: 7
 			}
 			function applyItemAttackModifiers(){
 				let effectsToApply = [];
@@ -133,6 +134,21 @@ module.exports = class RankedDuelCommand extends commando.Command {
 					else if(effectsToApply[i].type === "flatdamage" && effectsToApply[i].turn === turn){
 						duelers[notTurn].dmg += effectsToApply[i].mag;
 					}
+					else if(effectsToApply[i].type === "flatdamageheal"){
+						duelers[effectsToApply[i].turn ? 0 : 1].fdmg += (duelers[effectsToApply[i].turn].heal*(effectsToApply[i].mag/100));
+					}
+				}
+			}
+			let healthup0 = duelers[0].equipped.filter(function(element){return element.type.includes('healthup')});
+			if(Array.isArray(healthup0)){
+				for(var i = 0; i < healthup0.length; i++){
+					duelers[0].hp *= ((healthup0[i].mag/100)+1);
+				}
+			}
+			let healthup1 = duelers[1].equipped.filter(function(element){return element.type.includes('healthup')});
+			if(Array.isArray(healthup1)){
+				for(var i = 0; i < healthup1.length; i++){
+					duelers[1].hp *= ((healthup1[i].mag/100)+1);
 				}
 			}
 			function duel(){
@@ -158,7 +174,13 @@ module.exports = class RankedDuelCommand extends commando.Command {
 					}
 				}
 				duelers[notTurn].dmg = attack.dmg ? attack.dmg : 0;
-				duelers[turn].dmg = attack.selfdmg ? attack.selfdmg : 0;
+				let selfswapitem = duelers[turn].equipped.find(function(element){return element.type.includes('selfswap')});
+				if(selfswapitem){
+					duelers[notTurn].dmg += attack.selfdmg ? attack.selfdmg : 0;
+				}
+				else{
+					duelers[turn].dmg += attack.selfdmg ? attack.selfdmg : 0;
+				}
 				let healitem = duelers[notTurn].equipped.find(function(element){return element.type.includes('healsteal')});
 				if(attack.heal){
 					if(healitem && healitem.quality != 'Legendary'){
@@ -177,6 +199,8 @@ module.exports = class RankedDuelCommand extends commando.Command {
 				duelers[turn].dmg = Math.round(duelers[turn].dmg);
 				duelers[turn].heal = Math.round(duelers[turn].heal);
 				duelers[notTurn].heal = Math.round(duelers[notTurn].heal);
+				duelers[notTurn].fdmg = Math.round(duelers[notTurn].fdmg);
+				duelers[turn].fdmg = Math.round(duelers[turn].fdmg);
 				duelers[notTurn].dmg += duelers[notTurn].fdmg;
 				duelers[turn].dmg += duelers[turn].fdmg;
 				turnDescs.push({
