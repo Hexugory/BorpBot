@@ -151,8 +151,8 @@ module.exports = class RankedDuelCommand extends commando.Command {
 					duelers[1].hp *= ((healthup1[i].mag/100)+1);
 				}
 			}
-			Math.round(duelers[0].hp);
-			Math.round(duelers[1].hp);
+			duelers[0].hp = Math.round(duelers[0].hp);
+			duelers[1].hp = Math.round(duelers[1].hp);
 			function duel(){
 				duelers[notTurn].dmg = 0;
 				duelers[turn].dmg = 0;
