@@ -1,6 +1,6 @@
 const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
-var duelconfig = require('../../duel.json');
+const duelconfig = require('../../duel.json');
 
 module.exports = class ForgeItemCommand extends commando.Command {
 	constructor(client) {
@@ -31,11 +31,41 @@ module.exports = class ForgeItemCommand extends commando.Command {
 		function getRandomInt(min, max){
 			return Math.floor(Math.random() * (max - min + 1) + min);
 		}
+		function clone(obj) {
+			// Handle the 3 simple types, and null or undefined
+			if (null == obj || "object" != typeof obj) return obj;
 		
+			// Handle Date
+			if (obj instanceof Date) {
+				var copy = new Date();
+				copy.setTime(obj.getTime());
+				return copy;
+			}
+		
+			// Handle Array
+			if (obj instanceof Array) {
+				var copy = [];
+				for (var i = 0, len = obj.length; i < len; i++) {
+					copy[i] = clone(obj[i]);
+				}
+				return copy;
+			}
+		
+			// Handle Object
+			if (obj instanceof Object) {
+				var copy = {};
+				for (var attr in obj) {
+					if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+				}
+				return copy;
+			}
+		
+			throw new Error("Unable to copy obj! Its type isn't supported.");
+		}
 		function generateNewItem(){
 			let item = {};
 			item.quality = ['Ordinary', 'Epic', 'Legendary'].includes(ucFirst(args.qu)) ? ucFirst(args.qu) : 'Ordinary';
-			let types = duelconfig.types;
+			let types = clone(duelconfig.types);
 			for(var i = 0; i < duelconfig.itemmovesets.length; i++){
 				types.push({
 					name: duelconfig.itemmovesets[i].name,

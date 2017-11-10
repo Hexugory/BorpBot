@@ -6,7 +6,7 @@ const config = require('./config.json');
 const prompt = require('prompt');
 const emojiRegex = require('emoji-regex');
 const moment = require('moment');
-var duelconfig = require('./duel.json');
+const duelconfig = require('./duel.json');
 
 const client = new commando.Client({
 	owner: config.owner,
@@ -27,11 +27,41 @@ function sendMessages(arr, content){
 function getRandomInt(min, max){
 	return Math.floor(Math.random() * (max - min + 1) + min);
 }
+function clone(obj) {
+    // Handle the 3 simple types, and null or undefined
+    if (null == obj || "object" != typeof obj) return obj;
 
+    // Handle Date
+    if (obj instanceof Date) {
+        var copy = new Date();
+        copy.setTime(obj.getTime());
+        return copy;
+    }
+
+    // Handle Array
+    if (obj instanceof Array) {
+        var copy = [];
+        for (var i = 0, len = obj.length; i < len; i++) {
+            copy[i] = clone(obj[i]);
+        }
+        return copy;
+    }
+
+    // Handle Object
+    if (obj instanceof Object) {
+        var copy = {};
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+        }
+        return copy;
+    }
+
+    throw new Error("Unable to copy obj! Its type isn't supported.");
+}
 function generateNewItem(){
 	let item = {};
 	item.quality = getRandomInt(0, 100) > 90 ? (getRandomInt(0, 100) > 90 ? "Legendary" : "Epic") : "Ordinary";
-	let types = duelconfig.types;
+	let types = clone(duelconfig.types);
 	for(var i = 0; i < duelconfig.itemmovesets.length; i++){
 		types.push({
 			name: duelconfig.itemmovesets[i].name,
