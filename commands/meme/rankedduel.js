@@ -64,6 +64,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 			dmg: 0,
 			fdmg: 0
 		}];
+		var extraTurnNum = 0;
 		if(duelers[0].equipped.includes(null) || duelers[1].equipped.includes(null)){
 			return msg.reply("One (or more) of you cannot use 'rankedduel.\nYou cannot use 'rankedduel if you do not have 3 items equipped.");
 		}
@@ -235,7 +236,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 						var skipCooldownBool = false;
 						if(skipCooldownArray[0]){
 							for(var i = 0; i < skipCooldownArray.length; i++){
-								if(getRandomInt(1, 100) <= skipCooldownArray[i].mag){
+								if(!skipCooldownBool && getRandomInt(1, 100) <= skipCooldownArray[i].mag){
 									skipCooldownBool = true;
 									turnDescs[turnDescs.length-1].value += `❤${duelers[notTurn].name}[${duelers[notTurn].hp}] is still ready to fight again.`
 								}
@@ -343,16 +344,18 @@ module.exports = class RankedDuelCommand extends commando.Command {
 				}
 				else{
 					let extraTurnArray = duelers[turn].equipped.filter(function(element){return element.type === 'extraturn'});
-					var extraTurnBool = false;
+					let addedTurns = 0;
 					if(extraTurnArray[0]){
 						for(var i = 0; i < extraTurnArray.length; i++){
 							if(getRandomInt(1, 100) <= extraTurnArray[i].mag){
-								extraTurnBool = true;
-								turnDescs[turnDescs.length-1].value += `💨${duelers[turn].name}[${duelers[turn].hp}] takes an extra turn.`
+								extraTurnNum++;
+								addedTurns++;
 							}
 						}
 					}
-					if(extraTurnBool){
+					if(extraTurnNum > 0){
+						addedTurns > 0 ? turnDescs[turnDescs.length-1].value += `💨${duelers[turn].name}[${duelers[turn].hp}] takes ${addedTurns > 1 ? `${addedTurns} extra turns` : 'an extra turn'}.` : null;
+						extraTurnNum--;
 						duel();
 					}
 					else{
@@ -362,7 +365,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 					}
 				}
 			}
-			if(checkCooldown()){
+			if(true){
 				duel();
 			}
 		}
