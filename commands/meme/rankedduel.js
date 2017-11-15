@@ -365,7 +365,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 					}
 				}
 			}
-			if(true){
+			if(checkCooldown()){
 				duel();
 			}
 		}
