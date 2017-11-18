@@ -36,7 +36,7 @@ module.exports = class ViewProfileCommand extends commando.Command {
 			profileEmbed.setColor(profiles[args.mb.id].color ? profiles[args.mb.id].color : [114, 137, 218]);
 			profiles[args.mb.id].thumbnail ? profileEmbed.setThumbnail(profiles[args.mb.id].thumbnail) : null;
 			for(var i = 0; i < profiles.settings.fields.length; i++){
-				profileEmbed.addField(profiles.settings.fields[i], profiles[args.mb.id][profiles.settings.fields[i]] ? profiles[args.mb.id][profiles.settings.fields[i]] : '<unset>', true);
+				profileEmbed.addField(profiles.settings.fields[i], profiles[args.mb.id][profiles.settings.fields[i].toLowerCase()] ? profiles[args.mb.id][profiles.settings.fields[i].toLowerCase()] : '<unset>', true);
 			}
 			return msg.channel.send({embed: profileEmbed});
 		}
