@@ -9,7 +9,7 @@ module.exports = class RemoveProfileCommand extends commando.Command {
 			name: 'removeprofile',
 			group: 'util',
 			memberName: 'removeprofile',
-			description: oneLine`Remove a member's profile.`,
+			description: oneLine`Remove a member's profile. (Manage Messages)`,
 			examples: ['\'removeprofile @Guy Hero#1823'],
 
 			args: [
@@ -28,7 +28,7 @@ module.exports = class RemoveProfileCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
-        var profiles = this.client.provider.get(msg.guild, 'profiles', {});
+        let profiles = this.client.provider.get(msg.guild, 'profiles', {settings: {fields: []}});
         if(!profiles[msg.author.id]){
             msg.reply(`That member does not have a profile.`)
         }
