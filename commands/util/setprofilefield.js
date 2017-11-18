@@ -2,6 +2,7 @@ const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
 const path =  require('path');
 const oneLine = require('common-tags').oneLine;
+const urlRegex = require('url-regex');
 
 module.exports = class SetProfileFieldCommand extends commando.Command {
 	constructor(client) {
@@ -93,7 +94,17 @@ module.exports = class SetProfileFieldCommand extends commando.Command {
                     return msg.reply("Profile field set.");
                 }
             }
-            else if((lowercaseFields.includes(args.fd.toLowerCase())) || (args.fd.toLowerCase() === 'description' || args.fd.toLowerCase() === 'thumbnail')){
+            else if(args.fd.toLowerCase() === 'thumbnail'){
+                if(urlRegex({exact: true}).test(args.ft)){
+                    profiles[msg.author.id][args.fd.toLowerCase()] = args.ft;
+                    this.client.provider.set(msg.guild, 'profiles', profiles);
+                    return msg.reply("Profile field set.");
+                }
+                else{
+                    return msg.reply("Invalid URL.");
+                }
+            }
+            else if((lowercaseFields.includes(args.fd.toLowerCase())) || (args.fd.toLowerCase() === 'description')){
                 profiles[msg.author.id][args.fd.toLowerCase()] = args.ft;
                 this.client.provider.set(msg.guild, 'profiles', profiles);
                 return msg.reply("Profile field set.");
