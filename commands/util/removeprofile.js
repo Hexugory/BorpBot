@@ -23,6 +23,10 @@ module.exports = class RemoveProfileCommand extends commando.Command {
 		});
 	}
 
+    hasPermission(msg) {
+		return msg.client.isOwner(msg.author) || (msg.member && msg.member.permissions.has('MANAGE_MESSAGES'));
+	}
+
 	async run(msg, args) {
         var profiles = this.client.provider.get(msg.guild, 'profiles', {});
         if(!profiles[msg.author.id]){
