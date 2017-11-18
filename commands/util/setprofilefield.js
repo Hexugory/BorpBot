@@ -32,6 +32,37 @@ module.exports = class SetProfileFieldCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
+        function clone(obj) {
+            // Handle the 3 simple types, and null or undefined
+            if (null == obj || "object" != typeof obj) return obj;
+        
+            // Handle Date
+            if (obj instanceof Date) {
+                var copy = new Date();
+                copy.setTime(obj.getTime());
+                return copy;
+            }
+        
+            // Handle Array
+            if (obj instanceof Array) {
+                var copy = [];
+                for (var i = 0, len = obj.length; i < len; i++) {
+                    copy[i] = clone(obj[i]);
+                }
+                return copy;
+            }
+        
+            // Handle Object
+            if (obj instanceof Object) {
+                var copy = {};
+                for (var attr in obj) {
+                    if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+                }
+                return copy;
+            }
+        
+            throw new Error("Unable to copy obj! Its type isn't supported.");
+        }
         if(args.ft.length > 1000){
             msg.reply("A field cannot be longer than 1000 characters.");
         }
@@ -39,6 +70,11 @@ module.exports = class SetProfileFieldCommand extends commando.Command {
             let profiles = this.client.provider.get(msg.guild, 'profiles', {settings: {fields: []}});
             if(typeof profiles[msg.author.id] != 'object'){
                 profiles[msg.author.id] = {};
+            }
+            let lowercaseFields;
+            Array.isArray(profiles.settings.fields) ? lowercaseFields = clone(profiles.settings.fields) : null;
+            for(var i = 0; i < lowercaseFields.length; i++){
+                lowercaseFields[i] = lowercaseFields[i].toLowerCase();
             }
             if(args.fd === 'color'){
                 let argSplit = args.ft.split(" ");
@@ -55,8 +91,8 @@ module.exports = class SetProfileFieldCommand extends commando.Command {
                     return msg.reply("Profile field set.");
                 }
             }
-            else if((Array.isArray(profiles.settings.fields) && profiles.settings.fields.includes(args.fd)) || (args.fd === 'description' || args.fd === 'thumbnail')){
-                profiles[msg.author.id][args.fd] = args.ft;
+            else if((lowercaseFields.includes(args.fd.toLowerCase())) || (args.fd === 'description' || args.fd === 'thumbnail')){
+                profiles[msg.author.id][args.fd.toLowerCase()] = args.ft;
                 this.client.provider.set(msg.guild, 'profiles', profiles);
                 return msg.reply("Profile field set.");
             }
