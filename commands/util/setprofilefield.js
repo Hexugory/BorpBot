@@ -76,7 +76,7 @@ module.exports = class SetProfileFieldCommand extends commando.Command {
             for(var i = 0; i < lowercaseFields.length; i++){
                 lowercaseFields[i] = lowercaseFields[i].toLowerCase();
             }
-            if(args.fd === 'color'){
+            if(args.fd.toLowerCase() === 'color'){
                 let argSplit = args.ft.split(" ");
                 argSplit.length = 3;
                 if(Number.isNaN(parseInt(argSplit[0], 10)) || Number.isNaN(parseInt(argSplit[1], 10)) || Number.isNaN(parseInt(argSplit[2], 10))){
@@ -86,12 +86,12 @@ module.exports = class SetProfileFieldCommand extends commando.Command {
                     for(var i = 0; i < argSplit.length; i++){
                         argSplit[i] = parseInt(argSplit[i], 10)
                     }
-                    profiles[msg.author.id][args.fd] = argSplit;
+                    profiles[msg.author.id][args.fd.toLowerCase()] = argSplit;
                     this.client.provider.set(msg.guild, 'profiles', profiles);
                     return msg.reply("Profile field set.");
                 }
             }
-            else if((lowercaseFields.includes(args.fd.toLowerCase())) || (args.fd === 'description' || args.fd === 'thumbnail')){
+            else if((lowercaseFields.includes(args.fd.toLowerCase())) || (args.fd.toLowerCase() === 'description' || args.fd.toLowerCase() === 'thumbnail')){
                 profiles[msg.author.id][args.fd.toLowerCase()] = args.ft;
                 this.client.provider.set(msg.guild, 'profiles', profiles);
                 return msg.reply("Profile field set.");
