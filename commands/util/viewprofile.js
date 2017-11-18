@@ -12,6 +12,7 @@ module.exports = class ViewProfileCommand extends commando.Command {
 			memberName: 'viewprofile',
 			description: oneLine`View a member's profile, if they have one.`,
 			examples: ['\'viewprofile @Guy Hero#1823'],
+			guildOnly: true,
 
 			args: [
 				{

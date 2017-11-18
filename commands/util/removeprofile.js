@@ -10,7 +10,8 @@ module.exports = class RemoveProfileCommand extends commando.Command {
 			group: 'util',
 			memberName: 'removeprofile',
 			description: oneLine`Remove a member's profile. (Manage Messages)`,
-			examples: ['\'removeprofile @Guy Hero#1823'],
+            examples: ['\'removeprofile @Guy Hero#1823'],
+            guildOnly: true,
 
 			args: [
 				{

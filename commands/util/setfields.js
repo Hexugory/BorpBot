@@ -11,7 +11,8 @@ module.exports = class SetFieldsCommand extends commando.Command {
 			memberName: 'setfields',
 			description: oneLine`Set profile fields. (Manage Server)`,
             examples: ['\'setfields @Guy Hero#1823'],
-            aliases: ['setprofilefields'],
+			aliases: ['setprofilefields'],
+			guildOnly: true,
 
 			args: [
 				{
