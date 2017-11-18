@@ -34,7 +34,7 @@ module.exports = class ViewProfileCommand extends commando.Command {
 		else{
 			profileEmbed.setAuthor(`${args.mb.user.username}'s profile`, args.mb.user.avatarURL);
 			profileEmbed.setDescription(profiles[args.mb.id].description ? profiles[args.mb.id].description : '<unset>');
-			profileEmbed.setColor(profiles[args.mb.id].color ? profiles[args.mb.id].color : [114, 137, 218]);
+			profiles[args.mb.id].color ? profileEmbed.setColor(profiles[args.mb.id].color) : null;
 			profiles[args.mb.id].thumbnail ? profileEmbed.setThumbnail(profiles[args.mb.id].thumbnail) : null;
 			for(var i = 0; i < profiles.settings.fields.length; i++){
 				profileEmbed.addField(profiles.settings.fields[i], profiles[args.mb.id][profiles.settings.fields[i].toLowerCase()] ? profiles[args.mb.id][profiles.settings.fields[i].toLowerCase()] : '<unset>', true);
