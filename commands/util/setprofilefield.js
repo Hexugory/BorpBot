@@ -10,7 +10,8 @@ module.exports = class SetProfileFieldCommand extends commando.Command {
 			group: 'util',
 			memberName: 'setprofilefield',
             description: oneLine`Set a field for a guild specific profile for yourself that can be viewed by anyone.
-            Default fields are "thumbnail", "description", and "color".
+            Default fields that all guilds have are "thumbnail", "description", and "color".
+            Some guilds can have extra fields set.
             To set color supply red green and blue values.`,
             examples: ['\'setprofilefield description I am the top meme', '\'setprofilefield color 255 0 0'],
             guildOnly: true,
