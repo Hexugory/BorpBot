@@ -42,6 +42,7 @@ module.exports = class SuggestCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
+		let suggestions = this.client.provider.get(args.gi, 'suggestions', []);
 		function sendMessages(arr, content){
 			for(var i = 0; i < arr.length; i++){
 				try{
@@ -50,6 +51,15 @@ module.exports = class SuggestCommand extends commando.Command {
 				catch(err){console.log(err)}
 			}
 		};
+		function generateID(len){
+			let id = Math.floor(Math.random()*Math.pow(10, len));
+			if(suggestions.find(function(element){return element.id === id})){
+				return generateID();
+			}
+			else{
+				return id.toString(10);
+			}
+		}
 		if(msg.channel.guild != undefined){
 			msg.author.send(`You can only use 'suggest in DMs.\nPlease use \`'help suggest\`.`);
 		}
@@ -70,14 +80,15 @@ module.exports = class SuggestCommand extends commando.Command {
 						msg.reply("Your suggestion cannot be longer than 1900 characters.");
 					}
 					else{
-						var suggestions = this.client.provider.get(args.gi, 'suggestions', []);
 						var fromstr = args.an ? "[Anonymous]" : msg.author.toString();
-						sendMessages(suggestionChannels, `${fromstr} suggested: ${args.sg}\nSuggestion index: ${suggestions.length}`);
 						suggestions.push({
 							suggestion: args.sg,
 							user: msg.author.id,
-							anonymous: args.an
+							anonymous: args.an,
+							id: generateID(16)
 						});
+						console.log(suggestions[suggestions.length-1].id)
+						sendMessages(suggestionChannels, `${fromstr} suggested: ${args.sg}\nSuggestion ID: ${suggestions[suggestions.length-1].id}`);
 						this.client.provider.set(args.gi, 'suggestions', suggestions);
 						msg.reply("Suggestion sent.");
 					}
