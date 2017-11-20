@@ -16,8 +16,8 @@ module.exports = class RemoveSuggestionCommand extends commando.Command {
 			args: [
 				{
 					key: 'id',
-					label: 'index',
-					prompt: 'Please enter a suggestion index.',
+					label: 'id',
+					prompt: 'Please enter a suggestion ID.',
 					type: 'integer'
 				}
 			]
@@ -30,13 +30,14 @@ module.exports = class RemoveSuggestionCommand extends commando.Command {
 
 	async run(msg, args) {
 		var suggestions = this.client.provider.get(msg.guild, 'suggestions', []);
-		if(suggestions[args.id] === undefined){
+		var suggestionIndex = suggestions.findIndex(function(element){return element.id == args.id});
+		if(!suggestions[suggestionIndex]){
 			msg.reply("That suggestion does not exist.");
 		}
 		else{
-			suggestions.splice(args.id, 1);
+			suggestions.splice(suggestionIndex, 1);
 			this.client.provider.set(msg.guild, 'suggestions', suggestions);
-			msg.channel.send(`Suggestion #${args.id} removed.`);
+			msg.channel.send(`Suggestion removed.`);
 		}
 	};
 }
