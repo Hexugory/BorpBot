@@ -12,7 +12,7 @@ module.exports = class SuggestCommand extends commando.Command {
 			description: oneLine`Sends a suggestion to the staff for future viewing.
 			Can send anonymously. However if you do send anonymously, the staff can view who you are, but you will be notified if they do so.
 			Can only be used in DMs.
-			Reccomended that you only send "'suggest".
+			Reccomended that you only send "'suggest" and answer the prompts one by one.
 			You can send all of the arguments in one message, but only do so if you know what you're doing.
 			Suggestions are limited to 1900 characters.
 			Joke suggestions may lead to being blacklisted and/or other mod action.`,
