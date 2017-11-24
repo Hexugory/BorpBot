@@ -28,13 +28,14 @@ module.exports = class ViewSenderCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
-		var suggestions = this.client.provider.get(msg.guild, 'suggestions', []);
-		if(suggestions[args.id] === undefined){
+		let suggestions = this.client.provider.get(msg.guild, 'suggestions', []);
+		let suggestionIndex = suggestions.findIndex(function(element){return element.id == args.id});
+		if(!suggestions[suggestionIndex]){
 			msg.reply("That suggestion does not exist.");
 		}
 		else{
-			msg.reply(`<@${suggestions[args.id].user}> sent this suggestion.\nThey have been notified of their name being viewed.`);
-			msg.guild.fetchMember(suggestions[args.id].user).then(sender => {
+			msg.reply(`<@${suggestions[suggestionIndex].user}> sent this suggestion.\nThey have been notified of their name being viewed.`);
+			msg.guild.fetchMember(suggestions[suggestionIndex].user).then(sender => {
 				sender.send(`The staff of ${msg.guild.name} have requested your name on one of your suggestions.`)
 			});
 		}
