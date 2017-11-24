@@ -13,6 +13,7 @@ module.exports = class ListSuggestionsCommand extends commando.Command {
 			description: oneLine`List all suggestion IDs and the person who submitted them (If they're not anonymous.).
 			\`'listsuggestions full\` will list all full suggestions along with the ID and who submitted it. (Manage Messages)`,
 			examples: ['\'listsuggestions', '\'listsuggestions full'],
+			guildOnly: true,
 
 			args: [
 				{

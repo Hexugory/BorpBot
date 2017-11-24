@@ -12,6 +12,7 @@ module.exports = class ViewSuggestionCommand extends commando.Command {
 			memberName: 'viewsuggestion',
 			description: oneLine`View a suggestion using it's index. (Manage Messages)`,
 			examples: ['\'viewsuggestion 5'],
+			guildOnly: true,
 
 			args: [
 				{
