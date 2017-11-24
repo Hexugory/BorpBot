@@ -11,6 +11,7 @@ module.exports = class ViewSenderCommand extends commando.Command {
 			memberName: 'viewsender',
 			description: oneLine`View the sender of a suggestion using it's index. (Manage Messages)`,
 			examples: ['\'viewsender 5'],
+			guildOnly: true,
 
 			args: [
 				{
