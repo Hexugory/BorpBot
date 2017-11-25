@@ -41,7 +41,7 @@ module.exports = class MeltItemCommand extends commando.Command {
             }
             else{
                 if(args.id > duelstats.items.length-1 || args.id < 0){
-                    return msg.reply("Invalid index.")
+                    return msg.reply("```diff\n- Invalid index -```")
                 }
                 else{
                     let gaineddust = duelstats.items[args.id].quality === "Legendary" ? 2000 : (duelstats.items[args.id].quality === "Epic" ? 500 : 100);
