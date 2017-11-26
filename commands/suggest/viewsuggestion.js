@@ -26,17 +26,33 @@ module.exports = class ViewSuggestionCommand extends commando.Command {
 	}
 	
 	hasPermission(msg) {
-		return msg.client.isOwner(msg.author) || (msg.member && msg.member.permissions.has('MANAGE_MESSAGES'));
+		let roles = msg.member.roles.array();
+		let permissions = msg.client.provider.get(msg.guild, 'permissions', {suggest:[]});
+		if(!permissions.suggest){
+			return msg.client.isOwner(msg.author);
+		}
+		else if(permissions.suggest.length < 1){
+			return msg.client.isOwner(msg.author);
+		}
+		else{
+			for(var i = 0; i < roles.length; i++){
+				if(permissions.suggest.includes(roles[i].id)){
+					return true;
+				}
+			}
+			return msg.client.isOwner(msg.author);
+		}
 	}
 
 	async run(msg, args) {
-		var suggestions = this.client.provider.get(msg.guild, 'suggestions', []);
-		if(suggestions[args.id] === undefined){
+		let suggestions = this.client.provider.get(msg.guild, 'suggestions', []);
+		let suggestionIndex = suggestions.findIndex(function(element){return element.id == args.id});
+		if(!suggestions[suggestionIndex]){
 			msg.reply("That suggestion does not exist.");
 		}
 		else{
-			var fromstr = suggestions[args.id].anonymous ? "[Anonymous]" : `<@${suggestions[args.id].user}>`;
-			msg.channel.send(`${fromstr} suggested: ${suggestions[args.id].suggestion}`);
+			var fromstr = suggestions[suggestionIndex].anonymous ? "[Anonymous]" : `<@${suggestions[suggestionIndex].user}>`;
+			msg.channel.send(`${fromstr} suggested: ${suggestions[suggestionIndex].suggestion}`);
 		}
 	};
 }

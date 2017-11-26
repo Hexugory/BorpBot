@@ -9,13 +9,10 @@ module.exports = class BlacklistCommand extends commando.Command {
 			name: 'blacklist',
 			group: 'mod',
 			memberName: 'blacklist',
-			description: 'Adds the mentioned user to the specified blacklist. (Manage Roles)',
-			details: oneLine`
-			Prevents a user from using a specific set of commands.
+			description: oneLine`Prevents a user from using a specific set of commands.
 			A command or a command group can be specified.
 			You can also blacklist them from all commands in the server with "server".
-			`,
-			//` good syntax highlighting notepad++
+			Requires mod permission. (See setrole)`,
 			examples: ['\'blacklist x @Guy Hero#1823'],
 			guildOnly: true,
 
@@ -37,7 +34,22 @@ module.exports = class BlacklistCommand extends commando.Command {
 	}
 	
 	hasPermission(msg) {
-		return msg.client.isOwner(msg.author) || (msg.member && msg.member.permissions.has('MANAGE_ROLES'));
+		let roles = msg.member.roles.array();
+		let permissions = msg.client.provider.get(msg.guild, 'permissions', {mod:[]});
+		if(!permissions.mod){
+			return msg.client.isOwner(msg.author);
+		}
+		else if(permissions.mod.length < 1){
+			return msg.client.isOwner(msg.author);
+		}
+		else{
+			for(var i = 0; i < roles.length; i++){
+				if(permissions.mod.includes(roles[i].id)){
+					return true;
+				}
+			}
+			return msg.client.isOwner(msg.author);
+		}
 	}
 
 	async run(msg, args) {
