@@ -7,9 +7,10 @@ module.exports = class RemoveProfileCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
 			name: 'removeprofile',
-			group: 'util',
+			group: 'mod',
 			memberName: 'removeprofile',
-			description: oneLine`Remove a member's profile. (Manage Messages)`,
+			description: oneLine`Remove a member's profile.
+			Requires mod permission. (See setrole)`,
             examples: ['\'removeprofile @Guy Hero#1823'],
             guildOnly: true,
 
@@ -25,7 +26,22 @@ module.exports = class RemoveProfileCommand extends commando.Command {
 	}
 
     hasPermission(msg) {
-		return msg.client.isOwner(msg.author) || (msg.member && msg.member.permissions.has('MANAGE_MESSAGES'));
+		let roles = msg.member.roles.array();
+		let permissions = msg.client.provider.get(msg.guild, 'permissions', {mod:[]});
+		if(!permissions.mod){
+			return msg.client.isOwner(msg.author);
+		}
+		else if(permissions.mod.length < 1){
+			return msg.client.isOwner(msg.author);
+		}
+		else{
+			for(var i = 0; i < roles.length; i++){
+				if(permissions.mod.includes(roles[i].id)){
+					return true;
+				}
+			}
+			return msg.client.isOwner(msg.author);
+		}
 	}
 
 	async run(msg, args) {

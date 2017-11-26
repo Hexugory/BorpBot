@@ -25,7 +25,22 @@ module.exports = class RemoveCustomCommand extends commando.Command {
 	}
 	
 	hasPermission(msg) {
-		return msg.client.isOwner(msg.author) || (msg.guild && msg.member.permissions.has('MANAGE_MESSAGES'))
+		let roles = msg.member.roles.array();
+		let permissions = msg.client.provider.get(msg.guild, 'permissions', {custom:[]});
+		if(!permissions.custom){
+			return msg.client.isOwner(msg.author);
+		}
+		else if(permissions.custom.length < 1){
+			return msg.client.isOwner(msg.author);
+		}
+		else{
+			for(var i = 0; i < roles.length; i++){
+				if(permissions.custom.includes(roles[i].id)){
+					return true;
+				}
+			}
+			return msg.client.isOwner(msg.author);
+		}
 	}
 
 	async run(msg, args) {
