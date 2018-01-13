@@ -10,20 +10,9 @@ module.exports = class ListSuggestionsCommand extends commando.Command {
 			name: 'listsuggestions',
 			group: 'suggest',
 			memberName: 'listsuggestions',
-			description: oneLine`List all suggestion IDs and the person who submitted them (If they're not anonymous.).
-			\`'listsuggestions full\` will list all full suggestions along with the ID and who submitted it. (Manage Messages)`,
-			examples: ['\'listsuggestions', '\'listsuggestions full'],
-			guildOnly: true,
-
-			args: [
-				{
-					key: 'fl',
-					label: 'full',
-					default: 'a',
-					prompt: 'Full list or no?',
-					type: 'string'
-				}
-			]
+			description: oneLine`List all full suggestions along with the ID and who submitted it (If they're not anonymous.). (Manage Messages)`,
+			examples: ['\'listsuggestions'],
+			guildOnly: true
 		});
 	}
 	
@@ -49,17 +38,11 @@ module.exports = class ListSuggestionsCommand extends commando.Command {
 	async run(msg, args) {
 		var suggestions = this.client.provider.get(msg.guild, 'suggestions', []);
 		var sendstr = "";
-		if(args.fl.toLowerCase() != 'full'){
-			for(var i = 0; i < suggestions.length; i++){
-				var fromstr = suggestions[i].anonymous ? "[Anonymous]" : `<@${suggestions[i].user}>`;
-				sendstr += `${fromstr}: ${suggestions[i].id}, `
-			}
-		}
-		else{
-			for(var i = 0; i < suggestions.length; i++){
-				var fromstr = suggestions[i].anonymous ? "[Anonymous]" : `<@${suggestions[i].user}>`;
-				sendstr += `${fromstr} suggested: ${suggestions[i].suggestion}\nSuggestion ID: ${suggestions[i].id}\n`
-			}
+		for(var i = 0; i < suggestions.length; i++){
+			var fetched = await msg.guild.fetchMember(suggestions[i].user)
+			var name = fetched ? fetched.user.username : "[Not Found]"
+			var fromstr = suggestions[i].anonymous ? "[Anonymous]" : `${name}`;
+			sendstr += `${fromstr} suggested: ${suggestions[i].suggestion}\nSuggestion ID: ${suggestions[i].id}\n`
 		}
 		if(sendstr.length > 1999){
 			var messageBuffer = new Buffer(sendstr, 'utf-8')

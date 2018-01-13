@@ -80,7 +80,7 @@ module.exports = class SuggestCommand extends commando.Command {
 						msg.reply("Your suggestion cannot be longer than 1900 characters.");
 					}
 					else{
-						var fromstr = args.an ? "[Anonymous]" : msg.author.toString();
+						var fromstr = args.an ? "[Anonymous]" : msg.author.username;
 						suggestions.push({
 							suggestion: args.sg,
 							user: msg.author.id,

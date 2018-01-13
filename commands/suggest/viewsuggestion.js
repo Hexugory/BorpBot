@@ -51,7 +51,9 @@ module.exports = class ViewSuggestionCommand extends commando.Command {
 			msg.reply("That suggestion does not exist.");
 		}
 		else{
-			var fromstr = suggestions[suggestionIndex].anonymous ? "[Anonymous]" : `<@${suggestions[suggestionIndex].user}>`;
+			var fetched = await msg.guild.fetchMember(suggestions[suggestionIndex].user)
+			var name = fetched ? fetched.user.username : "[Not Found]"
+			var fromstr = suggestions[suggestionIndex].anonymous ? "[Anonymous]" : name;
 			msg.channel.send(`${fromstr} suggested: ${suggestions[suggestionIndex].suggestion}`);
 		}
 	};
