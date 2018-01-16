@@ -298,11 +298,11 @@ client
 		}
 		if(rea.me === true && rea.emoji.name === "❌"){
 			for(var i = 0; i < xBlacklistIDs.length; i++){
-				if(typeof reactUsers.find(function(element){return element.name === xBlacklistIDs[i]}) === 'string'){
+				if(reactUsers.find(function(element){return element.id === xBlacklistIDs[i]})){
 					blacklisted++;
 				}
 			}
-			if(rea.count-1-blacklisted >= client.provider.get(rea.message.guild, 'xLimit' + rea.message.channel.id, 7) && xChannelIDs.includes(rea.message.channel.id)){
+			if(rea.count-blacklisted >= client.provider.get(rea.message.guild, 'xLimit' + rea.message.channel.id, 7) && xChannelIDs.includes(rea.message.channel.id)){
 				let xlogChannelIDs = client.provider.get(rea.message.guild, 'xlogChannelIDs', []);
 				let logMessage = `Deleted ${rea.message.member.displayName}[${rea.message.author.id}]'s message[${rea.message.id}] in ${rea.message.channel}`
 				let messageAttachments = rea.message.attachments.array();
