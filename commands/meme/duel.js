@@ -1,6 +1,18 @@
 const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
-const duelconfig = require('../../duel.json');
+var duelconfig = require('../../duel.json');
+for(var i = 0; i < duelconfig.itemmovesets.length; i++){
+	duelconfig.types.push({
+		name: duelconfig.itemmovesets[i].name,
+		max: 1,
+		min: 1,
+		ordinary: false,
+		epic: true,
+		legendary: false,
+		moveset: true,
+		template: `Change your attacks to attacks from ${duelconfig.itemmovesets[i].name}.`
+	})
+}
 
 module.exports = class DuelCommand extends commando.Command {
 	constructor(client) {

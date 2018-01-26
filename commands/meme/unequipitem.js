@@ -25,8 +25,8 @@ module.exports = class UnequipItemCommand extends commando.Command {
 	
 
 	async run(msg, args) {
-        let duelstats = msg.client.provider.get(msg.guild, "duelstats" + msg.author.id, null);
-        if(!duelstats){
+        let duelstats = msg.client.provider.get(msg.guild, "duelstats", null);
+        if(!duelstats[msg.author.id]){
 			return msg.reply("```diff\n- You have no items or equipped items -```")
         }
         else{
@@ -35,10 +35,10 @@ module.exports = class UnequipItemCommand extends commando.Command {
             }
             else{
                 if(args.sl === 4){
-                    if(duelstats.moveset){
-                        duelstats.items.push(duelstats.moveset);
-                        duelstats.moveset = null;
-                        msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
+                    if(duelstats[msg.author.id].moveset){
+                        duelstats[msg.author.id].items.push(duelstats[msg.author.id].moveset);
+                        duelstats[msg.author.id].moveset = null;
+                        msg.client.provider.set(msg.guild, "duelstats", duelstats);
                         return msg.reply(`\`\`\`diff\n! Unequipped item !\`\`\``)
                     }
                     else{
@@ -46,10 +46,10 @@ module.exports = class UnequipItemCommand extends commando.Command {
                     }
                 }
                 else{
-                    if(duelstats.equipped[args.sl-1]){
-                        duelstats.items.push(duelstats.equipped[args.sl-1]);
-                        duelstats.equipped[args.sl-1] = null;
-                        msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
+                    if(duelstats[msg.author.id].equipped[args.sl-1]){
+                        duelstats[msg.author.id].items.push(duelstats[msg.author.id].equipped[args.sl-1]);
+                        duelstats[msg.author.id].equipped[args.sl-1] = null;
+                        msg.client.provider.set(msg.guild, "duelstats", duelstats);
                         return msg.reply(`\`\`\`diff\n! Unequipped item !\`\`\``)
                     }
                     else{
