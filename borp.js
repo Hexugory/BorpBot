@@ -386,7 +386,7 @@ client.registry
 	['custom', 'Custom command commands || group name "custom"'],
 	['role', 'Role commands || group name "role"'],
 	['x', 'Embed flagging commands || group name "x"'],
-	['suggest', 'Suggestion commands || group name "suggest"'],
+	['suggestion', 'Suggestion commands || group name "suggestion"'],
 	['mod', 'Moderator commands || group name "mod"']
 	])
 	.registerDefaults()

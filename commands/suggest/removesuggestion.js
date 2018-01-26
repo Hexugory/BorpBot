@@ -8,7 +8,7 @@ module.exports = class RemoveSuggestionCommand extends commando.Command {
 		super(client, {
 			aliases: ['removesuggest'],
 			name: 'removesuggestion',
-			group: 'suggest',
+			group: 'suggestion',
 			memberName: 'removesuggestion',
 			description: oneLine`Remove a suggestion using it's index. (Manage Messages)`,
 			examples: ['\'removesuggestion 5'],

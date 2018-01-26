@@ -7,7 +7,7 @@ module.exports = class ViewSenderCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
 			name: 'viewsender',
-			group: 'suggest',
+			group: 'suggestion',
 			memberName: 'viewsender',
 			description: oneLine`View the sender of a suggestion using it's index. (Manage Messages)`,
 			examples: ['\'viewsender 5'],
