@@ -50,7 +50,7 @@ module.exports = class GetLocationRoleCommand extends commando.Command {
 		function searchArrayForID(element){
 			return element.id === msg.author.id;
 		}
-		var roles = ["Scarlet Devil Mansion", "Netherworld", "Eientei", "Garden of the Sun", "Youkai Mountain", "Chireiden", "Myourenji", "Senkai", "Shining Needle Castle", "Dream World", "Heaven", "Hell", "Hakurei Shrine", "Forest of Magic", "Human Village", "Outside World", "Makai", "Moriya Shrine", "Lunar Capital", "Suzunaan"];
+		var roles = ["Scarlet Devil Mansion", "Netherworld", "Eientei", "Garden of the Sun", "Youkai Mountain", "Chireiden", "Myourenji", "Senkai", "Shining Needle Castle", "Dream World", "Heaven", "Hell", "Hakurei Shrine", "Forest of Magic", "Human Village", "Outside World", "Makai", "Moriya Shrine", "Lunar Capital"];
 		let cooldownTimes = msg.client.provider.get(msg.guild, "cooldownTimes", []);
 		if(args.rn === "none"){
 			for(var i = 0; i < roles.length; i++){
