@@ -110,7 +110,7 @@ module.exports = class GrantItemCommand extends commando.Command {
 				type = duelconfig.types[getRandomInt(0,duelconfig.types.length-1)]
 			}
 			item.type = type.name;
-			item.moveset = toBoolean(type.moveset);
+			item.moveset = type.moveset ? true : false;
 			item.mag = args.mag;
 			item.template = args.ds;
 			return item;
@@ -131,7 +131,7 @@ module.exports = class GrantItemCommand extends commando.Command {
 					return `${item.quality} quality: ${createStringFromTemplate(item.template, {mag: item.mag})}`;
 				}
 				else{
-					return `${item.quality} quality: ${createStringFromTemplate(duelconfig.types.find("name", item.type).template, {mag: item.mag})}`;
+					return `${item.quality} quality: ${createStringFromTemplate(duelconfig.types.find(element => {return element.name === item.type}).template, {mag: item.mag})}`;
 				}
 			}
 		}

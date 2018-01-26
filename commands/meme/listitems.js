@@ -42,7 +42,7 @@ module.exports = class ListItemsCommand extends commando.Command {
 					return `${item.quality} quality: ${createStringFromTemplate(item.template, {mag: item.mag})}`;
 				}
 				else{
-					return `${item.quality} quality: ${createStringFromTemplate(duelconfig.types.find("name", item.type).template, {mag: item.mag})}`;
+					return `${item.quality} quality: ${createStringFromTemplate(duelconfig.types.find(element => {return element.name === item.type}).template, {mag: item.mag})}`;
 				}
 			}
 		}
