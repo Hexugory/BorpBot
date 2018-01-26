@@ -1,6 +1,18 @@
 const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
 var duelconfig = require('../../duel.json');
+for(var i = 0; i < duelconfig.itemmovesets.length; i++){
+	duelconfig.types.push({
+		name: duelconfig.itemmovesets[i].name,
+		max: 1,
+		min: 1,
+		ordinary: false,
+		epic: true,
+		legendary: false,
+		moveset: true,
+		template: `Change your attacks to attacks from ${duelconfig.itemmovesets[i].name}.`
+	})
+}
 
 module.exports = class ListItemsCommand extends commando.Command {
 	constructor(client) {
@@ -26,30 +38,32 @@ module.exports = class ListItemsCommand extends commando.Command {
 				return "None";
 			}
 			else{
-				if(!item.template){
-					item.template = duelconfig.types.find(function(element){return element.name === item.type}).template;
+				if(item.template){
+					return `${item.quality} quality: ${createStringFromTemplate(item.template, {mag: item.mag})}`;
 				}
-				return `${item.quality} quality: ${createStringFromTemplate(item.template, {mag: item.mag})}`;
+				else{
+					return `${item.quality} quality: ${createStringFromTemplate(duelconfig.types.find("name", item.type).template, {mag: item.mag})}`;
+				}
 			}
-		};
+		}
 		let itemssend = "```diff\n- Equipped items -\n";
-		let duelstats = msg.client.provider.get(msg.guild, "duelstats" + msg.author.id, null);
-		if(!duelstats){
+		let duelstats = msg.client.provider.get(msg.guild, "duelstats", {});
+		if(!duelstats[msg.author.id]){
 			return msg.reply("```diff\n- You have no items or equipped items -```")
 		}
 		else{
-			for(var i = 0; i < duelstats.equipped.length; i++){
-				itemssend += `+ Slot ${i+1}: ${createDescString(duelstats.equipped[i])}\n`;
+			for(var i = 0; i < duelstats[msg.author.id].equipped.length; i++){
+				itemssend += `+ Slot ${i+1}: ${createDescString(duelstats[msg.author.id].equipped[i])}\n`;
 			};
-			if(duelstats.moveset){
-				itemssend += `+ Slot 4 (Moveset): ${createDescString(duelstats.moveset)}`
+			if(duelstats[msg.author.id].moveset){
+				itemssend += `+ Slot 4 (Moveset): ${createDescString(duelstats[msg.author.id].moveset)}`
 			}
 			else{
 				itemssend += `+ Slot 4 (Moveset): Default (Touhou)`
 			}
 			itemssend += '```\n```diff\n- Unequipped items -\n'
-			for(var i = 0; i < duelstats.items.length; i++){
-				itemssend += `+ Index ${i}: ${createDescString(duelstats.items[i])}\n`;
+			for(var i = 0; i < duelstats[msg.author.id].items.length; i++){
+				itemssend += `+ Index ${i}: ${createDescString(duelstats[msg.author.id].items[i])}\n`;
 			};
 			itemssend += '```'
 			if(itemssend.length > 1999){

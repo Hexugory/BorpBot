@@ -1,6 +1,18 @@
 const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
-const duelconfig = require('../../duel.json');
+var duelconfig = require('../../duel.json');
+for(var i = 0; i < duelconfig.itemmovesets.length; i++){
+	duelconfig.types.push({
+		name: duelconfig.itemmovesets[i].name,
+		max: 1,
+		min: 1,
+		ordinary: false,
+		epic: true,
+		legendary: false,
+		moveset: true,
+		template: `Change your attacks to attacks from ${duelconfig.itemmovesets[i].name}.`
+	})
+}
 
 module.exports = class ForgeItemCommand extends commando.Command {
 	constructor(client) {
@@ -65,26 +77,10 @@ module.exports = class ForgeItemCommand extends commando.Command {
 		function generateNewItem(){
 			let item = {};
 			item.quality = ['Ordinary', 'Epic', 'Legendary'].includes(ucFirst(args.qu)) ? ucFirst(args.qu) : 'Ordinary';
-			let types = clone(duelconfig.types);
-			for(var i = 0; i < duelconfig.itemmovesets.length; i++){
-				types.push({
-					name: duelconfig.itemmovesets[i].name,
-					max: 1,
-					min: 1,
-					ordinary: false,
-					epic: true,
-					legendary: false,
-					moveset: true,
-					template: `Change your attacks to attacks from ${duelconfig.itemmovesets[i].name}.`
-				})
-			}
-			let filteredtypes = types.filter(function(element){return element[item.quality.toLowerCase()]})
+			let filteredtypes = duelconfig.types.filter(function(element){return element[item.quality.toLowerCase()]})
 			let type = filteredtypes[getRandomInt(0,filteredtypes.length-1)];
 			item.type = type.name;
-			item.template = type.template;
-			if(type.moveset){
-				item.moveset = type.moveset;
-			}
+			item.moveset = toBoolean(type.moveset);
 			item.mag = item.quality === "Legendary" ? getRandomInt(type.max*2+1,type.max*3) : (item.quality === "Epic" ? getRandomInt(type.max+1,type.max*2) : getRandomInt(type.min,type.max));
 			return item;
 		}
@@ -100,19 +96,24 @@ module.exports = class ForgeItemCommand extends commando.Command {
 				return "None";
 			}
 			else{
-				return `${item.quality} quality: ${createStringFromTemplate(item.template, {mag: item.mag})}`;
+				if(item.template){
+					return `${item.quality} quality: ${createStringFromTemplate(item.template, {mag: item.mag})}`;
+				}
+				else{
+					return `${item.quality} quality: ${createStringFromTemplate(duelconfig.types.find("name", item.type).template, {mag: item.mag})}`;
+				}
 			}
 		}
-		let duelstats = msg.client.provider.get(msg.guild, "duelstats" + msg.author.id, null);
-		if(duelstats){
-			if(!duelstats.borpdust || duelstats.borpdust < (ucFirst(args.qu) === "Legendary" ? 6000 : (ucFirst(args.qu) === "Epic" ? 1500 : 300))){
+		let duelstats = msg.client.provider.get(msg.guild, "duelstats", {});
+		if(duelstats[msg.author.id]){
+			if(!duelstats[msg.author.id].borpdust || duelstats[msg.author.id].borpdust < (ucFirst(args.qu) === "Legendary" ? 6000 : (ucFirst(args.qu) === "Epic" ? 1500 : 300))){
 				return msg.reply("```diff\n- You don't have enough Borpdust -```")
 			}
 			else{
-				duelstats.borpdust -= ucFirst(args.qu) === "Legendary" ? 6000 : (ucFirst(args.qu) === "Epic" ? 1500 : 300)
-				duelstats.items.push(generateNewItem());
-				msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
-				msg.reply(`\`\`\`diff\n! You forged: ${createDescString(duelstats.items[duelstats.items.length-1])} !\`\`\``);
+				duelstats[msg.author.id].borpdust -= ucFirst(args.qu) === "Legendary" ? 6000 : (ucFirst(args.qu) === "Epic" ? 1500 : 300)
+				duelstats[msg.author.id].items.push(generateNewItem());
+				msg.client.provider.set(msg.guild, "duelstats", duelstats);
+				msg.reply(`\`\`\`diff\n! You forged: ${createDescString(duelstats[msg.author.id].items[duelstats[msg.author.id].items.length-1])} !\`\`\``);
 			}
 		}
 		else{

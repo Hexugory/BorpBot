@@ -1,6 +1,18 @@
 const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
-const duelconfig = require('../../duel.json');
+var duelconfig = require('../../duel.json');
+for(var i = 0; i < duelconfig.itemmovesets.length; i++){
+	duelconfig.types.push({
+		name: duelconfig.itemmovesets[i].name,
+		max: 1,
+		min: 1,
+		ordinary: false,
+		epic: true,
+		legendary: false,
+		moveset: true,
+		template: `Change your attacks to attacks from ${duelconfig.itemmovesets[i].name}.`
+	})
+}
 const moment = require('moment');
 
 module.exports = class RankedDuelCommand extends commando.Command {
@@ -42,13 +54,17 @@ module.exports = class RankedDuelCommand extends commando.Command {
 		var firstTurn = turn;
 		var notTurn = turn ? 0 : 1;
 		var turnDescs = [];
+		var duelstats = msg.client.provider.get(msg.guild, "duelstats", {})
+		if((!duelstats[msg.author.id] || duelstats[msg.author.id].equipped.includes(null)) || (!duelstats[args.p2.user.id] || duelstats[args.p2.user.id].equipped.includes(null))){
+			return msg.reply("One (or more) of you cannot use 'rankedduel.\nYou cannot use 'rankedduel if you do not have 3 items equipped.");
+		}
 		var duelers = [{
 			name: msg.author.username,
 			hp: 200,
 			id: msg.author.id,
 			avatar: msg.author.avatarURL,
-			equipped: msg.client.provider.get(msg.guild, "duelstats" + msg.author.id, {equipped: [null, null, null]}).equipped,
-			moveset: msg.client.provider.get(msg.guild, "duelstats" + msg.author.id, {moveset: null}).moveset,
+			equipped: duelstats[msg.author.id].equipped,
+			moveset: duelstats[msg.author.id].moveset ? duelstats[msg.author.id].equipped : null,
 			heal: 0,
 			dmg: 0,
 			fdmg: 0
@@ -58,16 +74,13 @@ module.exports = class RankedDuelCommand extends commando.Command {
 			hp: 200,
 			id: args.p2.user.id,
 			avatar: args.p2.user.avatarURL,
-			equipped: msg.client.provider.get(msg.guild, "duelstats" + args.p2.user.id, {equipped: [null, null, null]}).equipped,
-			moveset: msg.client.provider.get(msg.guild, "duelstats" + args.p2.user.id, {moveset: null}).moveset,
+			equipped: duelstats[args.p2.user.id].equipped,
+			moveset: duelstats[args.p2.user.id].moveset ? duelstats[args.p2.user.id].equipped : null,
 			heal: 0,
 			dmg: 0,
 			fdmg: 0
 		}];
 		var extraTurnNum = 0;
-		if(duelers[0].equipped.includes(null) || duelers[1].equipped.includes(null)){
-			return msg.reply("One (or more) of you cannot use 'rankedduel.\nYou cannot use 'rankedduel if you do not have 3 items equipped.");
-		}
 		else{
 			let duelCooldown = msg.client.provider.get(msg.guild, "duelCooldown", []);
 			function checkCooldown(){

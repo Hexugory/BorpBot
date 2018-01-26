@@ -6,7 +6,19 @@ const config = require('./config.json');
 const prompt = require('prompt');
 const emojiRegex = require('emoji-regex');
 const moment = require('moment');
-const duelconfig = require('./duel.json');
+var duelconfig = require('./duel.json');
+for(var i = 0; i < duelconfig.itemmovesets.length; i++){
+	duelconfig.types.push({
+		name: duelconfig.itemmovesets[i].name,
+		max: 1,
+		min: 1,
+		ordinary: false,
+		epic: true,
+		legendary: false,
+		moveset: true,
+		template: `Change your attacks to attacks from ${duelconfig.itemmovesets[i].name}.`
+	})
+}
 
 const client = new commando.Client({
 	owner: config.owner,
@@ -61,26 +73,10 @@ function clone(obj) {
 function generateNewItem(){
 	let item = {};
 	item.quality = getRandomInt(0, 100) > 90 ? (getRandomInt(0, 100) > 90 ? "Legendary" : "Epic") : "Ordinary";
-	let types = clone(duelconfig.types);
-	for(var i = 0; i < duelconfig.itemmovesets.length; i++){
-		types.push({
-			name: duelconfig.itemmovesets[i].name,
-			max: 1,
-			min: 1,
-			ordinary: false,
-			epic: true,
-			legendary: false,
-			moveset: true,
-			template: `Change your attacks to attacks from ${duelconfig.itemmovesets[i].name}.`
-		})
-	}
-	let filteredtypes = types.filter(function(element){return element[item.quality.toLowerCase()]})
+	let filteredtypes = duelconfig.types.filter(function(element){return element[item.quality.toLowerCase()]})
 	let type = filteredtypes[getRandomInt(0,filteredtypes.length-1)];
 	item.type = type.name;
-	item.template = type.template;
-	if(type.moveset){
-		item.moveset = type.moveset;
-	}
+	item.moveset = toBoolean(type.moveset);
 	item.mag = item.quality === "Legendary" ? getRandomInt(type.max*2+1,type.max*3) : (item.quality === "Epic" ? getRandomInt(type.max+1,type.max*2) : getRandomInt(type.min,type.max));
 	return item;
 }
@@ -96,7 +92,12 @@ function createDescString(item){
 		return "None";
 	}
 	else{
-		return `${item.quality} quality: ${createStringFromTemplate(item.template, {mag: item.mag})}`;
+		if(item.template){
+			return `${item.quality} quality: ${createStringFromTemplate(item.template, {mag: item.mag})}`;
+		}
+		else{
+			return `${item.quality} quality: ${createStringFromTemplate(duelconfig.types.find("name", item.type).template, {mag: item.mag})}`;
+		}
 	}
 }
 
@@ -178,17 +179,17 @@ client
 		let itemChannelIDs = client.provider.get(msg.guild, 'itemChannelIDs', null);
 		if(itemChannelIDs && itemChannelIDs.includes(msg.channel.id)){
 			if(getRandomInt(0, 100) === 100){
-				let duelstats = msg.client.provider.get(msg.guild, "duelstats" + msg.author.id, null);
-				if(duelstats){
-					duelstats.items.push(generateNewItem());
-					msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
+				let duelstats = msg.client.provider.get(msg.guild, "duelstats", {});
+				if(duelstats[msg.author.id]){
+					duelstats[msg.author.id].items.push(generateNewItem());
+					msg.client.provider.set(msg.guild, "duelstats", duelstats);
 				}
 				else{
-					duelstats = {items: [generateNewItem()], equipped: [null, null, null]};
-					msg.client.provider.set(msg.guild, "duelstats" + msg.author.id, duelstats);
+					duelstats[msg.author.id] = {items: [generateNewItem()], equipped: [null, null, null]};
+					msg.client.provider.set(msg.guild, "duelstats", duelstats);
 				}
 				if(msg.client.provider.get(msg.guild, 'optlist', []).includes(msg.author.id)){
-					msg.author.send(`You have gained an item: ${createDescString(duelstats.items[duelstats.items.length-1])}`)
+					msg.author.send(`You have gained an item: ${createDescString(duelstats[msg.author.id].items[duelstats[msg.author.id].items.length-1])}`)
 				}
 			}
 		}
