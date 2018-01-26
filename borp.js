@@ -76,7 +76,7 @@ function generateNewItem(){
 	let filteredtypes = duelconfig.types.filter(function(element){return element[item.quality.toLowerCase()]})
 	let type = filteredtypes[getRandomInt(0,filteredtypes.length-1)];
 	item.type = type.name;
-	item.moveset = toBoolean(type.moveset);
+	item.moveset = type.moveset ? true : false;
 	item.mag = item.quality === "Legendary" ? getRandomInt(type.max*2+1,type.max*3) : (item.quality === "Epic" ? getRandomInt(type.max+1,type.max*2) : getRandomInt(type.min,type.max));
 	return item;
 }
@@ -96,7 +96,7 @@ function createDescString(item){
 			return `${item.quality} quality: ${createStringFromTemplate(item.template, {mag: item.mag})}`;
 		}
 		else{
-			return `${item.quality} quality: ${createStringFromTemplate(duelconfig.types.find("name", item.type).template, {mag: item.mag})}`;
+			return `${item.quality} quality: ${createStringFromTemplate(duelconfig.types.find(element => {return element.name === item.type}).template, {mag: item.mag})}`;
 		}
 	}
 }
