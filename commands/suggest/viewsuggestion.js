@@ -8,7 +8,7 @@ module.exports = class ViewSuggestionCommand extends commando.Command {
 		super(client, {
 			aliases: ['viewsuggest'],
 			name: 'viewsuggestion',
-			group: 'suggest',
+			group: 'suggestion',
 			memberName: 'viewsuggestion',
 			description: oneLine`View a suggestion using it's index. (Manage Messages)`,
 			examples: ['\'viewsuggestion 5'],

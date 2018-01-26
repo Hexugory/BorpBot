@@ -7,7 +7,7 @@ module.exports = class SuggestCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
 			name: 'suggest',
-			group: 'suggest',
+			group: 'suggestion',
 			memberName: 'suggest',
 			description: oneLine`Sends a suggestion to the staff for future viewing.
 			Can send anonymously. However if you do send anonymously, the staff can view who you are, but you will be notified if they do so.
