@@ -155,17 +155,13 @@ client
 					emoji = emoji.concat(customEmoji)
 				}
 				if(emoji.length >= 4){
-					xLimit > 1 ? msg.react('\u{274c}') : msg.delete();
+					xLimit > 1 ? msg.react('\u{274c}').catch(err => {err.code === 90001 ? msg.delete() : null}) : msg.delete();
 				}
 				else{
 					let checkcount = 0
 					let checkx = setInterval(function(){
-						if(msg.attachments.array()[0] != undefined && msg.attachments.array()[0].id != undefined){
-							xLimit > 1 ? msg.react('\u{274c}') : msg.delete();
-							clearInterval(checkx);
-						}
-						else if(msg.embeds[0] != undefined){
-							xLimit > 1 ? msg.react('\u{274c}') : msg.delete();
+						if((msg.attachments.array()[0] != undefined && msg.attachments.array()[0].id != undefined) || msg.embeds[0] != undefined){
+							xLimit > 1 ? msg.react('\u{274c}').catch(err => {err.code === 90001 ? msg.delete() : null}) : msg.delete();
 							clearInterval(checkx);
 						}
 						else if(checkcount >= 3){
@@ -267,17 +263,17 @@ client
 					emoji = emoji.concat(customEmoji)
 				}
 				if(emoji.length >= 4){
-					xLimit > 1 ? newmsg.react('\u{274c}') : newmsg.delete();
+					xLimit > 1 ? newmsg.react('\u{274c}').catch(err => {err.code === 90001 ? newmsg.delete() : null}) : newmsg.delete();
 				}
 				else{
 					let checkcount = 0
 					let checkx = setInterval(function(){
 						if(newmsg.attachments.array()[0] != undefined && newmsg.attachments.array()[0].id != undefined){
-							xLimit > 1 ? newmsg.react('\u{274c}') : newmsg.delete();
+							xLimit > 1 ? newmsg.react('\u{274c}').catch(err => {err.code === 90001 ? newmsg.delete() : null}) : newmsg.delete();
 							clearInterval(checkx);
 						}
 						else if(newmsg.embeds[0] != undefined){
-							xLimit > 1 ? newmsg.react('\u{274c}') : newmsg.delete();
+							xLimit > 1 ? newmsg.react('\u{274c}').catch(err => {err.code === 90001 ? newmsg.delete() : null}) : newmsg.delete();
 							clearInterval(checkx);
 						}
 						else if(checkcount >= 3){
