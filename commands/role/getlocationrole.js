@@ -63,7 +63,7 @@ module.exports = class GetLocationRoleCommand extends commando.Command {
 			return msg.reply(`Role removed.`);
 		}
 		else{
-			if(true){
+			if(checkCooldown()){
 				if(roles.includes(args.rn.id)){
 					for(var i = 0; i < roles.length; i++){
 						var foundLocationRole = msg.member.roles.get(roles[i]);
