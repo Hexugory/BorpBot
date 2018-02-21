@@ -27,7 +27,7 @@ module.exports = class ViewProfileCommand extends commando.Command {
 
 	async run(msg, args) {
 		let profiles = this.client.provider.get(msg.guild, 'profiles', {settings: {fields: []}});
-		let profileEmbed = new discord.RichEmbed();
+		let profileEmbed = new discord.MessageEmbed();
 		if(typeof profiles[args.mb.id] != 'object'){
 			return msg.reply(`That member does not have a profile.`);
 		}
