@@ -72,7 +72,7 @@ function clone(obj) {
 }
 function generateNewItem(){
 	let item = {};
-	item.quality = getRandomInt(0, 100) > 90 ? (getRandomInt(0, 100) > 90 ? "Legendary" : "Epic") : "Ordinary";
+	item.quality = getRandomInt(1, 100) > 90 ? (getRandomInt(1, 100) > 90 ? "Legendary" : "Epic") : "Ordinary";
 	let filteredtypes = duelconfig.types.filter(function(element){return element[item.quality.toLowerCase()]})
 	let type = filteredtypes[getRandomInt(0,filteredtypes.length-1)];
 	item.type = type.name;
@@ -120,7 +120,7 @@ client
 	.on('debug', console.log)
 	.on('ready', () => {
 		console.log(`Client ready; logged in as ${client.user.username}#${client.user.discriminator} (${client.user.id})`);
-		client.user.setGame(config.game)
+		client.user.setActivity(config.game)
 		setInterval(function(){
 			try{
 				var times = client.provider.get('global', 'times', []);
@@ -174,7 +174,7 @@ client
 		}
 		let itemChannelIDs = client.provider.get(msg.guild, 'itemChannelIDs', null);
 		if(itemChannelIDs && itemChannelIDs.includes(msg.channel.id)){
-			if(getRandomInt(0, 100) === 100){
+			if(getRandomInt(1, 100) === 100){
 				let duelstats = msg.client.provider.get(msg.guild, "duelstats", {});
 				if(duelstats[msg.author.id]){
 					duelstats[msg.author.id].items.push(generateNewItem());
@@ -268,11 +268,7 @@ client
 				else{
 					let checkcount = 0
 					let checkx = setInterval(function(){
-						if(newmsg.attachments.array()[0] != undefined && newmsg.attachments.array()[0].id != undefined){
-							xLimit > 1 ? newmsg.react('\u{274c}').catch(err => {err.code === 90001 ? newmsg.delete() : null}) : newmsg.delete();
-							clearInterval(checkx);
-						}
-						else if(newmsg.embeds[0] != undefined){
+						if((newmsg.attachments.array()[0] != undefined && newmsg.attachments.array()[0].id != undefined) || newmsg.embeds[0] != undefined){
 							xLimit > 1 ? newmsg.react('\u{274c}').catch(err => {err.code === 90001 ? newmsg.delete() : null}) : newmsg.delete();
 							clearInterval(checkx);
 						}

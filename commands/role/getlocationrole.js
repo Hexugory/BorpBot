@@ -12,17 +12,20 @@ module.exports = class GetLocationRoleCommand extends commando.Command {
 			group: 'role',
 			memberName: 'getlocationrole',
 			description: oneLine`Get a location color role.
+			Use \`'getlocationrole\` to remove your location role.
 			Ratelimit of 1 per week.
-			Exclusive to Touhou Discord.
-			Roles: https://i.imgur.com/wqiaiXe.png`,
-			examples: ['\'getlocationrole "Scarlet Devil Mansion"'],
+			Exclusive to Touhou Project Discord.
+			Read #rules for the role list.`,
+			examples: ['\'getlocationrole "Scarlet Devil Mansion"', '\'getlocationrole'],
+			guildOnly: true,
 
 			args: [
 				{
 					key: 'rn',
-					label: 'role name',
-					prompt: 'Please enter role name.',
-					type: 'string'
+					label: 'role',
+					prompt: 'Please enter role.',
+					type: 'role',
+					default: 'none'
 				}
 			]
 		});
@@ -50,38 +53,36 @@ module.exports = class GetLocationRoleCommand extends commando.Command {
 		function searchArrayForID(element){
 			return element.id === msg.author.id;
 		}
-		var roles = ["Scarlet Devil Mansion", "Netherworld", "Eientei", "Garden of the Sun", "Youkai Mountain", "Chireiden", "Myourenji", "Senkai", "Shining Needle Castle", "Dream World", "Heaven", "Hell", "Hakurei Shrine", "Forest of Magic", "Human Village", "Outside World", "Makai", "Moriya Shrine", "Lunar Capital", "Suzunaan"];
-		let cooldownTimes = msg.client.provider.get(msg.guild, "cooldownTimes", []);
+		var roles = msg.client.provider.get(msg.guild, "locationRoles", []);
+		var cooldownTimes = msg.client.provider.get(msg.guild, "cooldownTimes", []);
 		if(args.rn === "none"){
 			for(var i = 0; i < roles.length; i++){
-				let foundLocationRole = msg.member.roles.find("name", roles[i]);
-				if(foundLocationRole){
-					msg.reply(`Role removed.`);
-					msg.member.removeRole(foundLocationRole, "Removed location roles");
-				}
+				var foundLocationRole = msg.member.roles.get(roles[i]);
+				msg.member.roles.remove(foundLocationRole, "Requested new location role");
 			}
-		}
-		else if(!roles.includes(args.rn)){
-			msg.reply("That's not a location role.");
+			return msg.reply(`Role removed.`);
 		}
 		else{
-			if(checkCooldown()){
-				for(var i = 0; i < roles.length; i++){
-					let foundLocationRole = msg.member.roles.find("name", roles[i]);
-					if(foundLocationRole && foundLocationRole.name != args.rn){
-						msg.member.removeRole(foundLocationRole, "Requested new location role");
+			if(true){
+				if(roles.includes(args.rn.id)){
+					for(var i = 0; i < roles.length; i++){
+						var foundLocationRole = msg.member.roles.get(roles[i]);
+						msg.member.roles.remove(foundLocationRole, "Requested new location role");
 					}
-				}
-				msg.member.addRole(msg.guild.roles.find("name", args.rn), "Requested location role");
-				msg.reply(`Given role ${args.rn}.`)
-				let IDIndex = cooldownTimes.findIndex(searchArrayForID);
-				if(IDIndex>-1){
-					cooldownTimes[IDIndex].time = moment.utc().add(1, "week");
-					msg.client.provider.set(msg.guild, "cooldownTimes", cooldownTimes);
+					msg.member.roles.add(args.rn, "Requested location role");
+					var IDIndex = cooldownTimes.findIndex(searchArrayForID);
+					if(IDIndex>-1){
+						cooldownTimes[IDIndex].time = moment.utc().add(1, "week");
+						msg.client.provider.set(msg.guild, "cooldownTimes", cooldownTimes);
+					}
+					else{
+						cooldownTimes.push({time: moment.utc().add(1, "week"), id: msg.author.id});
+						msg.client.provider.set(msg.guild, "cooldownTimes", cooldownTimes);
+					}
+					return msg.reply(`Given role ${args.rn}.`)
 				}
 				else{
-					cooldownTimes.push({time: moment.utc().add(1, "week"), id: msg.author.id});
-					msg.client.provider.set(msg.guild, "cooldownTimes", cooldownTimes);
+					return msg.reply(`That's not a location role.`)
 				}
 			}
 		}
