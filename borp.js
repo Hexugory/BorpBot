@@ -160,7 +160,7 @@ client
 				else{
 					let checkcount = 0
 					let checkx = setInterval(function(){
-						if((msg.attachments.array()[0] != undefined && msg.attachments.array()[0].id != undefined) || msg.embeds[0] != undefined){
+						if((msg.attachments.array()[0] && msg.attachments.array()[0].id) || msg.embeds[0]){
 							xLimit > 1 ? msg.react('\u{274c}').catch(err => {err.code === 90001 ? msg.delete() : null}) : msg.delete();
 							clearInterval(checkx);
 						}
@@ -268,7 +268,7 @@ client
 				else{
 					let checkcount = 0
 					let checkx = setInterval(function(){
-						if((newmsg.attachments.array()[0] != undefined && newmsg.attachments.array()[0].id != undefined) || newmsg.embeds[0] != undefined){
+						if((newmsg.attachments.array()[0] && newmsg.attachments.array()[0].id) || newmsg.embeds[0]){
 							xLimit > 1 ? newmsg.react('\u{274c}').catch(err => {err.code === 90001 ? newmsg.delete() : null}) : newmsg.delete();
 							clearInterval(checkx);
 						}
