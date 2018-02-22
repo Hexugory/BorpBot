@@ -36,7 +36,7 @@ module.exports = class RequestXCommand extends commando.Command {
 		}
 		var xLimit = msg.client.provider.get(msg.guild, 'xLimit' + msg.channel.id, 7)
 		var xlogChannelIDs = msg.client.provider.get(msg.guild, 'xlogChannelIDs', []);
-		msg.channel.fetchMessage(args.id).then(xmsg => {
+		msg.channel.messages.fetch(args.id).then(xmsg => {
 			if(xmsg != null && (!msg.client.provider.get(msg.guild, 'blacklist', {}).x || !msg.client.provider.get(msg.guild, 'blacklist', {}).x.includes(msg.author.id))){
 				sendMessages(xlogChannelIDs, `Placed an ❌ on ${xmsg.author.username}[${xmsg.author.id}]'s message[${xmsg.id}] by request of ${msg.author.username}[${msg.author.id}].`)
 				xLimit > 1 ? xmsg.react('\u{274c}') : xmsg.delete();

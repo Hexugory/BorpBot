@@ -69,7 +69,7 @@ module.exports = class SuggestCommand extends commando.Command {
 				msg.reply("That server does not have suggestions enabled.");
 			}
 			else{
-				args.gi.fetchMember(msg.author).then(author => {
+				args.gi.members.fetch(msg.author).then(author => {
 				if((this.client.provider.get(args.gi, 'blacklist', {}).suggest && this.client.provider.get(args.gi, 'blacklist', {}).suggest.includes(msg.author.id))
 				|| (this.client.provider.get(args.gi, 'blacklist', {}).server && this.client.provider.get(args.gi, 'blacklist', {}).server.includes(msg.author.id))
 				|| author === undefined){
