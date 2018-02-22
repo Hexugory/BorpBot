@@ -16,7 +16,7 @@ module.exports = class BlameCommand extends commando.Command {
 
 	async run(msg, args) {
 		var blame = [];
-		msg.channel.fetchMessages({limit: 20})
+		msg.channel.messages.fetch({limit: 20})
 		.then(messages => {
 		let messageArray = messages.array();
 		for(var i = 0; i < messageArray.length; i++){

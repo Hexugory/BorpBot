@@ -51,7 +51,7 @@ module.exports = class ViewSenderCommand extends commando.Command {
 		}
 		else{
 			msg.reply(`<@${suggestions[suggestionIndex].user}> sent this suggestion.\nThey have been notified of their name being viewed.`);
-			msg.guild.fetchMember(suggestions[suggestionIndex].user).then(sender => {
+			msg.guild.members.fetch(suggestions[suggestionIndex].user).then(sender => {
 				sender.send(`The staff of ${msg.guild.name} have requested your name on one of your suggestions.`)
 			});
 		}
