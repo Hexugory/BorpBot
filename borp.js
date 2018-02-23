@@ -195,7 +195,7 @@ client
 		if(!msg.author.bot){
 			let tumbleweedChannelIDs = client.provider.get(msg.guild, 'tumbleweedChannelIDs', []);
 			if(tumbleweedChannelIDs.includes(msg.channel.id)){
-				if(msg.attachments.array()[0] != undefined && msg.attachments.array()[0].filename.toLowerCase().includes("tumbleweed")){
+				if(msg.attachments.array()[0] != undefined && msg.attachments.array()[0].name.toLowerCase().includes("tumbleweed")){
 					//real mistake hours hit that tumbleweed if you up
 					let prevMessages = msg.channel.messages.array();
 					if(!prevMessages.indexOf(msg) - 1 < 0){
