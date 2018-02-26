@@ -1,14 +1,14 @@
 const commando = require('discord.js-commando');
 const sqlite = require('sqlite');
 
-module.exports = class UnlearnCommand extends commando.Command {
+module.exports = class ForgetCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
-			name: 'unlearn',
+			name: 'forget',
 			group: 'meme',
-			memberName: 'unlearn',
+			memberName: 'forget',
 			description: 'Remove a factoid from someone.',
-			examples: ['\'unlearn @Guy Hero#7991 1'],
+			examples: ['\'forget @Guy Hero#7991 1'],
 			guildOnly: true,
 			
 			args: [
