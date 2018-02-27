@@ -26,7 +26,7 @@ module.exports = class WhatIsCommand extends commando.Command {
 	async run(msg, args) {
 		var factoids = msg.client.provider.get(msg.guild, "factoids", {});
 		if(!Array.isArray(factoids[args.mb.id])) return msg.reply("This person has no factoids.");
-		var sendstr = `${args.mb} `
+		var sendstr = `${args.mb.user.username} `
 		for(var i = 0; i < factoids[args.mb.id].length; i++){
 			sendstr += `(#${i+1}) ${factoids[args.mb.id][i]} `
 		}
