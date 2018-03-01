@@ -1,3 +1,4 @@
+const Discord = require('discord.js')
 const commando = require('discord.js-commando');
 const path = require('path');
 const oneLine = require('common-tags').oneLine;
@@ -6,6 +7,7 @@ const config = require('./config.json');
 const prompt = require('prompt');
 const emojiRegex = require('emoji-regex');
 const moment = require('moment');
+const ms = require('./minestat');
 var duelconfig = require('./duel.json');
 for(var i = 0; i < duelconfig.itemmovesets.length; i++){
 	duelconfig.types.push({
@@ -137,6 +139,25 @@ client
 			}
 			catch(err){console.log(err)}
 		}, 60000)
+	client.guilds.get("163175631562080256").channels.get("163495560626700288").messages.fetch('393227876649926667')
+    .then(msg => message = msg)
+    .catch(console.error);
+    setInterval(function(){
+        var embed = new Discord.MessageEmbed();
+        ms.init('mamizou.net', 25565, function(result){
+            embed.setAuthor('Modded Minecraft Server')
+            if(ms.online){
+                embed.setFooter('Online')
+                embed.setColor([0, 150, 0])
+            }
+            else{
+                embed.setFooter('Offline')
+                embed.setColor([150, 0, 0])
+            }
+            embed.setDescription(`Players: ${ms.current_players ? ms.current_players : 0}/${ms.max_players ? ms.max_players : 0}\nIP: ${ms.address}:${ms.port}\nPack: FTB Infinity Evolved`)
+            message.edit(embed)
+        });
+    }, 600000)   
 	})
 	.on('disconnect', () => { console.warn('Disconnected!'); })
 	.on('reconnecting', () => { console.warn('Reconnecting...'); })
