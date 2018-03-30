@@ -29,9 +29,8 @@ module.exports = class EdgifierCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
-		let url = msg.author.avatarURL;
-		url = url.substr(0, url.indexOf(url.slice(url.length - 14, url.length)))
-		jimp.read(url + ".png?size=256").then(function(ava){
+		let url = msg.author.displayAvatarURL({format:'png',size:256});
+		jimp.read(url).then(function(ava){
 			ava.greyscale()
 			.invert()
 			.color([
