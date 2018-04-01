@@ -139,25 +139,27 @@ client
 			}
 			catch(err){console.log(err)}
 		}, 60000)
-	client.guilds.get("163175631562080256").channels.get("163495560626700288").messages.fetch('393227876649926667')
-    .then(msg => message = msg)
-    .catch(console.error);
-    setInterval(function(){
-        var embed = new Discord.MessageEmbed();
-        ms.init('mamizou.net', 25565, function(result){
-            embed.setAuthor('Modded Minecraft Server')
-            if(ms.online){
-                embed.setFooter('Online')
-                embed.setColor([0, 150, 0])
-            }
-            else{
-                embed.setFooter('Offline')
-                embed.setColor([150, 0, 0])
-            }
-            embed.setDescription(`Players: ${ms.current_players ? ms.current_players : 0}/${ms.max_players ? ms.max_players : 0}\nIP: ${ms.address}:${ms.port}\nPack: FTB Infinity Evolved`)
-            message.edit(embed)
-        });
-    }, 600000)   
+	if(client.user.id === "164203810082914304"){
+		client.guilds.get("163175631562080256").channels.get("163495560626700288").messages.fetch('393227876649926667')
+		.then(msg => message = msg)
+		.catch(console.error);
+		setInterval(function(){
+			var embed = new Discord.MessageEmbed();
+			ms.init('mamizou.net', 25565, function(result){
+				embed.setAuthor('Modded Minecraft Server')
+				if(ms.online){
+					embed.setFooter('Online')
+					embed.setColor([0, 150, 0])
+				}
+				else{
+					embed.setFooter('Offline')
+					embed.setColor([150, 0, 0])
+				}
+				embed.setDescription(`Players: ${ms.current_players ? ms.current_players : 0}/${ms.max_players ? ms.max_players : 0}\nIP: ${ms.address}:${ms.port}\nPack: FTB Infinity Evolved`)
+				message.edit(embed)
+			});
+		}, 600000)
+	}
 	})
 	.on('disconnect', () => { console.warn('Disconnected!'); })
 	.on('reconnecting', () => { console.warn('Reconnecting...'); })
