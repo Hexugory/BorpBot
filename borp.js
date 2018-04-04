@@ -349,13 +349,13 @@ client
 		let voiceChannelIDs = client.provider.get(oldMember.guild, 'voiceChannelIDs', null);
 		if(voiceChannelIDs != null){
 			//compare old channel state to new channel state
-			if(oldMember.voiceChannel === undefined && newMember.voiceChannel != undefined){
+			if(!oldMember.voiceChannelID && newMember.voiceChannelID){
 				sendMessages(voiceChannelIDs, `**${oldMember.displayName}** joined **${newMember.voiceChannel.name}**.`);
 			}
-			else if(oldMember.voiceChannel != undefined && newMember.voiceChannel === undefined){
+			else if(oldMember.voiceChannelID && !newMember.voiceChannelID){
 				sendMessages(voiceChannelIDs, `**${oldMember.displayName}** left **${oldMember.voiceChannel.name}**.`);
 			}
-			else if(oldMember.voiceChannel != undefined && newMember.voiceChannel != undefined && newMember.voiceChannel.id != oldMember.voiceChannel.id){
+			else if(oldMember.voiceChannelID && newMember.voiceChannelID && newMember.voiceChannelID != oldMember.voiceChannelID){
 				sendMessages(voiceChannelIDs, `**${oldMember.displayName}** moved to **${newMember.voiceChannel.name}** from **${oldMember.voiceChannel.name}**.`);
 			}
 		}
