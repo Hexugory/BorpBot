@@ -57,7 +57,7 @@ module.exports = class GetLocationRoleCommand extends commando.Command {
 		var cooldownTimes = msg.client.provider.get(msg.guild, "cooldownTimes", []);
 		if(args.rn === "none"){
 			for(var i = 0; i < roles.length; i++){
-				var foundLocationRole = msg.member.roles.get(roles[i]);
+				let foundLocationRole = msg.member.roles.get(roles[i]);
 				if(foundLocationRole) msg.member.roles.remove(foundLocationRole, "Requested new location role");
 			}
 			return msg.reply(`Role removed.`);
@@ -65,12 +65,9 @@ module.exports = class GetLocationRoleCommand extends commando.Command {
 		else{
 			if(checkCooldown()){
 				if(roles.includes(args.rn.id)){
-					msg.member.roles.add(args.rn, "Requested location role").then(member => {
-						for(var i = 0; i < roles.length; i++){
-							var foundLocationRole = msg.member.roles.get(roles[i]);
-							if(foundLocationRole && foundLocationRole.id != args.rn.id) msg.member.roles.remove(foundLocationRole, "Requested new location role");
-						}
-					});
+					let newRoles = msg.member.roles.filterArray(role => {return !roles.includes(role.id)})
+					newRoles.push(args.rn)
+					msg.member.roles.set(newRoles)
 					var IDIndex = cooldownTimes.findIndex(searchArrayForID);
 					if(IDIndex>-1){
 						cooldownTimes[IDIndex].time = moment.utc().add(1, "week");
