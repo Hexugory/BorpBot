@@ -407,6 +407,7 @@ client.registry
 	])
 	.registerDefaults()
 	.registerType(require("./guild.js"))
+	.registerType(require("./time.js"))
 	.registerCommandsIn(path.join(__dirname, 'commands'));
 
 client.login(config.token);
