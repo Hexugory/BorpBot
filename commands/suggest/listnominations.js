@@ -1,0 +1,36 @@
+const commando = require('discord.js-commando');
+const sqlite = require('sqlite');
+const path =  require('path');
+const oneLine = require('common-tags').oneLine;
+
+module.exports = class ListNominationsCommand extends commando.Command {
+	constructor(client) {
+		super(client, {
+			name: 'listnominations',
+			group: 'suggestion',
+			memberName: 'listnominations',
+			description: 'Lists nominations.',
+			examples: ['\'listnominations']
+		});
+	}
+
+	async run(msg, args) {
+		let nominees = this.client.provider.get(msg.guild, 'nominees', {});
+		let sendstr = "";
+		for(const nominee in nominees){
+			sendstr += `[${nominees[nominee].username}]\nNominations: ${nominees[nominee].total}\nInputs:\n`;
+			if(!Object.keys(nominees[nominee].inputs).length) sendstr += 'None';
+			for(const input in nominees[nominee].inputs){
+				sendstr += `${nominees[nominee].inputs[input].username}: ${nominees[nominee].inputs[input].input}\n`;
+			}
+		}
+		if(!sendstr) msg.reply("There are no nominations.");
+		else if(sendstr.length > 1999){
+			let messageBuffer = new Buffer(sendstr, 'utf-8');
+			msg.channel.send({files: [{attachment: messageBuffer,name: `result.txt`}]});
+		}
+		else{
+			msg.channel.send(sendstr);
+		}
+	};
+}
