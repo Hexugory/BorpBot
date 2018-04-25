@@ -41,7 +41,7 @@ module.exports = class ListNominationsCommand extends commando.Command {
 			sendstr += `[${nominees[nominee].username}]\nNominations: ${nominees[nominee].total}\nInputs:\n`;
 			if(!Object.keys(nominees[nominee].inputs).length) sendstr += 'None';
 			for(const input in nominees[nominee].inputs){
-				sendstr += `${nominees[nominee].inputs[input].username}: ${nominees[nominee].inputs[input].input}\n`;
+				sendstr += `${nominees[nominee].inputs[input].username}: ${nominees[nominee].inputs[input].input}\n\n`;
 			}
 		}
 		if(!sendstr) msg.reply("There are no nominations.");
