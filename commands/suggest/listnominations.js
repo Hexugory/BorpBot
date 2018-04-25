@@ -10,7 +10,8 @@ module.exports = class ListNominationsCommand extends commando.Command {
 			group: 'suggestion',
 			memberName: 'listnominations',
 			description: 'Lists nominations.',
-			examples: ['\'listnominations']
+			examples: ['\'listnominations'],
+			guildOnly: true
 		});
 	}
 

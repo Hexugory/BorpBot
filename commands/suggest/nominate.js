@@ -13,6 +13,7 @@ module.exports = class NominateCommand extends commando.Command {
 			Can send an optional text input.
 			You can edit that text input by nominating the same person again.`,
 			examples: ['\'nominate @Guy Hero#7991 good meme'],
+			guildOnly: true,
 
 			args: [
 				{
