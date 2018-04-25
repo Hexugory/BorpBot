@@ -14,6 +14,25 @@ module.exports = class ListNominationsCommand extends commando.Command {
 		});
 	}
 
+	hasPermission(msg) {
+		let roles = msg.member.roles.array();
+		let permissions = msg.client.provider.get(msg.guild, 'permissions', {suggest:[]});
+		if(!permissions.suggest){
+			return msg.client.isOwner(msg.author);
+		}
+		else if(permissions.suggest.length < 1){
+			return msg.client.isOwner(msg.author);
+		}
+		else{
+			for(var i = 0; i < roles.length; i++){
+				if(permissions.suggest.includes(roles[i].id)){
+					return true;
+				}
+			}
+			return msg.client.isOwner(msg.author);
+		}
+	}
+
 	async run(msg, args) {
 		let nominees = this.client.provider.get(msg.guild, 'nominees', {});
 		let sendstr = "";
