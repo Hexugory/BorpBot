@@ -10,7 +10,8 @@ module.exports = class ClearNominationsCommand extends commando.Command {
 			group: 'suggestion',
 			memberName: 'clearnominations',
 			description: 'Clears nominations.',
-			examples: ['\'clearnominations']
+			examples: ['\'clearnominations'],
+			guildOnly: true
 		});
 	}
 
