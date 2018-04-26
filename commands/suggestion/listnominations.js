@@ -39,7 +39,7 @@ module.exports = class ListNominationsCommand extends commando.Command {
 		let sendstr = "";
 		for(const nominee in nominees){
 			sendstr += `[${nominees[nominee].username}]\nNominations: ${nominees[nominee].total}\nInputs:\n`;
-			if(!Object.keys(nominees[nominee].inputs).length) sendstr += 'None';
+			if(!Object.keys(nominees[nominee].inputs).length) sendstr += 'None\n\n';
 			for(const input in nominees[nominee].inputs){
 				sendstr += `${nominees[nominee].inputs[input].username}: ${nominees[nominee].inputs[input].input}\n\n`;
 			}
