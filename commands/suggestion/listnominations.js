@@ -38,7 +38,7 @@ module.exports = class ListNominationsCommand extends commando.Command {
 		let nominees = this.client.provider.get(msg.guild, 'nominees', {});
 		let sendstr = "";
 		for(const nominee in nominees){
-			sendstr += `[${nominees[nominee].username}]\nNominations: ${nominees[nominee].total}\nInputs:\n`;
+			sendstr += `[${nominees[nominee].username}]\nNominations: ${nominees[nominee].nominators.length}\nInputs:\n`;
 			if(!Object.keys(nominees[nominee].inputs).length) sendstr += 'None\n\n';
 			for(const input in nominees[nominee].inputs){
 				sendstr += `${nominees[nominee].inputs[input].username}: ${nominees[nominee].inputs[input].input}\n\n`;

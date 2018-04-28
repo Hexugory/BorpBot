@@ -35,7 +35,7 @@ module.exports = class NominateCommand extends commando.Command {
 
 	async run(msg, args) {
 		let nominees = msg.client.provider.get(msg.guild, 'nominees', {});
-		if(!nominees[args.mb.id]) nominees[args.mb.id] = {total: 0, nominators: [], inputs: {}, username: args.mb.user.username};
+		if(!nominees[args.mb.id]) nominees[args.mb.id] = {nominators: [], inputs: {}, username: args.mb.user.username};
 		for(const nominee in nominees){
 			if(nominees[nominee].nominators.includes(msg.author.id)) return msg.reply("You have already nominated someone.");
 		}
@@ -47,7 +47,6 @@ module.exports = class NominateCommand extends commando.Command {
 			nominees[args.mb.id].inputs[msg.author.id] = {username: msg.author.username, input: args.tx};
 			return msg.reply("Text input edited.");
 		}
-		nominees[args.mb.id].total += 1;
 		nominees[args.mb.id].nominators.push(msg.author.id);
 		if(args.tx) nominees[args.mb.id].inputs[msg.author.id] = {username: msg.author.username, input: args.tx};
 		msg.client.provider.set(msg.guild, 'nominees', nominees);
