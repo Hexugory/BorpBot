@@ -6,6 +6,7 @@ const oneLine = require('common-tags').oneLine;
 module.exports = class UndoNominationsCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
+			aliases: ['undonomination'],
 			name: 'undonominations',
 			group: 'suggestion',
 			memberName: 'undonominations',
