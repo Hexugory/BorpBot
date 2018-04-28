@@ -37,7 +37,7 @@ module.exports = class NominateCommand extends commando.Command {
 		let nominees = msg.client.provider.get(msg.guild, 'nominees', {});
 		if(!nominees[args.mb.id]) nominees[args.mb.id] = {total: 0, nominators: [], inputs: {}, username: args.mb.user.username};
 		for(const nominee in nominees){
-			if(nominees[nominee].nominators.includes(msg.author.id)) return msg.reply("You have already nominated someone");
+			if(nominees[nominee].nominators.includes(msg.author.id)) return msg.reply("You have already nominated someone.");
 		}
 		if(nominees[args.mb.id].nominators.includes(msg.author.id)){
 			if(!args.tx){
