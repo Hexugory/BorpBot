@@ -307,12 +307,12 @@ client
 	.on('messageReactionAdd', (rea, user) => {
 		let xBlacklistIDs = client.provider.get(rea.message.guild, 'blacklist', {}).x;
 		let xChannelIDs = client.provider.get(rea.message.guild, 'xChannelIDs', []);
-		let blacklisted = 0;
 		let reactUsers = rea.users.array()
 		if(!Array.isArray(xBlacklistIDs)){
 			xBlacklistIDs = [];
 		}
 		if(rea.me === true && rea.emoji.name === "❌"){
+			let blacklisted = 0;
 			for(var i = 0; i < xBlacklistIDs.length; i++){
 				if(reactUsers.find(function(element){return element.id === xBlacklistIDs[i]})){
 					blacklisted++;
@@ -322,16 +322,9 @@ client
 				let xlogChannelIDs = client.provider.get(rea.message.guild, 'xlogChannelIDs', []);
 				let logMessage = `Deleted ${rea.message.member.displayName}[${rea.message.author.id}]'s message[${rea.message.id}] in ${rea.message.channel}`
 				let messageAttachments = rea.message.attachments.array();
-				if(messageAttachments[0] != undefined && messageAttachments[0].id != undefined){
-					logMessage += " containing a message attachment";
-				}
+				if(messageAttachments[0] != undefined && messageAttachments[0].id != undefined) logMessage += " containing a message attachment";
 				if(rea.message.embeds[0] != undefined){
-					if(messageAttachments[0] != undefined && messageAttachments[0].id != undefined){
-						logMessage += " and";
-					}
-					else{
-						logMessage += " containing";
-					}
+					logMessage += (messageAttachments[0] != undefined && messageAttachments[0].id != undefined) ? logMessage += " and" : " containing";
 					logMessage += " the following embeds:\n"
 					for(i = 0; i < rea.message.embeds.length; i++){
 						logMessage += `<${rea.message.embeds[i].url}>\n`;
