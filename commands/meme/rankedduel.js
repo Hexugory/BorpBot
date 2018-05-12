@@ -44,9 +44,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
-		if(msg.author.id === args.p2.id){
-			return msg.channel.send("You can't duel yourself!")
-		}
+		if(msg.author.id === args.p2.id) return msg.channel.send("You can't duel yourself!")
 		function getRandomInt(min, max){
 			return Math.floor(Math.random() * (max - min + 1) + min);
 		}
@@ -104,13 +102,53 @@ module.exports = class RankedDuelCommand extends commando.Command {
 			flatdamage: 0,
 			doubledamage: 1,
 			damage: 2,
-			defense: 3,
-			halfdamage: 4,
-			drain: 5,
+			drain: 3,
+			defense: 4,
+			halfdamage: 5,
 			flatdamageafter: 6,
 			flatdamageheal: 7
 		}
-		function applyItemAttackModifiers(){
+		let healthup0 = duelers[0].equipped.filter(function(element){return element.type.includes('healthup')});
+		if(Array.isArray(healthup0)){
+			for(var i = 0; i < healthup0.length; i++){
+				duelers[0].hp *= ((healthup0[i].mag/100)+1);
+			}
+		}
+		let healthup1 = duelers[1].equipped.filter(function(element){return element.type.includes('healthup')});
+		if(Array.isArray(healthup1)){
+			for(var i = 0; i < healthup1.length; i++){
+				duelers[1].hp *= ((healthup1[i].mag/100)+1);
+			}
+		}
+		duelers[0].hp = Math.round(duelers[0].hp);
+		duelers[1].hp = Math.round(duelers[1].hp);
+		function duel(){
+			duelers[notTurn].dmg = 0;
+			duelers[turn].dmg = 0;
+			duelers[turn].heal = 0;
+			duelers[notTurn].heal = 0;
+			duelers[turn].fdmg = 0;
+			duelers[notTurn].fdmg = 0;
+			if(duelers[turn].moveset){
+				let moveset = duelconfig.itemmovesets.find(function(element){return element.name === duelers[turn].moveset.type})
+				var attack = moveset.moves[getRandomInt(0, moveset.moves.length - 1)];
+			}
+			else var attack = duelconfig.spells[getRandomInt(0, duelconfig.spells.length - 1)];
+			let tipitems = duelers[turn].equipped.filter(function(element){return element.type.includes('fedoratip')});
+			if(Array.isArray(tipitems)){
+				for(var i = 0; i < tipitems.length; i++){
+					if(getRandomInt(1, 1000) === 69) attack = {name: "Fedora Tip", dmg: 99999};
+				}
+			}
+			duelers[notTurn].dmg = attack.dmg ? attack.dmg : 0;
+			let selfswapitem = duelers[turn].equipped.find(function(element){return element.type.includes('selfswap')});
+			if(selfswapitem) duelers[notTurn].dmg += attack.selfdmg ? attack.selfdmg : 0;
+			else duelers[turn].dmg += attack.selfdmg ? attack.selfdmg : 0;
+			let healitem = duelers[notTurn].equipped.find(function(element){return element.type.includes('healsteal')});
+			if(attack.heal){
+				if(healitem && healitem.quality != 'Legendary') duelers[notTurn].heal = attack.heal;
+				else duelers[turn].heal = attack.heal;
+			}
 			let effectsToApply = [];
 			for(var i = 0; i < 3; i++){
 				for(var o = 0; o < 2; o++){
@@ -151,61 +189,6 @@ module.exports = class RankedDuelCommand extends commando.Command {
 					duelers[effectsToApply[i].turn ? 0 : 1].fdmg += (duelers[effectsToApply[i].turn].heal*(effectsToApply[i].mag/100));
 				}
 			}
-		}
-		let healthup0 = duelers[0].equipped.filter(function(element){return element.type.includes('healthup')});
-		if(Array.isArray(healthup0)){
-			for(var i = 0; i < healthup0.length; i++){
-				duelers[0].hp *= ((healthup0[i].mag/100)+1);
-			}
-		}
-		let healthup1 = duelers[1].equipped.filter(function(element){return element.type.includes('healthup')});
-		if(Array.isArray(healthup1)){
-			for(var i = 0; i < healthup1.length; i++){
-				duelers[1].hp *= ((healthup1[i].mag/100)+1);
-			}
-		}
-		duelers[0].hp = Math.round(duelers[0].hp);
-		duelers[1].hp = Math.round(duelers[1].hp);
-		function duel(){
-			duelers[notTurn].dmg = 0;
-			duelers[turn].dmg = 0;
-			duelers[turn].heal = 0;
-			duelers[notTurn].heal = 0;
-			duelers[turn].fdmg = 0;
-			duelers[notTurn].fdmg = 0;
-			if(duelers[turn].moveset){
-				let moveset = duelconfig.itemmovesets.find(function(element){return element.name === duelers[turn].moveset.type})
-				var attack = moveset.moves[getRandomInt(0, moveset.moves.length - 1)];
-			}
-			else{
-				var attack = duelconfig.spells[getRandomInt(0, duelconfig.spells.length - 1)];
-			}
-			let tipitems = duelers[turn].equipped.filter(function(element){return element.type.includes('fedoratip')});
-			if(Array.isArray(tipitems)){
-				for(var i = 0; i < tipitems.length; i++){
-					if(getRandomInt(1, 1000) === 69){
-						attack = {name: "Fedora Tip", dmg: 99999};
-					}
-				}
-			}
-			duelers[notTurn].dmg = attack.dmg ? attack.dmg : 0;
-			let selfswapitem = duelers[turn].equipped.find(function(element){return element.type.includes('selfswap')});
-			if(selfswapitem){
-				duelers[notTurn].dmg += attack.selfdmg ? attack.selfdmg : 0;
-			}
-			else{
-				duelers[turn].dmg += attack.selfdmg ? attack.selfdmg : 0;
-			}
-			let healitem = duelers[notTurn].equipped.find(function(element){return element.type.includes('healsteal')});
-			if(attack.heal){
-				if(healitem && healitem.quality != 'Legendary'){
-					duelers[notTurn].heal = attack.heal;
-				}
-				else{
-					duelers[turn].heal = attack.heal;
-				}
-			}
-			applyItemAttackModifiers();
 			if(healitem && healitem.quality === 'Legendary'){
 				duelers[notTurn].heal += duelers[turn].heal;
 				duelers[turn].heal = 0;
@@ -222,18 +205,10 @@ module.exports = class RankedDuelCommand extends commando.Command {
 				name: `${duelers[turn].name}[${duelers[turn].hp}] uses ${attack.name} on ${duelers[notTurn].name}[${duelers[notTurn].hp}]`,
 				value: ''
 			});
-			if(duelers[notTurn].dmg){
-				turnDescs[turnDescs.length-1].value += `🗡${duelers[notTurn].name}[${duelers[notTurn].hp}] takes ${duelers[notTurn].dmg} damage.\n`
-			}
-			if(duelers[turn].dmg){
-				turnDescs[turnDescs.length-1].value += `🗡${duelers[turn].name}[${duelers[turn].hp}] takes ${duelers[turn].dmg} damage.\n`
-			}
-			if(duelers[notTurn].heal){
-				turnDescs[turnDescs.length-1].value += `➕${duelers[notTurn].name}[${duelers[notTurn].hp}] heals ${duelers[notTurn].heal} damage.\n`
-			}
-			if(duelers[turn].heal){
-				turnDescs[turnDescs.length-1].value += `➕${duelers[turn].name}[${duelers[turn].hp}] heals ${duelers[turn].heal} damage.\n`
-			}
+			if(duelers[notTurn].dmg) turnDescs[turnDescs.length-1].value += `🗡${duelers[notTurn].name}[${duelers[notTurn].hp}] takes ${duelers[notTurn].dmg} damage.\n`
+			if(duelers[turn].dmg) turnDescs[turnDescs.length-1].value += `🗡${duelers[turn].name}[${duelers[turn].hp}] takes ${duelers[turn].dmg} damage.\n`
+			if(duelers[notTurn].heal) turnDescs[turnDescs.length-1].value += `➕${duelers[notTurn].name}[${duelers[notTurn].hp}] heals ${duelers[notTurn].heal} damage.\n`
+			if(duelers[turn].heal) turnDescs[turnDescs.length-1].value += `➕${duelers[turn].name}[${duelers[turn].hp}] heals ${duelers[turn].heal} damage.\n`
 			duelers[notTurn].hp -= duelers[notTurn].dmg;
 			duelers[turn].hp -= duelers[turn].dmg;
 			duelers[turn].hp += duelers[turn].heal;
@@ -341,9 +316,9 @@ module.exports = class RankedDuelCommand extends commando.Command {
 						name: `Announcer ${msg.client.user.username}`,
 						icon_url: msg.client.user.avatarURL
 					},
-					"footer": {
-						"icon_url": duelers[turn].avatar,
-						"text": `${duelers[turn].name}'s wins/rank: ${wins}/${rank}`
+					footer: {
+						icon_url: duelers[turn].avatar,
+						text: `${duelers[turn].name}'s wins/rank: ${wins}/${rank}`
 					},
 					color: 0x8c110b,
 					title: `${msg.author.username} VS ${args.p2.user.username}!`,
@@ -377,8 +352,6 @@ module.exports = class RankedDuelCommand extends commando.Command {
 				}
 			}
 		}
-		if(checkCooldown()){
-			duel();
-		}
+		if(checkCooldown()) duel();
 	}
 };

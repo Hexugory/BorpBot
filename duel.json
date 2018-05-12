@@ -122,7 +122,7 @@
 ],
 "types": [
     {"name":"damage","max":20,"min":1,"ordinary":true,"epic":true,"legendary":true,"template":"Increase damage dealt by {mag}%."},
-    {"name":"drain","max":20,"min":1,"ordinary":true,"epic":true,"legendary":true,"template":"Heal yourself for {mag}% of all damage you deal."},
+    {"name":"drain","max":20,"min":1,"ordinary":true,"epic":true,"legendary":true,"template":"Heal yourself for {mag}% of all damage you deal (before damage reduction)."},
     {"name":"defense","max":20,"min":1,"ordinary":true,"epic":true,"legendary":true,"template":"Decrease damage taken by {mag}%."},
     {"name":"extraturn","max":10,"min":1,"ordinary":true,"epic":true,"legendary":true,"template":"{mag}% chance to take an extra turn."},
     {"name":"healsteal","max":1,"min":1,"ordinary":true,"epic":false,"legendary":false,"template":"Steal all healing done by the enemy (before modifiers)."},
