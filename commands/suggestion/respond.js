@@ -3,12 +3,12 @@ const sqlite = require('sqlite');
 const path =  require('path');
 const oneLine = require('common-tags').oneLine;
 
-module.exports = class ViewSenderCommand extends commando.Command {
+module.exports = class RespondCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
-			name: 'viewsender',
+			name: 'respond',
 			group: 'suggestion',
-			memberName: 'viewsender',
+			memberName: 'respond',
 			description: oneLine`View the sender of a suggestion using it's ID. (Manage Messages)`,
 			examples: ['\'viewsender 5'],
 			guildOnly: true,
@@ -19,6 +19,13 @@ module.exports = class ViewSenderCommand extends commando.Command {
 					label: 'id',
 					prompt: 'Please enter a suggestion ID.',
 					type: 'integer'
+				},
+				{
+					key: 'msg',
+					label: 'message',
+					prompt: 'Please enter a message.',
+					validate: text => {return text.length < 1900},
+					type: 'string'
 				}
 			]
 		});
@@ -46,14 +53,12 @@ module.exports = class ViewSenderCommand extends commando.Command {
 	async run(msg, args) {
 		let suggestions = this.client.provider.get(msg.guild, 'suggestions', []);
 		let suggestionIndex = suggestions.findIndex(function(element){return element.id == args.id});
-		if(!suggestions[suggestionIndex]){
-			msg.reply("That suggestion does not exist.");
-		}
-		else{
-			msg.reply(`<@${suggestions[suggestionIndex].user}> sent this suggestion.\nThey have been notified of their name being viewed.`);
-			msg.guild.members.fetch(suggestions[suggestionIndex].user).then(sender => {
-				sender.send(`The staff of ${msg.guild.name} have requested your name on one of your suggestions.`)
-			});
-		}
+		if(!suggestions[suggestionIndex]) return msg.reply("That suggestion does not exist.");
+		msg.reply("Message sent.");
+		msg.guild.members.fetch(suggestions[suggestionIndex].user).then(sender => {
+			sender.send(`The staff of ${msg.guild.name} have responded to one of your suggestions.
+Your name has not been viewed.
+"${args.msg}"`);
+		});
 	};
 }
