@@ -11,7 +11,7 @@ module.exports = class RemoveSuggestionCommand extends commando.Command {
 			group: 'suggestion',
 			memberName: 'removesuggestion',
 			description: oneLine`Remove a suggestion using it's ID. (Manage Messages)`,
-			examples: ['\'removesuggestion 5'],
+			examples: ['\'removesuggestion 4993818925491862'],
 			guildOnly: true,
 
 			args: [
@@ -19,7 +19,8 @@ module.exports = class RemoveSuggestionCommand extends commando.Command {
 					key: 'id',
 					label: 'id',
 					prompt: 'Please enter a suggestion ID.',
-					type: 'integer'
+					type: 'integer',
+					infinite: true
 				}
 			]
 		});
@@ -45,15 +46,17 @@ module.exports = class RemoveSuggestionCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
+		var sendstr = "\n";
 		var suggestions = this.client.provider.get(msg.guild, 'suggestions', []);
-		var suggestionIndex = suggestions.findIndex(function(element){return element.id == args.id});
-		if(!suggestions[suggestionIndex]){
-			msg.reply("That suggestion does not exist.");
+		for(var i = 0; i < args.id.length; i++){
+			let suggestionIndex = suggestions.findIndex(element => {return element.id == args.id[i]});
+			if(!suggestions[suggestionIndex]) sendstr += `${args.id[i]}: That suggestion does not exist.\n`;
+			else{
+				suggestions.splice(suggestionIndex, 1);
+				sendstr += `${args.id[i]}: 👍\n`;
+			}
 		}
-		else{
-			suggestions.splice(suggestionIndex, 1);
-			this.client.provider.set(msg.guild, 'suggestions', suggestions);
-			msg.channel.send(`Suggestion removed.`);
-		}
+		this.client.provider.set(msg.guild, 'suggestions', suggestions);
+		return msg.reply(sendstr);
 	};
 }
