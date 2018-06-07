@@ -56,7 +56,7 @@ module.exports = class RespondCommand extends commando.Command {
 		if(!suggestions[suggestionIndex]) return msg.reply("That suggestion does not exist.");
 		msg.reply("Message sent.");
 		msg.guild.members.fetch(suggestions[suggestionIndex].user).then(sender => {
-			sender.send(`The staff of ${msg.guild.name} have responded to one of your suggestions.
+			return sender.send(`The staff of ${msg.guild.name} have responded to one of your suggestions.
 Your name has not been viewed.
 "${args.msg}"`);
 		});
