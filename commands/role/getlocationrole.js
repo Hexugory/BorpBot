@@ -65,7 +65,7 @@ module.exports = class GetLocationRoleCommand extends commando.Command {
 		else{
 			if(checkCooldown()){
 				if(roles.includes(args.rn.id)){
-					let newRoles = msg.member.roles.filterArray(role => {return !roles.includes(role.id)})
+					let newRoles = msg.member.roles.filter(role => {return !roles.includes(role.id)}).array()
 					newRoles.push(args.rn)
 					msg.member.roles.set(newRoles)
 					var IDIndex = cooldownTimes.findIndex(searchArrayForID);
