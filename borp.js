@@ -291,7 +291,7 @@ client
 				else{
 					let checkcount = 0
 					let checkx = setInterval(function(){
-						if((newmsg.attachments.array()[0] && newmsg.attachments.array()[0].id) || newmsg.embeds[0] || newmsg.content.match(/(https?:\/\/)?(www.)?discord.gg\/[\w\d]+/)[0]){
+						if((newmsg.attachments.array()[0] && newmsg.attachments.array()[0].id) || newmsg.embeds[0] || newmsg.content.match(/(https?:\/\/)?(www.)?discord.gg\/[\w\d]+/)){
 							xLimit > 1 ? newmsg.react('\u{274c}').catch(err => {err.code === 90001 ? newmsg.delete() : null}) : newmsg.delete();
 							clearInterval(checkx);
 						}
