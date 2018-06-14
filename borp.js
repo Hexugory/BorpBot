@@ -90,30 +90,23 @@ function createStringFromTemplate(template, variables) {
 }
 
 function createDescString(item){
-	if(!item){
-		return "None";
-	}
-	else{
-		if(item.template){
-			return `${item.quality} quality: ${createStringFromTemplate(item.template, {mag: item.mag})}`;
-		}
-		else{
-			return `${item.quality} quality: ${createStringFromTemplate(duelconfig.types.find(element => {return element.name === item.type}).template, {mag: item.mag})}`;
-		}
-	}
+	if(!item) return "None";
+	else if(item.template) return `${item.quality} quality: ${createStringFromTemplate(item.template, {mag: item.mag})}`;
+	else return `${item.quality} quality: ${createStringFromTemplate(duelconfig.types.find(element => {return element.name === item.type}).template, {mag: item.mag})}`;
 }
 
 client.dispatcher.addInhibitor((msg) => {
+	if(msg.client.isOwner(msg.author)) return false;
 	let gblacklist = client.provider.get('global', 'blacklist', []);
 	let blacklist = client.provider.get(msg.guild, 'blacklist', {});
-	if(msg.command){
-		if(((blacklist[msg.command.group.id] != undefined && blacklist[msg.command.group.id].includes(msg.author.id)) || (blacklist[msg.command.name] != undefined && blacklist[msg.command.name].includes(msg.author.id)) || (blacklist.server != undefined && blacklist.server.includes(msg.author.id)) || gblacklist.includes(msg.author.id)) && !msg.client.isOwner(msg.author)){
-			return true;
-		}
-		else{
-			return false;
-		}
+	if(gblacklist.includes(msg.author.id)) return true;
+	if(!msg.command) return false;
+	if((blacklist[msg.command.group.id] && blacklist[msg.command.group.id].includes(msg.author.id))
+	 || (blacklist[msg.command.name] && blacklist[msg.command.name].includes(msg.author.id))
+	 || (blacklist.server && blacklist.server.includes(msg.author.id))){
+		return true;
 	}
+	return false;
 });
 
 client
