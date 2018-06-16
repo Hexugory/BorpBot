@@ -11,7 +11,7 @@ class GuildArgumentType extends ArgumentType {
 		const matches = value.match(/^(?:<#)?([0-9]+)>?$/);
 		if(matches) return this.client.guilds.has(matches[1]);
 		const search = value.toLowerCase();
-		let guilds = this.client.guilds.filterArray(nameFilterInexact(search));
+		let guilds = this.client.guilds.array().filter(nameFilterInexact(search));
 		if(guilds.length === 0) return false;
 		if(guilds.length === 1) return true;
 		const exactGuilds = guilds.filter(nameFilterExact(search));
@@ -24,7 +24,7 @@ class GuildArgumentType extends ArgumentType {
 		const matches = value.match(/^(?:<#)?([0-9]+)>?$/);
 		if(matches) return this.client.guilds.get(matches[1]) || null;
 		const search = value.toLowerCase();
-		const guilds = this.client.guilds.filterArray(nameFilterInexact(search));
+		const guilds = this.client.guilds.array().filter(nameFilterInexact(search));
 		if(guilds.length === 0) return null;
 		if(guilds.length === 1) return guilds[0];
 		const exactGuilds = guilds.filter(nameFilterExact(search));
