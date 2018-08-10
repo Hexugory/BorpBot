@@ -106,7 +106,7 @@ module.exports = class DuelCommand extends commando.Command {
 					title: `${args.p1} VS ${args.p2}!`,
 					description: `Coin flip decides ${duelers[firstTurn].name} will go first.`,
 					fields: turnDescs
-				}});
+				}}).catch(err => {err.code === 50013 ? msg.reply(`Cannot send embeds in this channel.`) : null});
 			}
 			else{
 				turn = turn ? 0 : 1;

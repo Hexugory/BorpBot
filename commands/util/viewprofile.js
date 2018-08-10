@@ -39,7 +39,7 @@ module.exports = class ViewProfileCommand extends commando.Command {
 			for(var i = 0; i < profiles.settings.fields.length; i++){
 				profileEmbed.addField(profiles.settings.fields[i], profiles[args.mb.id][profiles.settings.fields[i].toLowerCase()] ? profiles[args.mb.id][profiles.settings.fields[i].toLowerCase()] : '<unset>', true);
 			}
-			return msg.channel.send({embed: profileEmbed});
+			return msg.channel.send({embed: profileEmbed}).catch(err => {err.code === 50013 ? msg.reply(`Cannot send embeds in this channel.`) : null});
 		}
 	};
 }

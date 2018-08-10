@@ -38,6 +38,6 @@ module.exports = class ListEmotesCommand extends commando.Command {
 				sendstr += `${values[i].links[o].name}: ${values[i].links[o].link}\n`
 			}
 		}
-		return msg.reply({files: [{attachment: new Buffer(sendstr, 'utf-8'), name: `emotes.txt`}]})
+		return msg.reply({files: [{attachment: new Buffer(sendstr, 'utf-8'), name: `emotes.txt`}]}).catch(err => {err.code === 50013 ? msg.reply(`Cannot send embeds in this channel.`) : null})
 	};
 }

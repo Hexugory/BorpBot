@@ -47,7 +47,7 @@ module.exports = class ListNominationsCommand extends commando.Command {
 		if(!sendstr) msg.reply("There are no nominations.");
 		else if(sendstr.length > 1999){
 			let messageBuffer = new Buffer(sendstr, 'utf-8');
-			msg.channel.send({files: [{attachment: messageBuffer,name: `result.txt`}]});
+			msg.channel.send({files: [{attachment: messageBuffer,name: `result.txt`}]}).catch(err => {err.code === 50013 ? msg.reply(`Cannot send embeds in this channel.`) : null});
 		}
 		else{
 			msg.channel.send(sendstr);

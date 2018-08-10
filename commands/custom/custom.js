@@ -22,7 +22,7 @@ module.exports = class ListCustomCommand extends commando.Command {
 			}
 			if(commandList.length > 1999){
 				var messageBuffer = new Buffer(commandList, 'utf-8')
-				return msg.channel.send({files: [{attachment: messageBuffer,name: `result.txt`}]})
+				return msg.channel.send({files: [{attachment: messageBuffer,name: `result.txt`}]}).catch(err => {err.code === 50013 ? msg.reply(`Cannot send embeds in this channel.`) : null});
 			}
 			else{
 				return msg.channel.send(commandList)

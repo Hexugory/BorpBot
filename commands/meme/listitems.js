@@ -68,7 +68,7 @@ module.exports = class ListItemsCommand extends commando.Command {
 			itemssend += '```'
 			if(itemssend.length > 1999){
 				let itemsBuffer = new Buffer(itemssend, 'utf-8');
-				return msg.channel.send({files: [{attachment: itemsBuffer,name: `items.txt`}]});
+				return msg.channel.send({files: [{attachment: itemsBuffer,name: `items.txt`}]}).catch(err => {err.code === 50013 ? msg.reply(`Cannot send embeds in this channel.`) : null});
 			}
 			else{
 				return msg.reply(itemssend)
