@@ -46,7 +46,7 @@ module.exports = class ListSuggestionsCommand extends commando.Command {
 		}
 		if(sendstr.length > 1999){
 			var messageBuffer = new Buffer(sendstr, 'utf-8')
-			msg.channel.send({files: [{attachment: messageBuffer,name: `result.txt`}]})
+			msg.channel.send({files: [{attachment: messageBuffer,name: `result.txt`}]}).catch(err => {err.code === 50013 ? msg.reply(`Cannot send embeds in this channel.`) : null})
 		}
 		else{
 			msg.channel.send(sendstr)

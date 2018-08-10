@@ -324,7 +324,7 @@ module.exports = class RankedDuelCommand extends commando.Command {
 					title: `${msg.author.username} VS ${args.p2.user.username}!`,
 					description: `Coin flip decides ${duelers[firstTurn].name} will go first.`,
 					fields: turnDescs
-				}});
+				}}).catch(err => {err.code === 50013 ? msg.reply(`Cannot send embeds in this channel.`) : null});
 			}
 			else if(duelers[notTurn].hp !== duelers[notTurn].hp || duelers[turn].hp !== duelers[turn].hp){
 				return msg.reply("fuck\nif you see this then you need to ping guy hero right now")

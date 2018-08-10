@@ -24,7 +24,7 @@ module.exports = class GreyEdgeCommand extends commando.Command {
 			ava.greyscale()
 			.invert()
 			.getBuffer(jimp.MIME_PNG, function(err, buffer){
-				return msg.channel.send({files: [{attachment: buffer,name: `Edgy-${msg.author.username}.png`}]});
+				return msg.channel.send({files: [{attachment: buffer,name: `Edgy-${msg.author.username}.png`}]}).catch(err => {err.code === 50013 ? msg.reply(`Cannot send embeds in this channel.`) : null});
 			});
 		}).catch(function(err){
 			console.error(err);
