@@ -39,19 +39,18 @@ module.exports = class SetChannelCommand extends commando.Command {
 	async run(msg, args) {
 
 		//check for a valid argument
-		if(['voice', 'x', 'meme', 'xlog', 'tumbleweed', 'suggestion', 'item'].includes(args.ac)){
-			let list = this.client.provider.get(msg.guild, args.ac + 'ChannelIDs', []);
-			//check if the channel isnt already in the list
-			if(!list.includes(msg.channel.id)){
-				list.push(msg.channel.id);
-				this.client.provider.set(msg.guild, args.ac + 'ChannelIDs', list);
-				return msg.channel.send(`${msg.channel} added to **${args.ac}**.`);
-			}
-			else{
-				list.splice(list.indexOf(msg.channel.id), 1);
-				this.client.provider.set(msg.guild, args.ac + 'ChannelIDs', list);
-				return msg.channel.send(`${msg.channel} removed from **${args.ac}**.`);
-			}
+		if(!['voice', 'x', 'meme', 'xlog', 'tumbleweed', 'suggestion', 'item'].includes(args.ac)) return msg.reply(`There's no permission called **${args.ac}**.`)
+		let list = this.client.provider.get(msg.guild, args.ac + 'ChannelIDs', []);
+		//check if the channel isnt already in the list
+		if(!list.includes(msg.channel.id)){
+			list.push(msg.channel.id);
+			this.client.provider.set(msg.guild, args.ac + 'ChannelIDs', list);
+			return msg.channel.send(`${msg.channel} added to **${args.ac}**.`);
+		}
+		else{
+			list.splice(list.indexOf(msg.channel.id), 1);
+			this.client.provider.set(msg.guild, args.ac + 'ChannelIDs', list);
+			return msg.channel.send(`${msg.channel} removed from **${args.ac}**.`);
 		}
 	}
 };

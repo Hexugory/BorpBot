@@ -161,8 +161,7 @@ client
 		try{
 		(function(){
 			let xChannelIDs = client.provider.get(msg.guild, 'xChannelIDs', null);
-			if(!xChannelIDs) return false;
-			if(!xChannelIDs.includes(msg.channel.id)) return false;
+			if(!xChannelIDs || !xChannelIDs.includes(msg.channel.id)) return false;
 			let xLimit = client.provider.get(msg.guild, 'xLimit' + msg.channel.id, 7)
 			let emoji = [];
 			let unicodeEmoji = msg.content.match(emojiRegex());
