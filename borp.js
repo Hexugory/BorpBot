@@ -356,7 +356,7 @@ client
 			${enabled ? 'enabled' : 'disabled'}
 			${guild ? `in guild ${guild.name} (${guild.id})` : 'globally'}.
 		`);
-	});
+	})
 	.on('commandRun', (command, promise, msg, args, fromPattern) => {
 		console.log(`By ${msg.author.username}|${msg.author.id} in ${msg.guild.name}|${msg.guild.id}`);
 	});
