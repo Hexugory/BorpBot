@@ -247,6 +247,17 @@ client
 			if(memeChannelIDs.includes(msg.channel.id) || msg.client.isOwner(msg.author) || msg.member.permissions.has('MANAGE_MESSAGES')) return msg.channel.send(customCommands[commandIndex].output);
 			else return msg.reply("You do not have permission to use that in this channel.")
 		})();
+		(function(){
+			if(msg.guild.id != "163175631562080256") return false;
+			let itemChannelIDs = client.provider.get(msg.guild, 'itemChannelIDs', null);
+			if(!itemChannelIDs) return false;
+			if(!itemChannelIDs.includes(msg.channel.id)) return false;
+			if(getRandomInt(1, 10) === 10){
+				let gacha = msg.client.provider.get(msg.guild, "gacha"+msg.author.id, {rolls:0,spirits:[]});
+				gacha.rolls++
+				return msg.client.provider.set(msg.guild, "gacha"+msg.author.id, gacha);
+			}
+		})();
 		}
 		}
 		catch(err){console.error(err)}
@@ -346,6 +357,9 @@ client
 			${guild ? `in guild ${guild.name} (${guild.id})` : 'globally'}.
 		`);
 	});
+	.on('commandRun', (command, promise, msg, args, fromPattern) => {
+		console.log(`By ${msg.author.username}|${msg.author.id} in ${msg.guild.name}|${msg.guild.id}`);
+	});
 
 client.setProvider(
 	sqlite.open(path.join(__dirname, 'database.sqlite3')).then(db => new commando.SQLiteProvider(db))
@@ -353,13 +367,14 @@ client.setProvider(
 
 client.registry
 	.registerGroups([
-	['meme', 'Meme commands || group name "meme"'],
-	['channel', 'Channel settings || group name "channel"'],
-	['custom', 'Custom command commands || group name "custom"'],
-	['role', 'Role commands || group name "role"'],
-	['x', 'Embed flagging commands || group name "x"'],
-	['suggestion', 'Suggestion commands || group name "suggestion"'],
-	['mod', 'Moderator commands || group name "mod"']
+	['meme', 'meme'],
+	['channel', 'channel'],
+	['custom', 'custom'],
+	['role', 'role'],
+	['x', 'x'],
+	['suggestion', 'suggestion'],
+	['mod', 'mod'],
+	['gacha', 'gacha']
 	])
 	.registerDefaults()
 	.registerType(require("./guild.js"))
