@@ -248,7 +248,7 @@ client
 			else return msg.reply("You do not have permission to use that in this channel.")
 		})();
 		(function(){
-			if(msg.guild.id != "163175631562080256") return false;
+			if(!msg.guild || msg.guild.id != "163175631562080256") return false;
 			let itemChannelIDs = client.provider.get(msg.guild, 'itemChannelIDs', null);
 			if(!itemChannelIDs) return false;
 			if(!itemChannelIDs.includes(msg.channel.id)) return false;
