@@ -51,6 +51,12 @@ module.exports = class UpdateCardsCommand extends commando.Command {
                             case "DBSCharacters":
                                 return msg.author.id === "191266667278368769";
                                 break;
+                            case "GoldenAdditions":
+                                return msg.author.id === "250273321092907008";
+                                break;
+                            case "DumbassCards":
+                                return msg.author.id === "157704875726209025";
+                                break;
                             default:
                                 return false;
                         }
