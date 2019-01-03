@@ -374,7 +374,8 @@ client.registry
 	['x', 'x'],
 	['suggestion', 'suggestion'],
 	['mod', 'mod'],
-	['gacha', 'gacha']
+	['gacha', 'gacha'],
+	['tts', 'tts']
 	])
 	.registerDefaults()
 	.registerType(require("./guild.js"))

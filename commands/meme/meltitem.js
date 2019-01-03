@@ -44,7 +44,6 @@ module.exports = class MeltItemCommand extends commando.Command {
             }
             else{
                 var gaineddust = 0
-                console.log(args.id.substr(0,1), parseInt(args.id.substr(1), 10))
                 if(args.id.substr(0,1) === ">" && parseInt(args.id.substr(1), 10) != NaN){
                     for(var i = duelstats[msg.author.id].items.length-1; i > Math.max(parseInt(args.id.substr(1), 10), -1); i--){
                         gaineddust += duelstats[msg.author.id].items[i].quality === "Legendary" ? 2000 : (duelstats[msg.author.id].items[i].quality === "Epic" ? 500 : 100);
