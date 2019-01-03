@@ -316,14 +316,14 @@ client
 		}
 		catch(err){console.error(err)}
 	})
-	.on('voiceStateUpdate', (oldMember, newMember) => {
+	.on('voiceStateUpdate', (oldState, newState) => {
 		try{
-		let voiceChannelIDs = client.provider.get(oldMember.guild, 'voiceChannelIDs', null);
+		let voiceChannelIDs = client.provider.get(oldState.guild, 'voiceChannelIDs', null);
 		if(!voiceChannelIDs) return false;
 		//compare old channel state to new channel state
-		if(!oldMember.voiceChannelID && newMember.voiceChannelID) return sendMessages(voiceChannelIDs, `**${oldMember.displayName}** joined **${newMember.voiceChannel.name}**.`);
-		else if(oldMember.voiceChannelID && !newMember.voiceChannelID) return sendMessages(voiceChannelIDs, `**${oldMember.displayName}** left **${oldMember.voiceChannel.name}**.`);
-		else if(oldMember.voiceChannelID && newMember.voiceChannelID && newMember.voiceChannelID != oldMember.voiceChannelID) return sendMessages(voiceChannelIDs, `**${oldMember.displayName}** moved to **${newMember.voiceChannel.name}** from **${oldMember.voiceChannel.name}**.`);
+		if(!oldState.channelID && newState.channelID) return sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** joined **${newState.channel.name}**.`);
+		else if(oldState.channelID && !newState.channelID) return sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** left **${oldState.channel.name}**.`);
+		else if(oldState.channelID && newState.channelID && newState.channelID != oldState.channelID) return sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** moved to **${newState.channel.name}** from **${oldState.channel.name}**.`);
 		}
 		catch(err){console.error(err)}
 	})
