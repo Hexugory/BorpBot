@@ -11,6 +11,7 @@
     "jimp": "^0.2.28",
     "moment": "^2.21.0",
     "prompt": "^1.0.0",
+    "request-promise-native": "^1.0.5",
     "sqlite": "^2.3.0",
     "url-regex": "^4.1.1"
   },
