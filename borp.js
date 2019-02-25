@@ -358,7 +358,7 @@ client
 		`);
 	})
 	.on('commandRun', (command, promise, msg, args, fromPattern) => {
-		console.log(`By ${msg.author.username}|${msg.author.id} in ${msg.guild.name}|${msg.guild.id}`);
+		console.log(`By ${msg.author.username}|${msg.author.id} in ${msg.guild ? `${msg.guild.name}|${msg.guild.id}` : 'DM channel'}`);
 	});
 
 client.setProvider(
