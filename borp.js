@@ -9,6 +9,7 @@ const emojiRegex = require('emoji-regex');
 const moment = require('moment');
 const ms = require('./minestat');
 var duelconfig = require('./duel.json');
+var tumbleweedDates = {};
 for(var i = 0; i < duelconfig.itemmovesets.length; i++){
 	duelconfig.types.push({
 		name: duelconfig.itemmovesets[i].name,
@@ -100,10 +101,10 @@ client.dispatcher.addInhibitor((msg) => {
 	let gblacklist = client.provider.get('global', 'blacklist', []);
 	let blacklist = client.provider.get(msg.guild, 'blacklist', {});
 	if(gblacklist.includes(msg.author.id)) return true;
+	if(blacklist.server && blacklist.server.includes(msg.author.id)) return true;
 	if(!msg.command) return false;
 	if((blacklist[msg.command.group.id] && blacklist[msg.command.group.id].includes(msg.author.id))
-	 || (blacklist[msg.command.name] && blacklist[msg.command.name].includes(msg.author.id))
-	 || (blacklist.server && blacklist.server.includes(msg.author.id))){
+	 || (blacklist[msg.command.name] && blacklist[msg.command.name].includes(msg.author.id))){
 		return true;
 	}
 	return false;
@@ -180,84 +181,85 @@ client
 			}, 1000);
 			return true
 		})();
-		(function(){
-			let itemChannelIDs = client.provider.get(msg.guild, 'itemChannelIDs', null);
-			if(!itemChannelIDs) return false;
-			if(!itemChannelIDs.includes(msg.channel.id)) return false;
-			if(getRandomInt(1, 100) === 100){
-				let duelstats = msg.client.provider.get(msg.guild, "duelstats", {});
-				if(duelstats[msg.author.id]){
-					duelstats[msg.author.id].items.push(generateNewItem());
-					msg.client.provider.set(msg.guild, "duelstats", duelstats);
-				}
-				else{
-					duelstats[msg.author.id] = {items: [generateNewItem()], equipped: [null, null, null]};
-					msg.client.provider.set(msg.guild, "duelstats", duelstats);
-				}
-				if(msg.client.provider.get(msg.guild, 'optlist', []).includes(msg.author.id)) return msg.author.send(`You have gained an item: ${createDescString(duelstats[msg.author.id].items[duelstats[msg.author.id].items.length-1])}`);
-			}
-			return true;
-		})();
 		if(msg.content.toLowerCase().includes("press 🇫 to pay respects") || msg.content.toLowerCase().includes("press f to pay respects")) msg.react('\u{1f1eb}')
 		if(!msg.author.bot){
-		(function(){
-			let tumbleweedChannelIDs = client.provider.get(msg.guild, 'tumbleweedChannelIDs', []);
-			if(!tumbleweedChannelIDs.includes(msg.channel.id)) return false;
-			if(!msg.attachments.array()[0]) return false;
-			if(!msg.attachments.array()[0].name.toLowerCase().includes("tumbleweed")) return false
-			//real mistake hours hit that tumbleweed if you up
-			let prevMessages = msg.channel.messages.array();
-			let prevIndex = prevMessages.indexOf(msg);
-			if(prevIndex - 1 < 0) return false;
-			let tumbleweedLeaderboard = client.provider.get(msg.guild, 'tumbleweedLeaderboard', []);
-			let tumbleDate = msg.createdAt;
-			let prevDate = prevMessages[prevIndex - 1].createdAt;
-			let minuteDifference = Math.round((tumbleDate-prevDate)/1000/60);
-			let entryIndex = tumbleweedLeaderboard.findIndex(function(element){return element.id === msg.author.id});
-			if(entryIndex > -1){
-				if(minuteDifference > tumbleweedLeaderboard[entryIndex].score){
-					tumbleweedLeaderboard[entryIndex] = {
-						score: minuteDifference,
-						username: msg.author.username,
-						id: msg.author.id
+			(function(){
+				let itemChannelIDs = client.provider.get(msg.guild, 'itemChannelIDs', null);
+				if(!itemChannelIDs) return false;
+				if(!itemChannelIDs.includes(msg.channel.id)) return false;
+				if(getRandomInt(1, 100) === 100){
+					let duelstats = msg.client.provider.get(msg.guild, "duelstats", {});
+					if(duelstats[msg.author.id]){
+						duelstats[msg.author.id].items.push(generateNewItem());
+						msg.client.provider.set(msg.guild, "duelstats", duelstats);
+					}
+					else{
+						duelstats[msg.author.id] = {items: [generateNewItem()], equipped: [null, null, null]};
+						msg.client.provider.set(msg.guild, "duelstats", duelstats);
+					}
+					if(msg.client.provider.get(msg.guild, 'optlist', []).includes(msg.author.id)) return msg.author.send(`You have gained an item: ${createDescString(duelstats[msg.author.id].items[duelstats[msg.author.id].items.length-1])}`);
+				}
+				return true;
+			})();
+			(function(){
+				var tumbleweedChannelIDs = client.provider.get(msg.guild, 'tumbleweedChannelIDs', []);
+				if(!tumbleweedChannelIDs.includes(msg.channel.id)) return false;
+				let prevDate = tumbleweedDates[msg.channel.guild.id] ? tumbleweedDates[msg.channel.guild.id][msg.channel.id] ? tumbleweedDates[msg.channel.guild.id][msg.channel.id] : msg.createdAt : msg.createdAt;
+				let minuteDifference = Math.floor((msg.createdAt-prevDate)/1000/60);
+				(function(){
+					if(!tumbleweedDates[msg.channel.guild.id]) tumbleweedDates[msg.channel.guild.id] = {};
+					tumbleweedDates[msg.channel.guild.id][msg.channel.id] = msg.createdAt;
+				})();
+				if(!msg.attachments.array()[0]) return false;
+				if(!msg.attachments.array()[0].name.toLowerCase().includes("tumbleweed")) return false;
+				//real mistake hours hit that tumbleweed if you up
+				let tumbleweedLeaderboard = client.provider.get(msg.guild, 'tumbleweedLeaderboard', []);
+				//i've now realized far into the future that this is hella dumb but i'll fix it later
+				let entryIndex = tumbleweedLeaderboard.findIndex(function(element){return element.id === msg.author.id});
+				if(entryIndex > -1){
+					if(minuteDifference > tumbleweedLeaderboard[entryIndex].score){
+						tumbleweedLeaderboard[entryIndex] = {
+							score: minuteDifference,
+							username: msg.author.username,
+							id: msg.author.id
+						}
 					}
 				}
-			}
-			else{
-				tumbleweedLeaderboard.push(
-					{
-						score: minuteDifference,
-						username: msg.author.username,
-						id: msg.author.id
-					}
-				);
-			}
-			return client.provider.set(msg.guild, 'tumbleweedLeaderboard', tumbleweedLeaderboard);
-		})();
-		(function(){
-			let memeChannelIDs = client.provider.get(msg.guild, 'memeChannelIDs', null);
-			if(!memeChannelIDs) return false;
-			let customCommands = client.provider.get(msg.guild, 'customCommands', []);
-			let commandInput = msg.content;
-			let prefix = client.provider.get(msg.guild, 'prefix', client.commandPrefix)
-			if(commandInput.slice(0,prefix.length) != prefix) return false;
-			commandInput = commandInput.slice(prefix.length).toLowerCase();
-			let commandIndex = customCommands.findIndex(element => {return element.name.toLowerCase() === commandInput});
-			if(commandIndex <= -1) return false;
-			if(memeChannelIDs.includes(msg.channel.id) || msg.client.isOwner(msg.author) || msg.member.permissions.has('MANAGE_MESSAGES')) return msg.channel.send(customCommands[commandIndex].output);
-			else return msg.reply("You do not have permission to use that in this channel.")
-		})();
-		(function(){
-			if(!msg.guild || msg.guild.id != "163175631562080256") return false;
-			let itemChannelIDs = client.provider.get(msg.guild, 'itemChannelIDs', null);
-			if(!itemChannelIDs) return false;
-			if(!itemChannelIDs.includes(msg.channel.id)) return false;
-			if(getRandomInt(1, 10) === 10){
-				let gacha = msg.client.provider.get(msg.guild, "gacha"+msg.author.id, {rolls:0,spirits:[]});
-				gacha.rolls++
-				return msg.client.provider.set(msg.guild, "gacha"+msg.author.id, gacha);
-			}
-		})();
+				else{
+					tumbleweedLeaderboard.push(
+						{
+							score: minuteDifference,
+							username: msg.author.username,
+							id: msg.author.id
+						}
+					);
+				}
+				return client.provider.set(msg.guild, 'tumbleweedLeaderboard', tumbleweedLeaderboard);
+			})();
+			(function(){
+				let memeChannelIDs = client.provider.get(msg.guild, 'memeChannelIDs', null);
+				if(!memeChannelIDs) return false;
+				let customCommands = client.provider.get(msg.guild, 'customCommands', []);
+				let commandInput = msg.content;
+				let prefix = client.provider.get(msg.guild, 'prefix', client.commandPrefix)
+				if(commandInput.slice(0,prefix.length) != prefix) return false;
+				commandInput = commandInput.slice(prefix.length).toLowerCase();
+				let commandIndex = customCommands.findIndex(element => {return element.name.toLowerCase() === commandInput});
+				if(commandIndex <= -1) return false;
+				if(memeChannelIDs.includes(msg.channel.id) || msg.client.isOwner(msg.author) || msg.member.permissions.has('MANAGE_MESSAGES')) return msg.channel.send(customCommands[commandIndex].output);
+				else return msg.reply("You do not have permission to use that in this channel.")
+			})();
+			(function(){
+				if(!msg.guild || msg.guild.id != "163175631562080256") return false;
+				let itemChannelIDs = client.provider.get(msg.guild, 'itemChannelIDs', null);
+				if(!itemChannelIDs) return false;
+				if(!itemChannelIDs.includes(msg.channel.id)) return false;
+				if(getRandomInt(1, 10) === 10){
+					let gacha = msg.client.provider.get(msg.guild, "gacha"+msg.author.id, {rolls:0,spirits:[]});
+					gacha.rolls++
+					return msg.client.provider.set(msg.guild, "gacha"+msg.author.id, gacha);
+				}
+			})();
 		}
 		}
 		catch(err){console.error(err)}
@@ -299,7 +301,7 @@ client
 			if(reactUsers.find(function(element){return element.id === xBlacklistIDs[i]})) blacklisted++;
 		}
 		if(rea.message.author.id != client.user.id && rea.users.get(rea.message.author.id)) return rea.message.delete();
-		if(rea.count-blacklisted < client.provider.get(rea.message.guild, 'xLimit' + rea.message.channel.id, 7) || !xChannelIDs.includes(rea.message.channel.id)) return false;
+		if(rea.count-blacklisted < client.provider.get(rea.message.guild, 'xLimit' + rea.message.channel.id, 7)) return false;
 		let xlogChannelIDs = client.provider.get(rea.message.guild, 'xlogChannelIDs', []);
 		let logMessage = `Deleted ${rea.message.member.displayName}[${rea.message.author.id}]'s message[${rea.message.id}] in ${rea.message.channel}`
 		let messageAttachments = rea.message.attachments.array();
