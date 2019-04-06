@@ -239,6 +239,8 @@ client
 			(function(){
 				let memeChannelIDs = client.provider.get(msg.guild, 'memeChannelIDs', null);
 				if(!memeChannelIDs) return false;
+				let customBlacklistIDs = client.provider.get(msg.guild, 'blacklist', {}).custom;
+				if(Array.isArray(customBlacklistIDs) && customBlacklistIDs.includes(msg.author.id)) return false;
 				let customCommands = client.provider.get(msg.guild, 'customCommands', []);
 				let commandInput = msg.content;
 				let prefix = client.provider.get(msg.guild, 'prefix', client.commandPrefix)
