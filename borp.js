@@ -334,9 +334,12 @@ client.registry
 	['suggestion', 'suggestion'],
 	['mod', 'mod'],
 	['gacha', 'gacha'],
-	['tts', 'tts']
+	['tts', 'tts'],
+	['commands', 'commands', true],
+	['util', 'util']
 	])
-	.registerDefaults()
+	.registerDefaultTypes()
+	.registerDefaultCommands()
 	.registerType(require("./guild.js"))
 	.registerType(require("./time.js"))
 	.registerType(require("./memberexclude.js"))
