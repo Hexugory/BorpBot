@@ -27,7 +27,8 @@ module.exports = class BlacklistCommand extends commando.Command {
 					key: 'user',
 					label: 'mention',
 					prompt: 'Specify user.',
-					type: 'user'
+					type: 'user',
+					infinite: true
 				}
 			]
 		});
@@ -56,34 +57,32 @@ module.exports = class BlacklistCommand extends commando.Command {
 		//check for a valid argument
 		var command = msg.client.registry.findCommands(args.bc, true)[0]
 		var group = msg.client.registry.findGroups(args.bc, true)[0]
-		if(['server'].includes(args.bc) || command || group){
-			var blacklistName;
-			command ? blacklistName = command.name : null;
-			group ? blacklistName = group.name : null;
-			['server'].includes(args.bc) ? blacklistName = 'server' : null;
-			var list = this.client.provider.get(msg.guild, 'blacklist', {});
-			if(!Array.isArray(list[blacklistName])){
-				list[blacklistName] = [];
-			}
-			if(list[blacklistName].includes(msg.author.id) && !msg.client.isOwner(msg.author)){
-				return msg.reply("You are in this blacklist, you cannot manipulate it.");
+		if(!['server'].includes(args.bc) && !command && !group) return msg.channel.send(`**${blacklistName}** blacklist does not exist.`);
+		var blacklistName;
+		command ? blacklistName = command.name : null;
+		group ? blacklistName = group.name : null;
+		['server'].includes(args.bc) ? blacklistName = 'server' : null;
+		var list = this.client.provider.get(msg.guild, 'blacklist', {});
+		if(!Array.isArray(list[blacklistName])) list[blacklistName] = [];
+		var sendstr = "\n";
+		for(let user of args.user){
+			if(!list[blacklistName].includes(user.id)){
+				list[blacklistName].push(user.id);
+				this.client.provider.set(msg.guild, 'blacklist', list);
+				sendstr += `${user}: added to **${blacklistName}**\n`
 			}
 			else{
-				//check if the target isnt already in the list
-				if(!list[blacklistName].includes(args.user.id)){
-					list[blacklistName].push(args.user.id);
-					this.client.provider.set(msg.guild, 'blacklist', list);
-					return msg.channel.send(`${args.user} added to **${blacklistName}** blacklist.`);
-				}
-				else{
-					list[blacklistName].splice(list[blacklistName].indexOf(args.user.id), 1);
-					this.client.provider.set(msg.guild, 'blacklist', list);
-					return msg.channel.send(`${args.user} removed from **${blacklistName}** blacklist.`);
-				}
+				list[blacklistName].splice(list[blacklistName].indexOf(user.id), 1);
+				this.client.provider.set(msg.guild, 'blacklist', list);
+				sendstr += `${user}: removed from **${blacklistName}**\n`
 			}
 		}
+		if(sendstr.length > 1999){
+			var messageBuffer = new Buffer(sendstr, 'utf-8')
+			return msg.reply({files: [{attachment: messageBuffer,name: `result.txt`}]})
+		}
 		else{
-			return msg.channel.send(`**${blacklistName}** blacklist does not exist.`);
+			return msg.reply(sendstr)
 		}
 	};
 }
