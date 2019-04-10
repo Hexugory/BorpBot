@@ -160,27 +160,6 @@ client
 	.on('reconnecting', () => { console.warn('Reconnecting...'); })
 	.on('message', (msg) => {
 		try{
-		(function(){
-			let xChannelIDs = client.provider.get(msg.guild, 'xChannelIDs', null);
-			if(!xChannelIDs || !xChannelIDs.includes(msg.channel.id)) return false;
-			let xLimit = client.provider.get(msg.guild, 'xLimit' + msg.channel.id, 7)
-			let emoji = [];
-			let unicodeEmoji = msg.content.match(emojiRegex());
-			let customEmoji = msg.content.match(/<:\w\w*:\d\d*>/ig);
-			if(unicodeEmoji) emoji = emoji.concat(unicodeEmoji)
-			if(customEmoji) emoji = emoji.concat(customEmoji)
-			if(emoji.length >= 4) return xLimit > 1 ? msg.react('\u{274c}').catch(err => {err.code === 90001 ? msg.delete() : null}) : msg.delete();
-			let checkcount = 0
-			let checkx = setInterval(function(){
-				if((msg.attachments.array()[0] && msg.attachments.array()[0].id) || msg.embeds[0] || msg.content.match(/(https?:\/\/)?(www.)?discord.gg\/[\w\d]+/)){
-					xLimit > 1 ? msg.react('\u{274c}').catch(err => {err.code === 90001 ? msg.delete() : null}) : msg.delete();
-					return clearInterval(checkx);
-				}
-				else if(checkcount >= 3) return clearInterval(checkx);
-				checkcount++;
-			}, 1000);
-			return true
-		})();
 		if(msg.content.toLowerCase().includes("press 🇫 to pay respects") || msg.content.toLowerCase().includes("press f to pay respects")) msg.react('\u{1f1eb}')
 		if(!msg.author.bot){
 			(function(){
@@ -266,38 +245,14 @@ client
 		}
 		catch(err){console.error(err)}
 	})
-	.on('messageUpdate', (oldmsg, newmsg) => {
-		try{
-		let xChannelIDs = client.provider.get(newmsg.guild, 'xChannelIDs', null);
-		if(!xChannelIDs) return false;
-		if(!xChannelIDs.includes(newmsg.channel.id)) return false;
-		let xLimit = client.provider.get(newmsg.guild, 'xLimit' + newmsg.channel.id, 7)
-		let emoji = [];
-		let unicodeEmoji = newmsg.content.match(emojiRegex());
-		let customEmoji = newmsg.content.match(/<:\w\w*:\d\d*>/ig);
-		if(unicodeEmoji) emoji = emoji.concat(unicodeEmoji)
-		if(customEmoji) emoji = emoji.concat(customEmoji)
-		if(emoji.length >= 4) return xLimit > 1 ? newmsg.react('\u{274c}').catch(err => {err.code === 90001 ? newmsg.delete() : null}) : newmsg.delete();
-		let checkcount = 0
-		let checkx = setInterval(function(){
-			if((newmsg.attachments.array()[0] && newmsg.attachments.array()[0].id) || newmsg.embeds[0] || newmsg.content.match(/(https?:\/\/)?(www.)?discord.gg\/[\w\d]+/)){
-				xLimit > 1 ? newmsg.react('\u{274c}').catch(err => {err.code === 90001 ? newmsg.delete() : null}) : newmsg.delete();
-				return clearInterval(checkx);
-			}
-			else if(checkcount >= 3) return clearInterval(checkx);
-			checkcount++;
-		}, 1000);
-		return true;
-		}
-		catch(err){console.error(err)}
-	})
 	.on('messageReactionAdd', (rea, user) => {
 		try{
-		let xBlacklistIDs = client.provider.get(rea.message.guild, 'blacklist', {}).x;
+		if(rea.emoji.name != "❌") return false;
 		let xChannelIDs = client.provider.get(rea.message.guild, 'xChannelIDs', []);
+		if(!xChannelIDs.includes(msg.channel.id)) return false;
+		let xBlacklistIDs = client.provider.get(rea.message.guild, 'blacklist', {}).x;
 		let reactUsers = rea.users.array()
 		if(!Array.isArray(xBlacklistIDs)) xBlacklistIDs = [];
-		if(!rea.me || rea.emoji.name != "❌") return false;
 		let blacklisted = 0;
 		for(var i = 0; i < xBlacklistIDs.length; i++){
 			if(reactUsers.find(function(element){return element.id === xBlacklistIDs[i]})) blacklisted++;
