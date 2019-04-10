@@ -249,7 +249,7 @@ client
 		try{
 		if(rea.emoji.name != "❌") return false;
 		let xChannelIDs = client.provider.get(rea.message.guild, 'xChannelIDs', []);
-		if(!xChannelIDs.includes(msg.channel.id)) return false;
+		if(!xChannelIDs.includes(rea.message.channel.id)) return false;
 		let xBlacklistIDs = client.provider.get(rea.message.guild, 'blacklist', {}).x;
 		let reactUsers = rea.users.array()
 		if(!Array.isArray(xBlacklistIDs)) xBlacklistIDs = [];
