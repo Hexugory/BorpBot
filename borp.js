@@ -74,18 +74,6 @@ function clone(obj) {
     throw new Error("Unable to copy obj! Its type isn't supported.");
 }
 
-function binarySearch(array, value, key){
-	let left = 0;
-	let right = array.length;
-	let mid;
-	while(left < right){
-		mid = (left + right) / 2;
-		if(array[mid][key] <= value) left = mid+1;
-		else right = mid;
-	};
-	return right;
-};
-
 function generateNewItem(){
 	let item = {};
 	item.quality = getRandomInt(1, 100) > 90 ? (getRandomInt(1, 100) > 90 ? "Legendary" : "Epic") : "Ordinary";
