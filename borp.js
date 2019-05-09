@@ -73,6 +73,19 @@ function clone(obj) {
 
     throw new Error("Unable to copy obj! Its type isn't supported.");
 }
+
+function binarySearch(array, value, key){
+	let left = 0;
+	let right = array.length;
+	let mid;
+	while(left < right){
+		mid = (left + right) / 2;
+		if(array[mid][key] <= value) left = mid+1;
+		else right = mid;
+	};
+	return right;
+};
+
 function generateNewItem(){
 	let item = {};
 	item.quality = getRandomInt(1, 100) > 90 ? (getRandomInt(1, 100) > 90 ? "Legendary" : "Epic") : "Ordinary";
@@ -160,7 +173,38 @@ client
 	.on('reconnecting', () => { console.warn('Reconnecting...'); })
 	.on('message', (msg) => {
 		try{
-		if(msg.content.toLowerCase().includes("press 🇫 to pay respects") || msg.content.toLowerCase().includes("press f to pay respects")) msg.react('\u{1f1eb}')
+		if(msg.content.toLowerCase().includes("press 🇫 to pay respects") || msg.content.toLowerCase().includes("press f to pay respects")) msg.react('\u{1f1eb}');
+		(function(){
+			if(!msg.channel.xRecentMessages) msg.channel.xRecentMessages = [];
+			msg.channel.xRecentEmbeds = [];
+			let xActivityTime = client.provider.get(msg.guild, 'xActivityTime'+msg.channel.id, 1200000);
+			let xEmbedTime = client.provider.get(msg.guild, 'xEmbedTime'+msg.channel.id, 5000);
+			let xActivityRatio = client.provider.get(msg.guild, 'xActivityRatio'+msg.channel.id, 0.25);
+			let xEmbedPenalty = client.provider.get(msg.guild, 'xEmbedPenalty'+msg.channel.id, 2);
+			let xMin = client.provider.get(msg.guild, 'xMin'+msg.channel.id, 1);
+			let xMax = client.provider.get(msg.guild, 'xMax'+msg.channel.id, 30);
+			let currentTime = new Date();
+			msg.channel.xRecentMessages.push(msg);
+			let i = 0;
+			while(msg.channel.xRecentMessages[i] && msg.channel.xRecentMessages[i].createdAt < currentTime-xActivityTime){
+				i++;
+			};
+			msg.channel.xRecentMessages.splice(0,i);
+			i = msg.channel.xRecentMessages.length-1;
+			while(msg.channel.xRecentMessages[i] && msg.channel.xRecentMessages[i].createdAt > currentTime-xEmbedTime){
+				if(msg.channel.xRecentMessages[i].embeds[0] || msg.channel.xRecentMessages[i].attachments.array()[0]) msg.channel.xRecentEmbeds.push(msg.channel.xRecentMessages[i]);
+				i--;
+			};
+			let uniqueIDs = [];
+			for(let message of msg.channel.xRecentMessages){
+				if(!uniqueIDs.includes(message.author.id)) uniqueIDs.push(message.author.id);
+			};
+			let sentEmbeds = 0;
+			for(let message of msg.channel.xRecentEmbeds){
+				if(message.author.id === msg.author.id) sentEmbeds += message.embeds.length + message.attachments.array().length;
+			};
+			return msg.xCountRequired = Math.max(Math.min(Math.ceil(xActivityRatio * uniqueIDs.length - xEmbedPenalty * sentEmbeds), xMax), xMin);
+		})();
 		if(!msg.author.bot){
 			(function(){
 				let itemChannelIDs = client.provider.get(msg.guild, 'itemChannelIDs', null);
@@ -247,7 +291,7 @@ client
 	})
 	.on('messageReactionAdd', (rea, user) => {
 		try{
-		if(rea.emoji.name != "❌") return false;
+		if(!rea.message.xCountRequired || rea.emoji.name != "❌") return false;
 		let xChannelIDs = client.provider.get(rea.message.guild, 'xChannelIDs', []);
 		if(!xChannelIDs.includes(rea.message.channel.id)) return false;
 		let xBlacklistIDs = client.provider.get(rea.message.guild, 'blacklist', {}).x;
@@ -258,7 +302,7 @@ client
 			if(reactUsers.find(function(element){return element.id === xBlacklistIDs[i]})) blacklisted++;
 		}
 		if(rea.message.author.id != client.user.id && rea.users.get(rea.message.author.id)) return rea.message.delete();
-		if(rea.count-blacklisted < client.provider.get(rea.message.guild, 'xLimit' + rea.message.channel.id, 7)) return false;
+		if(rea.count-blacklisted < rea.message.xCountRequired) return false;
 		let xlogChannelIDs = client.provider.get(rea.message.guild, 'xlogChannelIDs', []);
 		let logMessage = `Deleted ${rea.message.member.displayName}[${rea.message.author.id}]'s message[${rea.message.id}] in ${rea.message.channel}`
 		let messageAttachments = rea.message.attachments.array();

@@ -8,17 +8,64 @@ module.exports = class xLimitCommand extends commando.Command {
 			name: 'setx',
 			group: 'x',
 			memberName: 'setx',
-			description: 'Set the amount of :x:s required to delete a message. (Manage Messages)',
+			description: 'Set the variables related to calculating the required x count for the channel. (Manage Messages)',
 			examples: ['\'setx 5'],
 			guildOnly: true,
 
 			args: [
 				{
-					key: 'xl',
-					label: 'xl',
-					default: 'a',
-					prompt: 'Specify x limit.',
-					type: 'integer'
+					key: 'xActivityTime',
+					label: 'time to look back (in milliseconds)',
+					prompt: 'Specify the time to look back (in milliseconds). (Default 1200000)',
+					type: 'integer',
+					validate: arg => {
+						return 60000 <= arg <= 3600000;
+					}
+				},
+				{
+					key: 'xEmbedTime',
+					label: 'time to look back for embeds (in milliseconds)',
+					prompt: 'Specify the time to look back for embeds (in milliseconds). (Default 5000)',
+					type: 'integer',
+					validate: arg => {
+						return 1000 <= arg <= 60000;
+					}
+				},
+				{
+					key: 'xActivityRatio',
+					label: 'amount to multiply unique users by',
+					prompt: 'Specify the amount to multiply unique users by. (Default 0.25)',
+					type: 'float',
+					validate: arg => {
+						return 0.1 <= arg <= 1;
+					}
+				},
+				{
+					key: 'xEmbedPenalty',
+					label: 'amount to lower the x limit for recently posted embeds',
+					prompt: 'Specify the amount to lower the x limit for recently posted embeds. (Default 2)',
+					type: 'integer',
+					validate: arg => {
+						return 0 <= arg <= 100;
+					}
+				},
+				{
+					key: 'xMin',
+					label: 'minimum x count',
+					prompt: 'Specify the minimum x count. (Default 1)',
+					type: 'integer',
+					validate: arg => {
+						return 1 <= arg <= 100;
+					}
+				},
+				{
+					key: 'xMax',
+					label: 'maximum x count',
+					prompt: 'Specify the maximum x count. (Default 30)',
+					type: 'integer',
+					validate: arg => {
+						return 2 <= arg <= 100;
+					}
 				}
 			]
 		});
@@ -29,12 +76,17 @@ module.exports = class xLimitCommand extends commando.Command {
 	}
 
 	async run(msg, args) {
-		if(args.xl === 'a'){
-			return msg.reply(`The current :x: limit in ${msg.channel} is ${this.client.provider.get(msg.guild, 'xLimit' + msg.channel.id, 7)}.`)
-		}
-		else{
-			this.client.provider.set(msg.guild, 'xLimit' + msg.channel.id, args.xl);
-			return msg.channel.send(`:x: limit set to ${args.xl} in ${msg.channel}.`);
-		}
+		msg.client.provider.set(msg.guild, 'xActivityTime'+msg.channel.id, args.xActivityTime);
+		msg.client.provider.set(msg.guild, 'xEmbedTime'+msg.channel.id, args.xEmbedTime);
+		msg.client.provider.set(msg.guild, 'xActivityRatio'+msg.channel.id, args.xActivityRatio);
+		msg.client.provider.set(msg.guild, 'xEmbedPenalty'+msg.channel.id, args.xEmbedPenalty);
+		msg.client.provider.set(msg.guild, 'xMin'+msg.channel.id, args.xMin);
+		msg.client.provider.set(msg.guild, 'xMax'+msg.channel.id, args.xMax);
+		return msg.reply(`xActivityTime set to ${args.xActivityTime}
+xEmbedTime set to ${args.xEmbedTime}
+xActivityRatio set to ${args.xActivityRatio}
+xEmbedPenalty set to ${args.xEmbedPenalty}
+xMin set to ${args.xMin}
+xMax set to ${args.xMax}`);
 	};
 }
