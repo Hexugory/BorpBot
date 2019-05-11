@@ -7,9 +7,10 @@ const config = require('./config.json');
 const prompt = require('prompt');
 const emojiRegex = require('emoji-regex');
 const moment = require('moment');
-const ms = require('./minestat');
+const fs = require('fs');
 var duelconfig = require('./duel.json');
 var tumbleweedDates = {};
+const xStream = fs.createWriteStream('xLogs.txt', {flags: 'a'});
 for(var i = 0; i < duelconfig.itemmovesets.length; i++){
 	duelconfig.types.push({
 		name: duelconfig.itemmovesets[i].name,
@@ -133,27 +134,6 @@ client
 		}
 		catch(err){console.error(err)}
 		}, 60000)
-		if(client.user.id === "164203810082914304"){
-			client.guilds.get("163175631562080256").channels.get("163495560626700288").messages.fetch('393227876649926667')
-			.then(msg => message = msg)
-			.catch(console.error);
-			setInterval(function(){
-				var embed = new Discord.MessageEmbed();
-				ms.init('mamizou.net', 25565, function(result){
-					embed.setAuthor('Modded Minecraft Server')
-					if(ms.online){
-						embed.setFooter('Online')
-						embed.setColor([0, 150, 0])
-					}
-					else{
-						embed.setFooter('Offline')
-						embed.setColor([150, 0, 0])
-					}
-					embed.setDescription(`Players: ${ms.current_players ? ms.current_players : 0}/${ms.max_players ? ms.max_players : 0}\nIP: ${ms.address}:${ms.port}\nPack: FTB Infinity Evolved`)
-					message.edit(embed)
-				});
-			}, 600000)
-		}
 		}
 		catch(err){console.error(err)}
 	})
@@ -163,6 +143,8 @@ client
 		try{
 		if(msg.content.toLowerCase().includes("press 🇫 to pay respects") || msg.content.toLowerCase().includes("press f to pay respects")) msg.react('\u{1f1eb}');
 		(function(){
+			let xChannelIDs = client.provider.get(msg.guild, 'xChannelIDs', []);
+			if(!xChannelIDs.includes(msg.channel.id)) return false;
 			if(!msg.channel.xRecentMessages) msg.channel.xRecentMessages = [];
 			msg.channel.xRecentEmbeds = [];
 			let xActivityTime = client.provider.get(msg.guild, 'xActivityTime'+msg.channel.id, 1200000);
@@ -186,12 +168,21 @@ client
 			let uniqueIDs = [];
 			for(let message of msg.channel.xRecentMessages){
 				if(!uniqueIDs.includes(message.author.id)) uniqueIDs.push(message.author.id);
+				if(message.reactions){
+					message.reactions.forEach(reaction => {
+						reaction.users.forEach(user => {
+							if(!uniqueIDs.includes(user.id)) uniqueIDs.push(user.id);
+						});
+					});
+				};
 			};
 			let sentEmbeds = 0;
 			for(let message of msg.channel.xRecentEmbeds){
 				if(message.author.id === msg.author.id) sentEmbeds += message.embeds.length + message.attachments.array().length;
 			};
-			return msg.xCountRequired = Math.max(Math.min(Math.ceil(xActivityRatio * uniqueIDs.length - xEmbedPenalty * sentEmbeds), xMax), xMin);
+			let xCountRequired = Math.max(Math.min(Math.ceil(xActivityRatio * uniqueIDs.length - xEmbedPenalty * sentEmbeds), xMax), xMin)
+			if(msg.guild.id === "225034347558862849") xStream.write(`${new Date().getTime()} ${msg.channel.name} ${msg.author.tag} ${msg.author.id} ${xCountRequired}\n`);
+			return msg.xCountRequired = xCountRequired;
 		})();
 		if(!msg.author.bot){
 			(function(){
