@@ -181,7 +181,7 @@ client
 				if(message.author.id === msg.author.id) sentEmbeds += message.embeds.length + message.attachments.array().length;
 			};
 			let xCountRequired = Math.max(Math.min(Math.ceil(xActivityRatio * uniqueIDs.length - xEmbedPenalty * sentEmbeds), xMax), xMin)
-			if(msg.guild.id === "163175631562080256") xStream.write(`${new Date().getTime()} ${msg.channel.name} ${msg.author.tag} ${msg.author.id} ${xCountRequired}\n`);
+			if(msg.guild.id === "163175631562080256") xStream.write(`${new Date().getTime()} ${msg.channel.name} ${msg.author.tag} ${msg.author.id} ${xCountRequired} ${sentEmbeds}\n`);
 			return msg.xCountRequired = xCountRequired;
 		})();
 		if(!msg.author.bot){
