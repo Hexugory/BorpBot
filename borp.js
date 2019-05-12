@@ -182,7 +182,7 @@ client
 			};
 			let xCountRequired = Math.max(Math.min(Math.ceil(xActivityRatio * uniqueIDs.length - xEmbedPenalty * sentEmbeds), xMax), xMin)
 			if(msg.guild.id === "163175631562080256") xStream.write(`${new Date().getTime()} ${msg.channel.name} ${msg.author.tag} ${msg.author.id} ${xCountRequired} ${sentEmbeds}\n`);
-			return msg.xCountRequired = xCountRequired;
+			return msg.member['xCountRequired'+msg.channel.id] = xCountRequired;
 		})();
 		if(!msg.author.bot){
 			(function(){
@@ -270,7 +270,7 @@ client
 	})
 	.on('messageReactionAdd', (rea, user) => {
 		try{
-		if(!rea.message.xCountRequired || rea.emoji.name != "❌") return false;
+		if(!rea.message.member['xCountRequired'+rea.message.channel.id] || rea.emoji.name != "❌") return false;
 		let xChannelIDs = client.provider.get(rea.message.guild, 'xChannelIDs', []);
 		if(!xChannelIDs.includes(rea.message.channel.id)) return false;
 		let xBlacklistIDs = client.provider.get(rea.message.guild, 'blacklist', {}).x;
@@ -281,7 +281,7 @@ client
 			if(reactUsers.find(function(element){return element.id === xBlacklistIDs[i]})) blacklisted++;
 		}
 		if(rea.message.author.id != client.user.id && rea.users.get(rea.message.author.id)) return rea.message.delete();
-		if(rea.count-blacklisted < rea.message.xCountRequired) return false;
+		if(rea.count-blacklisted < rea.message.member['xCountRequired'+rea.message.channel.id]) return false;
 		let xlogChannelIDs = client.provider.get(rea.message.guild, 'xlogChannelIDs', []);
 		let logMessage = `Deleted ${rea.message.member.displayName}[${rea.message.author.id}]'s message[${rea.message.id}] in ${rea.message.channel}`
 		let messageAttachments = rea.message.attachments.array();
