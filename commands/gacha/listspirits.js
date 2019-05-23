@@ -27,7 +27,7 @@ module.exports = class ListSpiritsCommand extends commando.Command {
 
 	async run(msg, args) {
 		var gacha = msg.client.provider.get(msg.guild, "gacha"+msg.author.id, {rolls:0,spirits:[]});
-		var returnEmbed = new MessageEmbed().setTitle(`List (Page ${args.page})`);
+		var returnEmbed = new MessageEmbed().setTitle(`List (Page ${args.page}/${Math.ceil(gacha.spirits.length/20)})`);
 		var description = '';
 		var startIndex = 0+20*(args.page-1);
 		var endIndex = Math.min(gacha.spirits.length, startIndex+20);
