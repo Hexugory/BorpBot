@@ -258,7 +258,7 @@ client
 				let itemChannelIDs = client.provider.get(msg.guild, 'itemChannelIDs', null);
 				if(!itemChannelIDs) return false;
 				if(!itemChannelIDs.includes(msg.channel.id)) return false;
-				if(getRandomInt(1, 10) === 10){
+				if(getRandomInt(1, 100) === 100){
 					let gacha = msg.client.provider.get(msg.guild, "gacha"+msg.author.id, {rolls:0,spirits:[]});
 					gacha.rolls++
 					return msg.client.provider.set(msg.guild, "gacha"+msg.author.id, gacha);
