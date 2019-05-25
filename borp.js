@@ -261,6 +261,7 @@ client
 				if(getRandomInt(1, 100) === 100){
 					let gacha = msg.client.provider.get(msg.guild, "gacha"+msg.author.id, {rolls:0,spirits:[]});
 					gacha.rolls++
+					if(msg.client.provider.get(msg.guild, 'optgachalist', []).includes(msg.author.id)) return msg.author.send(`You got a roll!`);
 					return msg.client.provider.set(msg.guild, "gacha"+msg.author.id, gacha);
 				}
 			})();
