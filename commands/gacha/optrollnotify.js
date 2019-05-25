@@ -23,12 +23,12 @@ module.exports = class OptItemNotifyCommand extends commando.Command {
 		if(!optlist.includes(msg.author.id)){
 			optlist.push(msg.author.id);
 			this.client.provider.set(msg.guild, 'optgachalist', optlist);
-			return msg.reply(`You will now be notified when you get an item.`);
+			return msg.reply(`You will now be notified when you get a roll.`);
 		}
 		else{
 			optlist.splice(optlist.indexOf(msg.author.id), 1);
 			this.client.provider.set(msg.guild, 'optgachalist', optlist);
-			return msg.reply(`You will no longer be notified when you get an item.`);
+			return msg.reply(`You will no longer be notified when you get a roll.`);
 		}
 	}
 };
