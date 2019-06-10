@@ -39,8 +39,8 @@ module.exports = class ListSuggestionsCommand extends commando.Command {
 		var suggestions = this.client.provider.get(msg.guild, 'suggestions', []);
 		var sendstr = "";
 		for(var i = 0; i < suggestions.length; i++){
-			var fetched = await msg.guild.members.fetch(suggestions[i].user).catch(err => {return "Missing Member"});
-			var name = fetched ? fetched.user.username : "[Not Found]"
+			var fetched = await msg.guild.members.fetch(suggestions[i].user).catch(err => {return "[Not Found]"});
+			var name = typeof fetched != 'string' ? fetched.user.username : fetched;
 			var fromstr = suggestions[i].anonymous ? "[Anonymous]" : `${name}`;
 			sendstr += `${fromstr} suggested: ${suggestions[i].suggestion}\nSuggestion ID: ${suggestions[i].id}\n`
 		}
