@@ -10,7 +10,6 @@ const moment = require('moment');
 const fs = require('fs');
 var duelconfig = require('./duel.json');
 var tumbleweedDates = {};
-const xStream = fs.createWriteStream('xLogs.txt', {flags: 'a'});
 for(var i = 0; i < duelconfig.itemmovesets.length; i++){
 	duelconfig.types.push({
 		name: duelconfig.itemmovesets[i].name,
@@ -181,7 +180,6 @@ client
 				if(message.author.id === msg.author.id) sentEmbeds += message.embeds.length + message.attachments.array().length;
 			};
 			let xCountRequired = Math.max(Math.min(Math.ceil(xActivityRatio * uniqueIDs.length - xEmbedPenalty * sentEmbeds), xMax), xMin)
-			if(msg.guild.id === "163175631562080256") xStream.write(`${new Date().getTime()} ${msg.channel.name} ${msg.author.tag} ${msg.author.id} ${xCountRequired} ${sentEmbeds}\n`);
 			return msg.member['xCountRequired'+msg.channel.id] = xCountRequired;
 		})();
 		if(!msg.author.bot){
