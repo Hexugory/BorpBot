@@ -307,7 +307,7 @@ client
 					.setTitle('Drop')
 					.setDescription('A user appeared!\nTry guessing their username with `\'claim <username>` to claim them!')
 					.setImage(botspam.drop.avatar);
-					return msg.channel.send(returnEmbed);
+					return botspam.send(returnEmbed);
 				}
 			})();
 		}
