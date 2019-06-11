@@ -30,7 +30,7 @@ module.exports = class ClaimCommand extends commando.Command {
 
 	async run(msg, args) {
 		if(!msg.channel.drop) return msg.reply('There\'s no drop here.');
-		if(args.username != msg.channel.drop.username) return msg.reply('Incorrect!');
+		if(args.username.toLowerCase() != msg.channel.drop.username.toLowerCase()) return msg.reply('Incorrect!');
 		var gacha = msg.client.provider.get(msg.guild, "gacha"+msg.author.id, {rolls:0,spirits:[]});
 		gacha.spirits.unshift(msg.channel.drop.id);
 		msg.client.provider.set(msg.guild, "gacha"+msg.author.id, gacha)
