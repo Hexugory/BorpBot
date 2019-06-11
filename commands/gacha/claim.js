@@ -32,7 +32,7 @@ module.exports = class ClaimCommand extends commando.Command {
 		if(!msg.channel.drop) return msg.reply('There\'s no drop here.');
 		if(args.username.toLowerCase() != msg.channel.drop.username.toLowerCase()) return msg.reply('Incorrect!');
 		var gacha = msg.client.provider.get(msg.guild, "gacha"+msg.author.id, {rolls:0,spirits:[]});
-		gacha.spirits.unshift(msg.channel.drop.id);
+		gacha.spirits.push(msg.channel.drop.id);
 		msg.client.provider.set(msg.guild, "gacha"+msg.author.id, gacha)
 		var returnEmbed = new MessageEmbed()
 			.setTitle(`You got: ${msg.channel.drop.tag}!`)

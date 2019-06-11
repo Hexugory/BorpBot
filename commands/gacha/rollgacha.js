@@ -24,7 +24,7 @@ module.exports = class RollGachaCommand extends commando.Command {
 		if(gacha.rolls < 1) return msg.reply('You dont have any rolls.');
 		var fullMemberList = await msg.guild.members.fetch();
 		var gachaGuy = fullMemberList.random();
-		gacha.spirits.unshift(gachaGuy.user.id);
+		gacha.spirits.push(gachaGuy.user.id);
 		gacha.rolls--;
 		msg.client.provider.set(msg.guild, "gacha"+msg.author.id, gacha)
 		var returnEmbed = new MessageEmbed()
