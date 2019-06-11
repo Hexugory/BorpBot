@@ -24,14 +24,17 @@ module.exports = class ListSpiritsCommand extends commando.Command {
 		});
 	}
 	
+	hasPermission(msg) {
+		return msg.client.isOwner(msg.author) || (msg.guild  && msg.guild.id === "163175631562080256" && (msg.member.permissions.has('MANAGE_MESSAGES') || msg.client.provider.get(msg.guild, 'memeChannelIDs', []).includes(msg.channel.id)))
+	}
 
 	async run(msg, args) {
 		var gacha = msg.client.provider.get(msg.guild, "gacha"+msg.author.id, {rolls:0,spirits:[]});
 		var returnEmbed = new MessageEmbed().setTitle(`List (Page ${args.page}/${Math.ceil(gacha.spirits.length/20)})`);
 		var description = '';
-		var startIndex = 0+20*(args.page-1);
-		var endIndex = Math.min(gacha.spirits.length, startIndex+20);
-		for(var i = startIndex; i < endIndex; i++){
+		var endIndex = gacha.spirits.length-1-20*(args.page-1);
+		var startIndex = Math.max(0, endIndex-20)
+		for(var i = endIndex; i > startIndex; i--){
 			let dude = msg.guild.members.get(gacha.spirits[i])
 			dude = dude ? dude : await msg.guild.members.fetch(gacha.spirits[i]).catch(err => {return 'Dead User'});
 			if(dude.user) dude = dude.user.tag;
