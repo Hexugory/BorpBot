@@ -9,7 +9,7 @@ module.exports = class BuyRollsCommand extends commando.Command {
 			aliases: ['buyroll'],
 			group: 'gacha',
 			memberName: 'buyrolls',
-			description: 'Buy gacha rolls for 6000 BorpDust.\nExclusive to Touhou Discord.',
+			description: 'Buy gacha rolls for 3000 BorpDust.\nExclusive to Touhou Discord.',
 			examples: ['\'buyroll', '\'buyrolls 20'],
 			guildOnly: true,
 			
@@ -31,8 +31,8 @@ module.exports = class BuyRollsCommand extends commando.Command {
 
 	async run(msg, args) {
 		var duelstats = msg.client.provider.get(msg.guild, "duelstats", {});
-		if(!duelstats[msg.author.id] || duelstats[msg.author.id].borpdust < 6000*args.amount) return msg.reply("You don't have enough BorpDust.");
-		duelstats[msg.author.id].borpdust -= 6000*args.amount;
+		if(!duelstats[msg.author.id] || duelstats[msg.author.id].borpdust < 3000*args.amount) return msg.reply("You don't have enough BorpDust.");
+		duelstats[msg.author.id].borpdust -= 3000*args.amount;
 		var gacha = msg.client.provider.get(msg.guild, "gacha"+msg.author.id, {rolls:0,spirits:[]});
 		gacha.rolls += args.amount;
 		msg.client.provider.set(msg.guild, "gacha"+msg.author.id, gacha);
