@@ -133,6 +133,18 @@ client
 		}
 		catch(err){console.error(err)}
 		}, 60000)
+		setInterval(function(){
+			try{
+				let activeMembers = client.provider.get('163175631562080256', 'activeMembers', {});
+				for(let member in activeMembers){
+					if(moment.utc().isAfter(moment.utc(member.postDate).add(1, 'months'))){
+						delete activeMembers[member.id];
+					}
+				}
+				return client.provider.set('163175631562080256', 'activeMembers', activeMembers);
+			}
+			catch(err){console.error(err)}
+		}, 86400000)
 		}
 		catch(err){console.error(err)}
 	})
@@ -181,6 +193,26 @@ client
 			};
 			let xCountRequired = Math.max(Math.min(Math.ceil(xActivityRatio * uniqueIDs.length - xEmbedPenalty * sentEmbeds), xMax), xMin)
 			return msg.member['xCountRequired'+msg.channel.id] = xCountRequired;
+		})();
+		(function(){
+			if(!msg.guild || msg.guild.id != "163175631562080256") return false;
+			let activeMembers = msg.client.provider.get(msg.guild, 'activeMembers', {});
+			if(activeMembers[msg.author.id]) {
+				activeMembers[msg.author.id].postDate = moment.utc();
+				activeMembers[msg.author.id].tag = msg.author.tag;
+				activeMembers[msg.author.id].username = msg.author.username;
+				activeMembers[msg.author.id].avatar = msg.author.avatarURL();
+			}
+			else{
+				activeMembers[msg.author.id] = {
+					tag: msg.author.tag,
+					username: msg.author.username,
+					postDate: moment.utc(),
+					id: msg.author.id,
+					avatar: msg.author.avatarURL()
+				};
+			};
+			return msg.client.provider.set(msg.guild, 'activeMembers', activeMembers);
 		})();
 		if(!msg.author.bot){
 			(function(){
@@ -251,7 +283,7 @@ client
 				if(memeChannelIDs.includes(msg.channel.id) || msg.client.isOwner(msg.author) || msg.member.permissions.has('MANAGE_MESSAGES')) return msg.channel.send(customCommands[commandIndex].output);
 				else return msg.reply("You do not have permission to use that in this channel.")
 			})();
-			(function(){
+			/*(function(){
 				if(!msg.guild || msg.guild.id != "163175631562080256") return false;
 				let itemChannelIDs = client.provider.get(msg.guild, 'itemChannelIDs', null);
 				if(!itemChannelIDs) return false;
@@ -261,6 +293,21 @@ client
 					gacha.rolls++
 					if(msg.client.provider.get(msg.guild, 'optgachalist', []).includes(msg.author.id)) msg.author.send(`You got a roll!`);
 					return msg.client.provider.set(msg.guild, "gacha"+msg.author.id, gacha);
+				}
+			})();*/
+			(function(){
+				if(!msg.guild || msg.guild.id != "163175631562080256") return false;
+				if(getRandomInt(1, 100) === 100){
+					let activeMembers = msg.client.provider.get(msg.guild, 'activeMembers', {});
+					let keys = Object.keys(activeMembers);
+					if(keys.length <= 0) return false;
+					let botspam = msg.guild.channels.get('372835728574382090');
+					botspam.drop = activeMembers[keys[ keys.length * Math.random() << 0]];
+					var returnEmbed = new Discord.MessageEmbed()
+					.setTitle('Drop')
+					.setDescription('A user appeared!\nTry guessing their username with `\'claim <username>` to claim them!')
+					.setImage(botspam.drop.avatar);
+					return msg.channel.send(returnEmbed);
 				}
 			})();
 		}

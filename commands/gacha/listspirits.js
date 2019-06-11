@@ -32,10 +32,9 @@ module.exports = class ListSpiritsCommand extends commando.Command {
 		var startIndex = 0+20*(args.page-1);
 		var endIndex = Math.min(gacha.spirits.length, startIndex+20);
 		for(var i = startIndex; i < endIndex; i++){
-			let dude = await msg.guild.members.fetch(gacha.spirits[i]);
-			if(dude) dude = dude.user.tag;
-			else dude = 'Dead User';
-			description += `${dude}\n`;
+			let dude = await msg.guild.members.fetch(gacha.spirits[i]).catch(err => {return 'Dead User'});
+			if(dude.user) dude = dude.user.tag;
+			description += `#${i} ${dude}\n`;
 		}
 		returnEmbed.setDescription(description)
 			.setFooter(`You have ${gacha.rolls} rolls.`);
