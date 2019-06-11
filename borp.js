@@ -303,11 +303,11 @@ client
 					if(keys.length <= 0) return false;
 					let botspam = msg.guild.channels.get('372835728574382090');
 					botspam.drop = activeMembers[keys[ keys.length * Math.random() << 0]];
-					var returnEmbed = new Discord.MessageEmbed()
+					let returnEmbed = new Discord.MessageEmbed()
 					.setTitle('Drop')
 					.setDescription('A user appeared!\nTry guessing their username with `\'claim <username>` to claim them!')
 					.setImage(botspam.drop.avatar);
-					return botspam.send(returnEmbed);
+					return botspam.send('<@&587842201040715809>', returnEmbed);
 				}
 			})();
 		}
