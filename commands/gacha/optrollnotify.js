@@ -6,7 +6,7 @@ module.exports = class OptItemNotifyCommand extends commando.Command {
 		super(client, {
 			aliases: ['fuckurdad'],
 			name: 'optrollnotify',
-			group: 'meme',
+			group: 'gacha',
 			memberName: 'optrollnotify',
 			description: 'Toggle notifications for when you get rolls.',
 			examples: ['\'optrollnotify'],
