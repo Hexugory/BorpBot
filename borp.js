@@ -297,7 +297,7 @@ client
 			})();
 			(function(){
 				if(!msg.guild || msg.guild.id != "163175631562080256") return false;
-				if(getRandomInt(1, 100) === 100){
+				if(getRandomInt(1, 200) === 200){
 					let activeMembers = msg.client.provider.get(msg.guild, 'activeMembers', {});
 					let keys = Object.keys(activeMembers);
 					if(keys.length <= 0) return false;
