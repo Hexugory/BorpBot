@@ -283,7 +283,7 @@ client
 				if(memeChannelIDs.includes(msg.channel.id) || msg.client.isOwner(msg.author) || msg.member.permissions.has('MANAGE_MESSAGES')) return msg.channel.send(customCommands[commandIndex].output);
 				else return msg.reply("You do not have permission to use that in this channel.")
 			})();
-			/*(function(){
+			(function(){
 				if(!msg.guild || msg.guild.id != "163175631562080256") return false;
 				let itemChannelIDs = client.provider.get(msg.guild, 'itemChannelIDs', null);
 				if(!itemChannelIDs) return false;
@@ -294,7 +294,7 @@ client
 					if(msg.client.provider.get(msg.guild, 'optgachalist', []).includes(msg.author.id)) msg.author.send(`You got a roll!`);
 					return msg.client.provider.set(msg.guild, "gacha"+msg.author.id, gacha);
 				}
-			})();*/
+			})();
 			(function(){
 				if(!msg.guild || msg.guild.id != "163175631562080256") return false;
 				if(getRandomInt(1, 100) === 100){
