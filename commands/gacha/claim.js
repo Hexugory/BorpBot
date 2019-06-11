@@ -37,6 +37,7 @@ module.exports = class ClaimCommand extends commando.Command {
 		var returnEmbed = new MessageEmbed()
 			.setTitle(`You got: ${msg.channel.drop.tag}!`)
 			.setImage(msg.channel.drop.avatar);
+		delete msg.channel.drop;
 		return msg.reply(returnEmbed);
 	}
 };
