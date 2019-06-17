@@ -33,7 +33,7 @@ const client = new commando.Client({
 function sendMessages(arr, content){
 	for(var i = 0; i < arr.length; i++){
 		try{
-			client.channels.get(arr[i]).send(content)
+			client.channels.get(arr[i]).send(content).catch(err => console.error(err));
 		}
 		catch(err){console.error(err)}
 	}
@@ -125,7 +125,7 @@ client
 			for(var i = 0; i < times.length; i++){
 				if(moment.utc().isAfter(times[i].time)){
 					let recipient = client.users.get(times[i].user);
-					if(recipient) client.users.get(times[i].user).send(`You asked to be reminded at ${moment.utc(times[i].time).format('MMMM Do YYYY, h:mm:ss a ZZ')} of:  ${times[i].message}`)
+					if(recipient) client.users.get(times[i].user).send(`You asked to be reminded at ${moment.utc(times[i].time).format('MMMM Do YYYY, h:mm:ss a ZZ')} of:  ${times[i].message}`).catch(err => console.error(err));
 					times.splice(i, 1)
 				}
 			}
@@ -229,7 +229,7 @@ client
 						duelstats[msg.author.id] = {items: [generateNewItem()], equipped: [null, null, null]};
 						msg.client.provider.set(msg.guild, "duelstats", duelstats);
 					}
-					if(msg.client.provider.get(msg.guild, 'optlist', []).includes(msg.author.id)) return msg.author.send(`You have gained an item: ${createDescString(duelstats[msg.author.id].items[duelstats[msg.author.id].items.length-1])}`);
+					if(msg.client.provider.get(msg.guild, 'optlist', []).includes(msg.author.id)) return msg.author.send(`You have gained an item: ${createDescString(duelstats[msg.author.id].items[duelstats[msg.author.id].items.length-1])}`).catch(err => console.error(err));
 				}
 				return true;
 			})();
@@ -280,7 +280,7 @@ client
 				commandInput = commandInput.slice(prefix.length).toLowerCase();
 				let commandIndex = customCommands.findIndex(element => {return element.name.toLowerCase() === commandInput});
 				if(commandIndex <= -1) return false;
-				if(memeChannelIDs.includes(msg.channel.id) || msg.client.isOwner(msg.author) || msg.member.permissions.has('MANAGE_MESSAGES')) return msg.channel.send(customCommands[commandIndex].output);
+				if(memeChannelIDs.includes(msg.channel.id) || msg.client.isOwner(msg.author) || msg.member.permissions.has('MANAGE_MESSAGES')) return msg.channel.send(customCommands[commandIndex].output).catch(err => console.error(err));
 				else return msg.reply("You do not have permission to use that in this channel.")
 			})();
 			(function(){
@@ -291,7 +291,7 @@ client
 				if(getRandomInt(1, 100) === 100){
 					let gacha = msg.client.provider.get(msg.guild, "gacha"+msg.author.id, {rolls:0,spirits:[]});
 					gacha.rolls++
-					if(msg.client.provider.get(msg.guild, 'optgachalist', []).includes(msg.author.id)) msg.author.send(`You got a roll!`);
+					if(msg.client.provider.get(msg.guild, 'optgachalist', []).includes(msg.author.id)) msg.author.send(`You got a roll!`).catch(err => console.error(err));
 					return msg.client.provider.set(msg.guild, "gacha"+msg.author.id, gacha);
 				}
 			})();
@@ -307,7 +307,7 @@ client
 					.setTitle('Drop')
 					.setDescription('A user appeared!\nTry guessing their username with `\'claim <username>` to claim them!')
 					.setImage(botspam.drop.avatar);
-					return botspam.send('<@&587842201040715809>', returnEmbed);
+					return botspam.send('<@&587842201040715809>', returnEmbed).catch(err => console.error(err));
 				}
 			})();
 		}
