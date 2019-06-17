@@ -178,7 +178,7 @@ client
 			};
 			let uniqueIDs = [];
 			for(let message of msg.channel.xRecentMessages){
-				if(!msg.author.bot && !uniqueIDs.includes(message.author.id)) uniqueIDs.push(message.author.id);
+				if(!message.author.bot && !uniqueIDs.includes(message.author.id)) uniqueIDs.push(message.author.id);
 				if(message.reactions){
 					message.reactions.forEach(reaction => {
 						reaction.users.forEach(user => {
