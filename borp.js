@@ -201,7 +201,7 @@ client
 				activeMembers[msg.author.id].postDate = moment.utc();
 				activeMembers[msg.author.id].tag = msg.author.tag;
 				activeMembers[msg.author.id].username = msg.author.username;
-				activeMembers[msg.author.id].avatar = msg.author.avatarURL();
+				activeMembers[msg.author.id].avatar = msg.author.avatarURL({size:128,format:'webp'});
 			}
 			else{
 				activeMembers[msg.author.id] = {
@@ -209,7 +209,7 @@ client
 					username: msg.author.username,
 					postDate: moment.utc(),
 					id: msg.author.id,
-					avatar: msg.author.avatarURL()
+					avatar: msg.author.avatarURL({size:128,format:'webp'})
 				};
 			};
 			return msg.client.provider.set(msg.guild, 'activeMembers', activeMembers);
@@ -296,17 +296,19 @@ client
 				}
 			})();
 			(function(){
-				if(!msg.guild || msg.guild.id != "163175631562080256") return false;
+				if(!msg.guild || msg.guild.id != "163175631562080256" || msg.channel.id === "372835728574382090") return false;
 				if(getRandomInt(1, 200) === 200){
 					let activeMembers = msg.client.provider.get(msg.guild, 'activeMembers', {});
 					let keys = Object.keys(activeMembers);
 					if(keys.length <= 0) return false;
 					let botspam = msg.guild.channels.get('372835728574382090');
 					botspam.drop = activeMembers[keys[ keys.length * Math.random() << 0]];
+					let attachment = new Discord.MessageAttachment(botspam.drop.avatar, 'avatar.webp');
 					let returnEmbed = new Discord.MessageEmbed()
 					.setTitle('Drop')
 					.setDescription('A user appeared!\nTry guessing their username with `\'claim <username>` to claim them!')
-					.setImage(botspam.drop.avatar);
+					.attachFiles([attachment])
+					.setImage('attachment://avatar.webp');
 					return botspam.send('<@&587842201040715809>', returnEmbed).catch(err => console.error(err));
 				}
 			})();
