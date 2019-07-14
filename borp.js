@@ -201,7 +201,7 @@ client
 				activeMembers[msg.author.id].postDate = moment.utc();
 				activeMembers[msg.author.id].tag = msg.author.tag;
 				activeMembers[msg.author.id].username = msg.author.username;
-				activeMembers[msg.author.id].avatar = msg.author.avatarURL({size:128,format:'webp'});
+				activeMembers[msg.author.id].avatar = msg.author.avatarURL({size:128,format:'png'});
 			}
 			else{
 				activeMembers[msg.author.id] = {
@@ -209,7 +209,7 @@ client
 					username: msg.author.username,
 					postDate: moment.utc(),
 					id: msg.author.id,
-					avatar: msg.author.avatarURL({size:128,format:'webp'})
+					avatar: msg.author.avatarURL({size:128,format:'png'})
 				};
 			};
 			return msg.client.provider.set(msg.guild, 'activeMembers', activeMembers);
