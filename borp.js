@@ -97,6 +97,19 @@ function createDescString(item){
 	else return `${item.quality} quality: ${createStringFromTemplate(duelconfig.types.find(element => {return element.name === item.type}).template, {mag: item.mag})}`;
 }
 
+function cleanActiveMembers(){
+	try{
+		let activeMembers = client.provider.get('163175631562080256', 'activeMembers', {});
+		for(let member in activeMembers){
+			if(moment.utc().isAfter(moment.utc(member.postDate).add(1, 'months'))){
+				delete activeMembers[member.id];
+			}
+		}
+		return client.provider.set('163175631562080256', 'activeMembers', activeMembers);
+	}
+	catch(err){console.error(err)}
+}
+
 client.dispatcher.addInhibitor((msg) => {
 	if(msg.client.isOwner(msg.author)) return false;
 	let gblacklist = client.provider.get('global', 'blacklist', []);
@@ -133,17 +146,9 @@ client
 		}
 		catch(err){console.error(err)}
 		}, 60000)
+		cleanActiveMembers()
 		setInterval(function(){
-			try{
-				let activeMembers = client.provider.get('163175631562080256', 'activeMembers', {});
-				for(let member in activeMembers){
-					if(moment.utc().isAfter(moment.utc(member.postDate).add(1, 'months'))){
-						delete activeMembers[member.id];
-					}
-				}
-				return client.provider.set('163175631562080256', 'activeMembers', activeMembers);
-			}
-			catch(err){console.error(err)}
+			cleanActiveMembers()
 		}, 86400000)
 		}
 		catch(err){console.error(err)}
@@ -198,7 +203,7 @@ client
 			if(!msg.guild || msg.guild.id != "163175631562080256") return false;
 			let activeMembers = msg.client.provider.get(msg.guild, 'activeMembers', {});
 			if(activeMembers[msg.author.id]) {
-				activeMembers[msg.author.id].postDate = moment.utc();
+				activeMembers[msg.author.id].postDate = moment.utc().format();
 				activeMembers[msg.author.id].tag = msg.author.tag;
 				activeMembers[msg.author.id].username = msg.author.username;
 				activeMembers[msg.author.id].avatar = msg.author.avatarURL({size:128,format:'png'});
@@ -207,7 +212,7 @@ client
 				activeMembers[msg.author.id] = {
 					tag: msg.author.tag,
 					username: msg.author.username,
-					postDate: moment.utc(),
+					postDate: moment.utc().format(),
 					id: msg.author.id,
 					avatar: msg.author.avatarURL({size:128,format:'png'})
 				};
