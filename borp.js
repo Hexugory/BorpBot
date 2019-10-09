@@ -101,8 +101,8 @@ function cleanActiveMembers(){
 	try{
 		let activeMembers = client.provider.get('163175631562080256', 'activeMembers', {});
 		for(let member in activeMembers){
-			if(moment.utc().isAfter(moment.utc(member.postDate).add(1, 'months'))){
-				delete activeMembers[member.id];
+			if(moment.utc().isAfter(moment.utc(activeMembers[member].postDate).add(1, 'months'))){
+				delete activeMembers[member];
 			}
 		}
 		return client.provider.set('163175631562080256', 'activeMembers', activeMembers);
