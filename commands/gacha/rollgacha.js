@@ -23,6 +23,7 @@ module.exports = class RollGachaCommand extends commando.Command {
 		var gacha = msg.client.provider.get(msg.guild, "gacha"+msg.author.id, {rolls:0,spirits:[]});
 		if(gacha.rolls < 1) return msg.reply('You dont have any rolls.');
 		var fullMemberList = await msg.guild.members.fetch().catch(err => console.error(err));
+		if(!fullMemberList) return msg.reply('Could not fetch member list.')
 		var gachaGuy = fullMemberList.random();
 		gacha.spirits.push(gachaGuy.user.id);
 		gacha.rolls--;
