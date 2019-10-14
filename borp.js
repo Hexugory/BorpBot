@@ -27,7 +27,8 @@ const client = new commando.Client({
 	owner: config.owner,
 	commandPrefix: config.prefix,
 	unknownCommandResponse: false,
-	invite: 'http://discord.gg/hAj5dY8'
+	invite: 'http://discord.gg/hAj5dY8',
+	fetchAllMembers: true
 });
 
 function sendMessages(arr, content){
