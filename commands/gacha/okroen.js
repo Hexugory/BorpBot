@@ -30,7 +30,7 @@ module.exports = class RollGachaCommand extends commando.Command {
 				[array[i], array[j]] = [array[j], array[i]];
 			}
 		};
-		var activeMembers = client.provider.get('163175631562080256', 'activeMembers', {});
+		var activeMembers = msg.client.provider.get('163175631562080256', 'activeMembers', {});
 		var gacha = msg.client.provider.get(msg.guild, "gacha"+msg.author.id, {rolls:0,spirits:[]});
 		if(gacha.rolls < 10) return msg.reply('You dont have enough rolls.');
 		var gachaGuys = [];
