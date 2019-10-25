@@ -15,7 +15,7 @@ module.exports = class GetLocationRoleCommand extends commando.Command {
 			Use \`'getlocationrole\` with no argument to remove your location role.
 			Ratelimit of 1 per week.
 			Exclusive to Touhou Project Discord.
-			Read #rules for the role list.`,
+			Read #info for the role list.`,
 			examples: ['\'getlocationrole "Scarlet Devil Mansion"', '\'getlocationrole'],
 			guildOnly: true,
 
