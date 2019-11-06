@@ -41,10 +41,10 @@ module.exports = class RollGachaCommand extends commando.Command {
 		var returnEmbeds = [];
 		for(let guy of gachaGuys){
 			gacha.spirits.push(guy.user.id);
-			returnEmbeds.push(new Discord.MessageEmbed({author:{name: `You got: ${guy.user.tag}!`, iconURL: guy.user.avatarURL()}}));
+			returnEmbeds.push(new MessageEmbed({author:{name: `You got: ${guy.user.tag}!`, iconURL: guy.user.avatarURL()}}));
 		};
 		gacha.spirits.push(bonusGuy.id)
-		returnEmbeds.push(new Discord.MessageEmbed({author:{name: `You got: ${bonusGuy.tag}!`, iconURL: bonusGuy.avatar}}));
+		returnEmbeds.push(new MessageEmbed({author:{name: `You got: ${bonusGuy.tag}!`, iconURL: bonusGuy.avatar}}));
 		shuffle(returnEmbeds);
 		gacha.rolls -= 10;
 		msg.client.provider.set(msg.guild, "gacha"+msg.author.id, gacha);
