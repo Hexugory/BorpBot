@@ -34,7 +34,7 @@ module.exports = class RollGachaCommand extends commando.Command {
 		var gacha = msg.client.provider.get(msg.guild, "gacha"+msg.author.id, {rolls:0,spirits:[]});
 		if(gacha.rolls < 10) return msg.reply('You dont have enough rolls.');
 		var gachaGuys = [];
-		for(var i = 0; i < 9; i++){
+		for(var i = 0; i < 8; i++){
 			gachaGuys.push(msg.guild.members.random());
 		};
 		var bonusGuy = randomProperty(activeMembers);
@@ -48,6 +48,6 @@ module.exports = class RollGachaCommand extends commando.Command {
 		shuffle(returnEmbeds);
 		gacha.rolls -= 10;
 		msg.client.provider.set(msg.guild, "gacha"+msg.author.id, gacha);
-		return msg.reply(returnEmbeds);
+		return msg.reply('ok roen', returnEmbeds);
 	}
 };
