@@ -24,17 +24,11 @@ module.exports = class RollGachaCommand extends commando.Command {
 			var keys = Object.keys(obj)
 			return obj[keys[ keys.length * Math.random() << 0]];
 		};
-		function shuffle(array) {
-			for (let i = array.length - 1; i > 0; i--) {
-				let j = Math.floor(Math.random() * (i + 1));
-				[array[i], array[j]] = [array[j], array[i]];
-			}
-		};
 		var activeMembers = msg.client.provider.get('163175631562080256', 'activeMembers', {});
 		var gacha = msg.client.provider.get(msg.guild, "gacha"+msg.author.id, {rolls:0,spirits:[]});
 		if(gacha.rolls < 10) return msg.reply('You dont have enough rolls.');
 		var gachaGuys = [];
-		for(var i = 0; i < 8; i++){
+		for(var i = 0; i < 9; i++){
 			gachaGuys.push(msg.guild.members.random());
 		};
 		var bonusGuy = randomProperty(activeMembers);
@@ -45,7 +39,6 @@ module.exports = class RollGachaCommand extends commando.Command {
 		};
 		gacha.spirits.push(bonusGuy.id)
 		returnEmbeds.push(new MessageEmbed({author:{name: `You got: ${bonusGuy.tag}!`, iconURL: bonusGuy.avatar}}));
-		shuffle(returnEmbeds);
 		gacha.rolls -= 10;
 		msg.client.provider.set(msg.guild, "gacha"+msg.author.id, gacha);
 		return msg.reply('ok roen', returnEmbeds);
