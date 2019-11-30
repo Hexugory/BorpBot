@@ -57,8 +57,17 @@ module.exports = class UpdateCardsCommand extends commando.Command {
                             case "DumbassCards":
                                 return msg.author.id === "157704875726209025";
                                 break;
-                            case "AdvancedShitposting":
+                            case "MUSCLE":
+                                return msg.author.id === "155800533351923712";
+                                break;
+                            case "Traits":
+                                return msg.author.id === "269714882142797834";
+                                break;
+							case "AdvancedShitposting":
                                 return msg.author.id === "157704875726209025";
+                                break;
+							case "Wild":
+                                return msg.author.id === "165327251884343296";
                                 break;
                             case "BullshitTier":
                                 return msg.author.id === "160921909637283842";
@@ -73,7 +82,7 @@ module.exports = class UpdateCardsCommand extends commando.Command {
 					label: 'deck',
 					prompt: 'Enter deck name.',
 					type: 'string',
-                    validate: str => {return ["MainCards", "LunaticCards", "IncidentCards", "CharacterCards", "HeroineCards", "PartnerCards", "StageCards", "ExCards", "RevealCards", "TerminalCards", "PrecognitionCards", "NightCards"].includes(str)}
+                    validate: str => {return ["MainCards", "LunaticCards", "IncidentCards", "CharacterCards", "HeroineCards", "PartnerCards", "StageCards", "ExCards", "RevealCards", "TerminalCards", "PrecognitionCards", "NightCards", "TraitCards", "WildCards"].includes(str)}
                 },
                 {
 					key: 'face',
