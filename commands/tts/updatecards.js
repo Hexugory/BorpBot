@@ -57,6 +57,12 @@ module.exports = class UpdateCardsCommand extends commando.Command {
                             case "DumbassCards":
                                 return msg.author.id === "157704875726209025";
                                 break;
+                            case "AdvancedShitposting":
+                                return msg.author.id === "157704875726209025";
+                                break;
+                            case "BullshitTier":
+                                return msg.author.id === "160921909637283842";
+                                break;
                             default:
                                 return false;
                         }
