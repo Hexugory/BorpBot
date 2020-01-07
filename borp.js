@@ -363,6 +363,12 @@ client
 		}
 		catch(err){console.error(err)}
 	})
+	.on('guildMemberAdd', (member) => {
+		if(member.guild.id === "163175631562080256"){
+			if(member.guild.memberCount < 6969) return member.guild.channels.get("163175631562080256").send(`*${6969-member.guild.memberCount} until 6969.* <:borp:337407396945330188>`);
+			else if(member.guild.memberCount === 6969) return member.guild.channels.get("163175631562080256").send(`*${member}, you are the 6969th user!*`);
+		}
+	})
 	.on('commandError', (cmd, err) => {
 		if(err instanceof commando.FriendlyError) return;
 		console.error(`Error in command ${cmd.groupID}:${cmd.memberName}`, err);
