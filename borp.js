@@ -364,9 +364,12 @@ client
 		catch(err){console.error(err)}
 	})
 	.on('guildMemberAdd', (member) => {
+		console.log("join");
 		if(member.guild.id === "163175631562080256"){
+			console.log("in the cool one");
 			if(member.guild.memberCount < 6969) return member.guild.channels.get("163175631562080256").send(`*${6969-member.guild.memberCount} until 6969.* <:borp:337407396945330188>`);
 			else if(member.guild.memberCount === 6969) return member.guild.channels.get("163175631562080256").send(`*${member}, you are the 6969th user!*`);
+			console.log("what the fuck is a member");
 		}
 	})
 	.on('commandError', (cmd, err) => {
