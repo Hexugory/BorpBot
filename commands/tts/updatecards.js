@@ -75,6 +75,9 @@ module.exports = class UpdateCardsCommand extends commando.Command {
                             case "VastGensokyo":
                                 return msg.author.id === "249503374817361923";
                                 break;
+                            case "PC98":
+                                return msg.author.id === "249503374817361923";
+                                break;
                             default:
                                 return false;
                         }
@@ -85,7 +88,7 @@ module.exports = class UpdateCardsCommand extends commando.Command {
 					label: 'deck',
 					prompt: 'Enter deck name.',
 					type: 'string',
-                    validate: str => {return ["MainCards", "LunaticCards", "IncidentCards", "CharacterCards", "HeroineCards", "PartnerCards", "StageCards", "ExCards", "RevealCards", "TerminalCards", "PrecognitionCards", "NightCards", "TraitCards", "WildCards"].includes(str)}
+                    validate: str => {return ["MainCards", "LunaticCards", "IncidentCards", "CharacterCards", "HeroineCards", "PartnerCards", "StageCards", "ExCards", "RevealCards", "TerminalCards", "PrecognitionCards", "NightCards", "TraitCards", "WildCards", "ContractCards", "ExternalCards"].includes(str)}
                 },
                 {
 					key: 'face',
