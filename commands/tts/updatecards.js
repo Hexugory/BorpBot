@@ -76,7 +76,7 @@ module.exports = class UpdateCardsCommand extends commando.Command {
                                 return msg.author.id === "249503374817361923";
                                 break;
                             case "PC98":
-                                return msg.author.id === "249503374817361923";
+                                return msg.author.id === "176947422570872839";
                                 break;
                             default:
                                 return false;
