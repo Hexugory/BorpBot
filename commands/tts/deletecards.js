@@ -78,6 +78,9 @@ module.exports = class DeleteCardsCommand extends commando.Command {
                             case "PC98":
                                 return msg.author.id === "176947422570872839";
                                 break;
+                            case "Travel":
+                                return msg.author.id === "126088601510346753";
+                                break;
                             default:
                                 return false;
                         }
@@ -88,7 +91,7 @@ module.exports = class DeleteCardsCommand extends commando.Command {
 					label: 'deck',
 					prompt: 'Enter deck name.',
 					type: 'string',
-                    validate: str => {return ["MainCards", "LunaticCards", "IncidentCards", "CharacterCards", "HeroineCards", "PartnerCards", "StageCards", "ExCards", "RevealCards", "TerminalCards", "PrecognitionCards", "NightCards", "TraitCards", "WildCards", "ContractCards", "ExternalCards"].includes(str)}
+                    validate: str => {return ["MainCards", "LunaticCards", "IncidentCards", "CharacterCards", "HeroineCards", "PartnerCards", "StageCards", "ExCards", "RevealCards", "TerminalCards", "PrecognitionCards", "NightCards", "TraitCards", "WildCards", "ContractCards", "TravelCards", "ExternalCards"].includes(str)}
                 }
 			]
 		});
