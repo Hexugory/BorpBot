@@ -81,6 +81,9 @@ module.exports = class DeleteCardsCommand extends commando.Command {
                             case "Travel":
                                 return msg.author.id === "126088601510346753";
                                 break;
+                            case "Distrust":
+                                return msg.author.id === "465423366740901898";
+                                break;
                             default:
                                 return false;
                         }
