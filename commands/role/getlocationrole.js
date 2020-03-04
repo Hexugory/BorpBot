@@ -46,9 +46,9 @@ module.exports = class GetLocationRoleCommand extends commando.Command {
 		}
 		else{
 			if(!roles.includes(args.rn.id)) return msg.reply("That's not a location role.");
-			if(msg.member.roles.get(args.rn.id)) return msg.reply("You already have that role.");
+			if(msg.member.roles.cache.get(args.rn.id)) return msg.reply("You already have that role.");
 			if(lastUsed && moment.utc().isBefore(lastUsed.time)) return msg.reply(`You cannot use this command again until ${moment.utc(lastUsed.time).format('MMMM Do YYYY, h:mm:ss a ZZ')}, \`${Math.round((parseInt(moment.utc(lastUsed.time).format('x'))-parseInt(moment.utc().format('x')))/1000/60/60)}\` hours from now.`);
-			let newRoles = msg.member.roles.filter(role => {return !roles.includes(role.id)}).array();
+			let newRoles = msg.member.roles.cache.filter(role => {return !roles.includes(role.id)}).array();
 			newRoles.push(args.rn)
 			msg.member.roles.set(newRoles)
 			if(lastUsed) cooldownTimes[lastUsedIndex].time = moment.utc().add(1, "week");
