@@ -29,7 +29,7 @@ module.exports = class RollGachaCommand extends commando.Command {
 		if(gacha.rolls < 10) return msg.reply('You dont have enough rolls.');
 		var gachaGuys = [];
 		for(var i = 0; i < 9; i++){
-			gachaGuys.push(msg.guild.members.random());
+			gachaGuys.push(msg.guild.members.cache.random());
 		};
 		var bonusGuy = randomProperty(activeMembers);
 		var returnEmbeds = [];
