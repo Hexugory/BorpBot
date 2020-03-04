@@ -35,7 +35,7 @@ module.exports = class ListSpiritsCommand extends commando.Command {
 		var endIndex = gacha.spirits.length-1-20*(args.page-1);
 		var startIndex = Math.max(0, endIndex-20)
 		for(var i = endIndex; i > startIndex; i--){
-			let dude = msg.guild.members.get(gacha.spirits[i])
+			let dude = msg.guild.members.cache.get(gacha.spirits[i])
 			dude = dude ? dude : await msg.guild.members.fetch(gacha.spirits[i]).catch(err => {return 'Dead User'});
 			if(dude.user) dude = dude.user.tag;
 			description += `#${i} ${dude}\n`;
