@@ -307,7 +307,7 @@ client
 					let activeMembers = msg.client.provider.get(msg.guild, 'activeMembers', {});
 					let keys = Object.keys(activeMembers);
 					if(keys.length <= 0) return false;
-					let botspam = msg.guild.channels.get('372835728574382090');
+					let botspam = msg.guild.channels.cache.get('372835728574382090');
 					botspam.drop = activeMembers[keys[ keys.length * Math.random() << 0]];
 					let attachment = new Discord.MessageAttachment(botspam.drop.avatar, 'avatar.png');
 					let returnEmbed = new Discord.MessageEmbed()
@@ -334,7 +334,7 @@ client
 		for(var i = 0; i < xBlacklistIDs.length; i++){
 			if(reactUsers.find(function(element){return element.id === xBlacklistIDs[i]})) blacklisted++;
 		}
-		if(rea.message.author.id != client.user.id && rea.users.get(rea.message.author.id)) return rea.message.delete();
+		if(rea.message.author.id != client.user.id && rea.users.cache.get(rea.message.author.id)) return rea.message.delete();
 		if(rea.count-blacklisted < rea.message.member['xCountRequired'+rea.message.channel.id]) return false;
 		let xlogChannelIDs = client.provider.get(rea.message.guild, 'xlogChannelIDs', []);
 		let logMessage = `Deleted ${rea.message.member.displayName}[${rea.message.author.id}]'s message[${rea.message.id}] in ${rea.message.channel}`
@@ -367,8 +367,8 @@ client
 		console.log("join");
 		if(member.guild.id === "163175631562080256"){
 			console.log("in the cool one");
-			if(member.guild.memberCount < 6969) return member.guild.channels.get("163175631562080256").send(`*${6969-member.guild.memberCount} until 6969.* <:borp:337407396945330188>`);
-			else if(member.guild.memberCount === 6969) return member.guild.channels.get("163175631562080256").send(`*${member}, you are the 6969th user!*`);
+			if(member.guild.memberCount < 6969) return member.guild.channels.cache.get("163175631562080256").send(`*${6969-member.guild.memberCount} until 6969.* <:borp:337407396945330188>`);
+			else if(member.guild.memberCount === 6969) return member.guild.channels.cache.get("163175631562080256").send(`*${member}, you are the 6969th user!*`);
 			console.log("what the fuck is a member");
 		}
 	})
