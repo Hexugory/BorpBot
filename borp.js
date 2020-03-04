@@ -34,7 +34,7 @@ const client = new commando.Client({
 function sendMessages(arr, content){
 	for(var i = 0; i < arr.length; i++){
 		try{
-			client.channels.get(arr[i]).send(content).catch(err => console.error(err));
+			client.channels.cache.get(arr[i]).send(content).catch(err => console.error(err));
 		}
 		catch(err){console.error(err)}
 	}
@@ -138,8 +138,8 @@ client
 			let times = client.provider.get('global', 'times', []);
 			for(var i = 0; i < times.length; i++){
 				if(moment.utc().isAfter(times[i].time)){
-					let recipient = client.users.get(times[i].user);
-					if(recipient) client.users.get(times[i].user).send(`You asked to be reminded at ${moment.utc(times[i].time).format('MMMM Do YYYY, h:mm:ss a ZZ')} of:  ${times[i].message}`).catch(err => console.error(err));
+					let recipient = client.users.cache.get(times[i].user);
+					if(recipient) client.users.cache.get(times[i].user).send(`You asked to be reminded at ${moment.utc(times[i].time).format('MMMM Do YYYY, h:mm:ss a ZZ')} of:  ${times[i].message}`).catch(err => console.error(err));
 					times.splice(i, 1)
 				}
 			}
