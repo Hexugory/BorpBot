@@ -26,7 +26,6 @@ for(var i = 0; i < duelconfig.itemmovesets.length; i++){
 const client = new commando.Client({
 	owner: config.owner,
 	commandPrefix: config.prefix,
-	unknownCommandResponse: false,
 	invite: 'http://discord.gg/hAj5dY8',
 	fetchAllMembers: true
 });
@@ -425,7 +424,7 @@ client.registry
 	['util', 'util']
 	])
 	.registerDefaultTypes()
-	.registerDefaultCommands()
+	.registerDefaultCommands({help:true, prefix:true, eval:true, ping:true, commandState:true})
 	.registerType(require("./guild.js"))
 	.registerType(require("./time.js"))
 	.registerType(require("./memberexclude.js"))
