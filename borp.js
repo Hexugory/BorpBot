@@ -424,7 +424,7 @@ client.registry
 	['util', 'util']
 	])
 	.registerDefaultTypes()
-	.registerDefaultCommands({help:true, prefix:true, eval:true, ping:true, commandState:true})
+	.registerDefaultCommands({unknownCommand:false})
 	.registerType(require("./guild.js"))
 	.registerType(require("./time.js"))
 	.registerType(require("./memberexclude.js"))
