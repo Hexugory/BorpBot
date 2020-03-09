@@ -16,7 +16,7 @@ module.exports = class ListEmotesCommand extends commando.Command {
 	
 	hasPermission(msg) {
 		if(!(msg.guild && msg.guild.id === "163175631562080256")) return msg.client.isOwner(msg.author);
-		let roles = msg.member.roles.array();
+		let roles = msg.member.roles.cache.array();
 		let permissions = msg.client.provider.get(msg.guild, 'permissions', {mod:[]});
 		if(!permissions.mod) return msg.client.isOwner(msg.author);
 		if(permissions.mod.length < 1) return msg.client.isOwner(msg.author);
