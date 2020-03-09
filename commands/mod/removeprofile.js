@@ -26,7 +26,7 @@ module.exports = class RemoveProfileCommand extends commando.Command {
 	}
 
     hasPermission(msg) {
-		let roles = msg.member.roles.array();
+		let roles = msg.member.roles.cache.array();
 		let permissions = msg.client.provider.get(msg.guild, 'permissions', {mod:[]});
 		if(!permissions.mod){
 			return msg.client.isOwner(msg.author);

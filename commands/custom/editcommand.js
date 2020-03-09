@@ -36,7 +36,7 @@ module.exports = class EditCustomCommand extends commando.Command {
 	}
 	
 	hasPermission(msg) {
-		let roles = msg.member.roles.array();
+		let roles = msg.member.roles.cache.array();
 		let permissions = msg.client.provider.get(msg.guild, 'permissions', {custom:[]});
 		if(!permissions.custom){
 			return msg.client.isOwner(msg.author);
