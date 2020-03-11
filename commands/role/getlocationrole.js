@@ -41,7 +41,7 @@ module.exports = class GetLocationRoleCommand extends commando.Command {
 		var lastUsedIndex = cooldownTimes.findIndex(element => {return element.id === msg.author.id});
 		var lastUsed = cooldownTimes[lastUsedIndex];
 		if(!args.rn){
-			msg.member.roles.set(msg.member.roles.filter(role => {return !roles.includes(role.id)}).array());
+			msg.member.roles.set(msg.member.roles.cache.filter(role => {return !roles.includes(role.id)}).array());
 			return msg.reply(`Role removed.`);
 		}
 		else{
