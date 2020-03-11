@@ -327,7 +327,7 @@ client
 		let xChannelIDs = client.provider.get(rea.message.guild, 'xChannelIDs', []);
 		if(!xChannelIDs.includes(rea.message.channel.id)) return false;
 		let xBlacklistIDs = client.provider.get(rea.message.guild, 'blacklist', {}).x;
-		let reactUsers = rea.users.array()
+		let reactUsers = rea.users.cache.array();
 		if(!Array.isArray(xBlacklistIDs)) xBlacklistIDs = [];
 		let blacklisted = 0;
 		for(var i = 0; i < xBlacklistIDs.length; i++){
