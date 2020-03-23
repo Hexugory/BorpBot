@@ -43,7 +43,7 @@ module.exports = class SuggestCommand extends commando.Command {
 		function sendMessages(arr, content){
 			for(var i = 0; i < arr.length; i++){
 				try{
-					msg.client.channels.get(arr[i]).send(content)
+					msg.client.channels.cache.get(arr[i]).send(content)
 				}
 				catch(err){console.log(err)}
 			}
