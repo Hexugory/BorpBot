@@ -300,7 +300,7 @@ client
 					return msg.client.provider.set(msg.guild, "gacha"+msg.author.id, gacha);
 				}
 			})();
-			(function(){
+			/*(function(){
 				if(!msg.guild || msg.guild.id != "163175631562080256" || msg.channel.id === "372835728574382090") return false;
 				if(getRandomInt(1, 200) === 200){
 					let activeMembers = msg.client.provider.get(msg.guild, 'activeMembers', {});
@@ -316,7 +316,7 @@ client
 					.setImage('attachment://avatar.png');
 					return botspam.send('<@&587842201040715809>', returnEmbed).catch(err => console.error(err));
 				}
-			})();
+			})();*/
 		}
 		}
 		catch(err){console.error(err)}
