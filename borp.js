@@ -10,6 +10,7 @@ const moment = require('moment');
 const fs = require('fs');
 var duelconfig = require('./duel.json');
 var tumbleweedDates = {};
+var xCounts = new Map();
 for(var i = 0; i < duelconfig.itemmovesets.length; i++){
 	duelconfig.types.push({
 		name: duelconfig.itemmovesets[i].name,
@@ -196,8 +197,8 @@ client
 			for(let message of msg.channel.xRecentEmbeds){
 				if(message.author.id === msg.author.id) sentEmbeds += message.embeds.length + message.attachments.array().length;
 			};
-			let xCountRequired = Math.max(Math.min(Math.ceil(xActivityRatio * uniqueIDs.length - xEmbedPenalty * sentEmbeds), xMax), xMin)
-			return msg.member['xCountRequired'+msg.channel.id] = xCountRequired;
+			let xCountRequired = Math.max(Math.min(Math.ceil(xActivityRatio * uniqueIDs.length - xEmbedPenalty * sentEmbeds), xMax), xMin);
+			return xCounts.set(`${msg.guild.id};${msg.channel.id};${msg.author.id}`, xCountRequired);
 		})();
 		(function(){
 			if(!msg.guild || msg.guild.id != "163175631562080256") return false;
@@ -323,7 +324,7 @@ client
 	})
 	.on('messageReactionAdd', (rea, user) => {
 		try{
-		if(!rea.message.member['xCountRequired'+rea.message.channel.id] || rea.emoji.name != "❌") return false;
+		if(!xCounts.get(`${rea.message.guild.id};${rea.message.channel.id};${rea.message.author.id}`) || rea.emoji.name != "❌") return false;
 		let xChannelIDs = client.provider.get(rea.message.guild, 'xChannelIDs', []);
 		if(!xChannelIDs.includes(rea.message.channel.id)) return false;
 		let xBlacklistIDs = client.provider.get(rea.message.guild, 'blacklist', {}).x;
@@ -334,7 +335,7 @@ client
 			if(reactUsers.find(function(element){return element.id === xBlacklistIDs[i]})) blacklisted++;
 		}
 		if(rea.message.author.id != client.user.id && rea.users.cache.get(rea.message.author.id)) return rea.message.delete();
-		if(rea.count-blacklisted < rea.message.member['xCountRequired'+rea.message.channel.id]) return false;
+		if(rea.count-blacklisted < xCounts.get(`${rea.message.guild.id};${rea.message.channel.id};${rea.message.author.id}`)) return false;
 		let xlogChannelIDs = client.provider.get(rea.message.guild, 'xlogChannelIDs', []);
 		let logMessage = `Deleted ${rea.message.member.displayName}[${rea.message.author.id}]'s message[${rea.message.id}] in ${rea.message.channel}`
 		let messageAttachments = rea.message.attachments.array();
