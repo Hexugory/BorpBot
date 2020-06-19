@@ -4,7 +4,6 @@ const path = require('path');
 const oneLine = require('common-tags').oneLine;
 const sqlite = require('sqlite');
 const config = require('./config.json');
-const prompt = require('prompt');
 const emojiRegex = require('emoji-regex');
 const moment = require('moment');
 const fs = require('fs');
