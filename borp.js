@@ -1,433 +1,244 @@
-const Discord = require('discord.js')
-const commando = require('discord.js-commando');
-const path = require('path');
-const oneLine = require('common-tags').oneLine;
-const sqlite = require('sqlite');
-const config = require('./config.json');
-const emojiRegex = require('emoji-regex');
-const moment = require('moment');
 const fs = require('fs');
-var duelconfig = require('./duel.json');
-var tumbleweedDates = {};
-var xCounts = new Map();
-for(var i = 0; i < duelconfig.itemmovesets.length; i++){
-	duelconfig.types.push({
-		name: duelconfig.itemmovesets[i].name,
-		max: 1,
-		min: 1,
-		ordinary: false,
-		epic: true,
-		legendary: false,
-		moveset: true,
-		template: `Change your attacks to attacks from ${duelconfig.itemmovesets[i].name}.`
-	})
-}
+const Discord = require('discord.js');
+const { prefix, token, owner } = require('./config.json');
+const ArgHandler = require('./argHandler.js');
+const Sequelize = require('sequelize');
 
-const client = new commando.Client({
-	owner: config.owner,
-	commandPrefix: config.prefix,
-	invite: 'http://discord.gg/hAj5dY8',
-	fetchAllMembers: true
+const client = new Discord.Client();
+client.commands = new Discord.Collection();
+client.argHandler = new ArgHandler();
+client.db = new Sequelize({
+	dialect: 'sqlite',
+	storage: './database.sqlite'
 });
 
-function sendMessages(arr, content){
-	for(var i = 0; i < arr.length; i++){
-		try{
-			client.channels.cache.get(arr[i]).send(content).catch(err => console.error(err));
+function sendMessages (arr, content, options = {}) {
+	for (let channel of arr) {
+		try {
+			client.channels.resolve(channel).send(content, options).catch(err => console.error(err));
 		}
-		catch(err){console.error(err)}
+		catch (error) {console.error(error)}
 	}
 }
 
-function getRandomInt(min, max){
-	return Math.floor(Math.random() * (max - min + 1) + min);
-}
-function clone(obj) {
-    // Handle the 3 simple types, and null or undefined
-    if (null == obj || "object" != typeof obj) return obj;
+async function xCalculation (msg) {
+	const xChannel = await channelTags.findOne({ where: {
+		guild_id: msg.guild.id,
+		channel_id: msg.channel.id,
+		x: 1
+	} });
+	if (!xChannel) return;
 
-    // Handle Date
-    if (obj instanceof Date) {
-        var copy = new Date();
-        copy.setTime(obj.getTime());
-        return copy;
-    }
+	const xConfig = await xConfigs.findOne({ where: {
+		guild_id: msg.guild.id,
+		channel_id: msg.channel.id
+	} });
+	if (!xConfig) return;
 
-    // Handle Array
-    if (obj instanceof Array) {
-        var copy = [];
-        for (var i = 0, len = obj.length; i < len; i++) {
-            copy[i] = clone(obj[i]);
-        }
-        return copy;
-    }
+	const now = Date.now();
 
-    // Handle Object
-    if (obj instanceof Object) {
-        var copy = {};
-        for (var attr in obj) {
-            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
-        }
-        return copy;
-    }
+	if (!msg.channel.xRecentMessages) msg.channel.xRecentMessages = [];
+	msg.channel.xRecentMessages.push(msg);
+	msg.channel.xRecentMessages = msg.channel.xRecentMessages.filter(msg => msg.createdAt > now-xConfig.activityTime);
 
-    throw new Error("Unable to copy obj! Its type isn't supported.");
-}
-
-function generateNewItem(){
-	let item = {};
-	item.quality = getRandomInt(1, 100) > 90 ? (getRandomInt(1, 100) > 90 ? "Legendary" : "Epic") : "Ordinary";
-	let filteredtypes = duelconfig.types.filter(function(element){return element[item.quality.toLowerCase()]})
-	let type = filteredtypes[getRandomInt(0,filteredtypes.length-1)];
-	item.type = type.name;
-	item.moveset = type.moveset ? true : false;
-	item.mag = item.quality === "Legendary" ? getRandomInt(type.max*2+1,type.max*3) : (item.quality === "Epic" ? getRandomInt(type.max+1,type.max*2) : getRandomInt(type.min,type.max));
-	return item;
-}
-
-function createStringFromTemplate(template, variables) {
-	return template.replace(new RegExp("\{([^\{]+)\}", "g"), function(_unused, varName){
-		return variables[varName];
-	});
-}
-
-function createDescString(item){
-	if(!item) return "None";
-	else if(item.template) return `${item.quality} quality: ${createStringFromTemplate(item.template, {mag: item.mag})}`;
-	else return `${item.quality} quality: ${createStringFromTemplate(duelconfig.types.find(element => {return element.name === item.type}).template, {mag: item.mag})}`;
-}
-
-function cleanActiveMembers(){
-	try{
-		let activeMembers = client.provider.get('163175631562080256', 'activeMembers', {});
-		for(let member in activeMembers){
-			if(moment.utc().isAfter(moment.utc(activeMembers[member].postDate).add(1, 'months'))){
-				delete activeMembers[member];
-			}
-		}
-		return client.provider.set('163175631562080256', 'activeMembers', activeMembers);
+	const uniqueIDs = [];
+	for (let recentMsg of msg.channel.xRecentMessages) {
+		if (!recentMsg.author.bot
+			 && !uniqueIDs.includes(recentMsg.author.id)) uniqueIDs.push(recentMsg.author.id);
 	}
-	catch(err){console.error(err)}
+
+	msg.requiredX = Math.max(Math.min(Math.ceil(xConfig.activityRatio * uniqueIDs.length), xConfig.maximum), xConfig.minimum);
 }
 
-client.dispatcher.addInhibitor((msg) => {
-	if(msg.client.isOwner(msg.author)) return false;
-	let gblacklist = client.provider.get('global', 'blacklist', []);
-	let blacklist = client.provider.get(msg.guild, 'blacklist', {});
-	if(gblacklist.includes(msg.author.id)) return true;
-	if(blacklist.server && blacklist.server.includes(msg.author.id)) return true;
-	if(!msg.command) return false;
-	if((blacklist[msg.command.group.id] && blacklist[msg.command.group.id].includes(msg.author.id))
-	 || (blacklist[msg.command.name] && blacklist[msg.command.name].includes(msg.author.id))){
-		return true;
-	}
-	return false;
+module.exports = {db: client.db, sendMessages: sendMessages};
+
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+	const command = require(`./commands/${file}`);
+	client.commands.set(command.name, command);
+}
+
+const cooldowns = new Discord.Collection();
+
+const customCommands = client.db.import('./models/customCommands');
+customCommands.sync();
+
+const channelTags = client.db.import('./models/channelTags');
+channelTags.sync();
+
+const xConfigs = client.db.import('./models/xConfigs');
+xConfigs.sync();
+
+const blacklistUsers = client.db.import('./models/blacklistedUsers');
+blacklistUsers.sync();
+
+const suggestions = client.db.import('./models/suggestions');
+suggestions.sync();
+
+const uniqueRoles = client.db.import('./models/uniqueRoles');
+uniqueRoles.sync();
+
+client.once('ready', () => {
+    console.log(`Logged in as ${client.user.tag}`);
 });
 
-client
-	.on('error', console.error)
-	.on('warn', console.warn)
-	.on('debug', console.log)
-	.on('ready', () => {
-		try{
-		console.log(`Client ready; logged in as ${client.user.username}#${client.user.discriminator} (${client.user.id})`);
-		client.user.setActivity(config.game)
-		setInterval(function(){
-		try{
-			let times = client.provider.get('global', 'times', []);
-			for(var i = 0; i < times.length; i++){
-				if(moment.utc().isAfter(times[i].time)){
-					let recipient = client.users.cache.get(times[i].user);
-					if(recipient) client.users.cache.get(times[i].user).send(`You asked to be reminded at ${moment.utc(times[i].time).format('MMMM Do YYYY, h:mm:ss a ZZ')} of:  ${times[i].message}`).catch(err => console.error(err));
-					times.splice(i, 1)
-				}
-			}
-			return client.provider.set('global', 'times', times);
+client.on('message', async (msg) => {
+	if(msg.guild) xCalculation(msg);
+
+	if (!msg.content.startsWith(prefix) || msg.author.bot) return;
+
+	if (msg.author.id != owner && (await blacklistUsers.findOne({ where: { user_id: msg.author.id, blacklisted: 1 } }))) return;
+
+	const args = msg.content.slice(prefix.length).split(/ +/);
+    const commandName = args.shift().toLowerCase();
+    if (args.length > 0) client.argHandler.formatArgs(args);
+
+	const command = client.commands.get(commandName)
+		|| client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+
+	if (!command) {
+		const guildCommands = await customCommands.findAll({ where: { guild_id: msg.guild.id } });
+		const customCommand = guildCommands.find(command => { return command.name === commandName });
+		if (!customCommand) return;
+
+		const memeChannel = await channelTags.findOne({ where: {
+			guild_id: msg.guild.id,
+			channel_id: msg.channel.id,
+			meme: 1
+		} });
+		if (!memeChannel
+			 && !msg.member.hasPermission('MANAGE_MESSAGES')
+			 && msg.author.id != owner) 
+			 return msg.reply('you can\'t use custom commands in this channel');
+
+		return msg.channel.send(customCommand.response);
+	};
+
+	if (command.ownerOnly && msg.author.id != owner) {
+		return msg.reply('why would you be allowed to use that command')
+	} 
+
+	if (command.guildOnly && msg.channel.type !== 'text') {
+		return msg.reply('i\'m not sure what you were expecting, but that command doesn\'t work in DMs');
+	}
+
+	if (command.permission) {
+		for(let permission of command.permission) {
+			if (!msg.member.hasPermission(permission)) return msg.reply('you aren\'t allowed to use that command');
 		}
-		catch(err){console.error(err)}
-		}, 60000)
-		cleanActiveMembers()
-		setInterval(function(){
-			cleanActiveMembers()
-		}, 86400000)
+	}
+
+	if (command.args && !command.args[0].optional && !args.length) {
+		let reply = 'i\'ll do that, as soon as you give me the command arguments';
+
+		if (command.usage) {
+			reply += `\nthe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
 		}
-		catch(err){console.error(err)}
-	})
-	.on('disconnect', () => { console.warn('Disconnected!'); })
-	.on('reconnecting', () => { console.warn('Reconnecting...'); })
-	.on('message', (msg) => {
-		try{
-		if(msg.content.toLowerCase().includes("press 🇫 to pay respects") || msg.content.toLowerCase().includes("press f to pay respects")) msg.react('\u{1f1eb}');
-		(function(){
-			let xChannelIDs = client.provider.get(msg.guild, 'xChannelIDs', []);
-			if(!xChannelIDs.includes(msg.channel.id)) return false;
-			if(!msg.channel.xRecentMessages) msg.channel.xRecentMessages = [];
-			msg.channel.xRecentEmbeds = [];
-			let xActivityTime = client.provider.get(msg.guild, 'xActivityTime'+msg.channel.id, 1200000);
-			let xEmbedTime = client.provider.get(msg.guild, 'xEmbedTime'+msg.channel.id, 5000);
-			let xActivityRatio = client.provider.get(msg.guild, 'xActivityRatio'+msg.channel.id, 0.25);
-			let xEmbedPenalty = client.provider.get(msg.guild, 'xEmbedPenalty'+msg.channel.id, 2);
-			let xMin = client.provider.get(msg.guild, 'xMin'+msg.channel.id, 1);
-			let xMax = client.provider.get(msg.guild, 'xMax'+msg.channel.id, 30);
-			let currentTime = new Date();
-			msg.channel.xRecentMessages.push(msg);
-			let i = 0;
-			while(msg.channel.xRecentMessages[i] && msg.channel.xRecentMessages[i].createdAt < currentTime-xActivityTime){
-				i++;
-			};
-			msg.channel.xRecentMessages.splice(0,i);
-			i = msg.channel.xRecentMessages.length-1;
-			while(msg.channel.xRecentMessages[i] && msg.channel.xRecentMessages[i].createdAt > currentTime-xEmbedTime){
-				if(msg.channel.xRecentMessages[i].embeds[0] || msg.channel.xRecentMessages[i].attachments.array()[0]) msg.channel.xRecentEmbeds.push(msg.channel.xRecentMessages[i]);
-				i--;
-			};
-			let uniqueIDs = [];
-			for(let message of msg.channel.xRecentMessages){
-				if(!message.author.bot && !uniqueIDs.includes(message.author.id)) uniqueIDs.push(message.author.id);
-				if(message.reactions){
-					message.reactions.cache.forEach(reaction => {
-						reaction.users.cache.forEach(user => {
-							if(!msg.author.bot && !uniqueIDs.includes(user.id)) uniqueIDs.push(user.id);
-						});
-					});
-				};
-			};
-			let sentEmbeds = 0;
-			for(let message of msg.channel.xRecentEmbeds){
-				if(message.author.id === msg.author.id) sentEmbeds += message.embeds.length + message.attachments.array().length;
-			};
-			let xCountRequired = Math.max(Math.min(Math.ceil(xActivityRatio * uniqueIDs.length - xEmbedPenalty * sentEmbeds), xMax), xMin);
-			return xCounts.set(`${msg.guild.id};${msg.channel.id};${msg.author.id}`, xCountRequired);
-		})();
-		(function(){
-			if(!msg.guild || msg.guild.id != "163175631562080256") return false;
-			let activeMembers = msg.client.provider.get(msg.guild, 'activeMembers', {});
-			if(activeMembers[msg.author.id]) {
-				activeMembers[msg.author.id].postDate = moment.utc().format();
-				activeMembers[msg.author.id].tag = msg.author.tag;
-				activeMembers[msg.author.id].username = msg.author.username;
-				activeMembers[msg.author.id].avatar = msg.author.avatarURL({size:128,format:'png'});
-			}
-			else{
-				activeMembers[msg.author.id] = {
-					tag: msg.author.tag,
-					username: msg.author.username,
-					postDate: moment.utc().format(),
-					id: msg.author.id,
-					avatar: msg.author.avatarURL({size:128,format:'png'})
-				};
-			};
-			return msg.client.provider.set(msg.guild, 'activeMembers', activeMembers);
-		})();
-		if(!msg.author.bot){
-			(function(){
-				let itemChannelIDs = client.provider.get(msg.guild, 'itemChannelIDs', null);
-				if(!itemChannelIDs) return false;
-				if(!itemChannelIDs.includes(msg.channel.id)) return false;
-				if(getRandomInt(1, 100) === 100){
-					let duelstats = msg.client.provider.get(msg.guild, "duelstats", {});
-					if(duelstats[msg.author.id]){
-						duelstats[msg.author.id].items.push(generateNewItem());
-						msg.client.provider.set(msg.guild, "duelstats", duelstats);
-					}
-					else{
-						duelstats[msg.author.id] = {items: [generateNewItem()], equipped: [null, null, null]};
-						msg.client.provider.set(msg.guild, "duelstats", duelstats);
-					}
-					if(msg.client.provider.get(msg.guild, 'optlist', []).includes(msg.author.id)) return msg.author.send(`You have gained an item: ${createDescString(duelstats[msg.author.id].items[duelstats[msg.author.id].items.length-1])}`).catch(err => console.error(err));
-				}
-				return true;
-			})();
-			(function(){
-				var tumbleweedChannelIDs = client.provider.get(msg.guild, 'tumbleweedChannelIDs', []);
-				if(!tumbleweedChannelIDs.includes(msg.channel.id)) return false;
-				let prevDate = tumbleweedDates[msg.channel.guild.id] ? tumbleweedDates[msg.channel.guild.id][msg.channel.id] ? tumbleweedDates[msg.channel.guild.id][msg.channel.id] : msg.createdAt : msg.createdAt;
-				let minuteDifference = Math.floor((msg.createdAt-prevDate)/1000/60);
-				(function(){
-					if(!tumbleweedDates[msg.channel.guild.id]) tumbleweedDates[msg.channel.guild.id] = {};
-					tumbleweedDates[msg.channel.guild.id][msg.channel.id] = msg.createdAt;
-				})();
-				if(!msg.attachments.array()[0]) return false;
-				if(!msg.attachments.array()[0].name.toLowerCase().includes("tumbleweed")) return false;
-				//real mistake hours hit that tumbleweed if you up
-				let tumbleweedLeaderboard = client.provider.get(msg.guild, 'tumbleweedLeaderboard', []);
-				//i've now realized far into the future that this is hella dumb but i'll fix it later
-				let entryIndex = tumbleweedLeaderboard.findIndex(function(element){return element.id === msg.author.id});
-				if(entryIndex > -1){
-					if(minuteDifference > tumbleweedLeaderboard[entryIndex].score){
-						tumbleweedLeaderboard[entryIndex] = {
-							score: minuteDifference,
-							username: msg.author.username,
-							id: msg.author.id
-						}
-					}
-				}
-				else{
-					tumbleweedLeaderboard.push(
-						{
-							score: minuteDifference,
-							username: msg.author.username,
-							id: msg.author.id
-						}
-					);
-				}
-				return client.provider.set(msg.guild, 'tumbleweedLeaderboard', tumbleweedLeaderboard);
-			})();
-			(function(){
-				let memeChannelIDs = client.provider.get(msg.guild, 'memeChannelIDs', null);
-				if(!memeChannelIDs) return false;
-				let customBlacklistIDs = client.provider.get(msg.guild, 'blacklist', {}).custom;
-				if(Array.isArray(customBlacklistIDs) && customBlacklistIDs.includes(msg.author.id)) return false;
-				let customCommands = client.provider.get(msg.guild, 'customCommands', []);
-				let commandInput = msg.content;
-				let prefix = client.provider.get(msg.guild, 'prefix', client.commandPrefix)
-				if(commandInput.slice(0,prefix.length) != prefix) return false;
-				commandInput = commandInput.slice(prefix.length).toLowerCase();
-				let commandIndex = customCommands.findIndex(element => {return element.name.toLowerCase() === commandInput});
-				if(commandIndex <= -1) return false;
-				if(memeChannelIDs.includes(msg.channel.id) || msg.client.isOwner(msg.author) || msg.member.permissions.has('MANAGE_MESSAGES')) return msg.channel.send(customCommands[commandIndex].output).catch(err => console.error(err));
-				else return msg.reply("You do not have permission to use that in this channel.")
-			})();
-			(function(){
-				if(!msg.guild || msg.guild.id != "163175631562080256") return false;
-				let itemChannelIDs = client.provider.get(msg.guild, 'itemChannelIDs', null);
-				if(!itemChannelIDs) return false;
-				if(!itemChannelIDs.includes(msg.channel.id)) return false;
-				if(getRandomInt(1, 100) === 100){
-					let gacha = msg.client.provider.get(msg.guild, "gacha"+msg.author.id, {rolls:0,spirits:[]});
-					gacha.rolls++
-					if(msg.client.provider.get(msg.guild, 'optgachalist', []).includes(msg.author.id)) msg.author.send(`You got a roll!`).catch(err => console.error(err));
-					return msg.client.provider.set(msg.guild, "gacha"+msg.author.id, gacha);
-				}
-			})();
-			/*(function(){
-				if(!msg.guild || msg.guild.id != "163175631562080256" || msg.channel.id === "372835728574382090") return false;
-				if(getRandomInt(1, 200) === 200){
-					let activeMembers = msg.client.provider.get(msg.guild, 'activeMembers', {});
-					let keys = Object.keys(activeMembers);
-					if(keys.length <= 0) return false;
-					let botspam = msg.guild.channels.cache.get('372835728574382090');
-					botspam.drop = activeMembers[keys[ keys.length * Math.random() << 0]];
-					let attachment = new Discord.MessageAttachment(botspam.drop.avatar, 'avatar.png');
-					let returnEmbed = new Discord.MessageEmbed()
-					.setTitle('Drop')
-					.setDescription('A user appeared!\nTry guessing their username with `\'claim <username>` to claim them!')
-					.attachFiles([attachment])
-					.setImage('attachment://avatar.png');
-					return botspam.send('<@&587842201040715809>', returnEmbed).catch(err => console.error(err));
-				}
-			})();*/
+
+		return msg.channel.send(reply);
+	}
+
+	if (command.args && args.length < command.args.filter(arg => {return !arg.optional}).length) {
+		let reply = 'you\'re missing arguments';
+
+		if (command.usage) {
+			reply += `\nthe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
 		}
+
+		return msg.channel.send(reply);
+	}
+
+	if (command.cooldown && msg.author.id != owner) {
+		if (!cooldowns.has(command.name)) {
+			cooldowns.set(command.name, new Discord.Collection());
 		}
-		catch(err){console.error(err)}
-	})
-	.on('messageReactionAdd', (rea, user) => {
-		try{
-		if(!xCounts.get(`${rea.message.guild.id};${rea.message.channel.id};${rea.message.author.id}`) || rea.emoji.name != "❌") return false;
-		let xChannelIDs = client.provider.get(rea.message.guild, 'xChannelIDs', []);
-		if(!xChannelIDs.includes(rea.message.channel.id)) return false;
-		let xBlacklistIDs = client.provider.get(rea.message.guild, 'blacklist', {}).x;
-		let reactUsers = rea.users.cache.array();
-		if(!Array.isArray(xBlacklistIDs)) xBlacklistIDs = [];
-		let blacklisted = 0;
-		for(var i = 0; i < xBlacklistIDs.length; i++){
-			if(reactUsers.find(function(element){return element.id === xBlacklistIDs[i]})) blacklisted++;
-		}
-		if(rea.message.author.id != client.user.id && rea.users.cache.get(rea.message.author.id)) return rea.message.delete();
-		if(rea.count-blacklisted < xCounts.get(`${rea.message.guild.id};${rea.message.channel.id};${rea.message.author.id}`)) return false;
-		let xlogChannelIDs = client.provider.get(rea.message.guild, 'xlogChannelIDs', []);
-		let logMessage = `Deleted ${rea.message.member.displayName}[${rea.message.author.id}]'s message[${rea.message.id}] in ${rea.message.channel}`
-		let messageAttachments = rea.message.attachments.array();
-		if(messageAttachments[0] && messageAttachments[0].id) logMessage += " containing a message attachment";
-		if(rea.message.embeds[0]){
-			logMessage += (messageAttachments[0] != undefined && messageAttachments[0].id != undefined) ? logMessage += " and" : " containing";
-			logMessage += " the following embeds:\n"
-			for(i = 0; i < rea.message.embeds.length; i++){
-				logMessage += `<${rea.message.embeds[i].url}>\n`;
+
+		const now = Date.now();
+		const timestamps = cooldowns.get(command.name);
+		const cooldownAmount = (command.cooldown || 3) * 1000;
+
+		if (timestamps.has(msg.author.id)) {
+			const expirationTime = timestamps.get(msg.author.id) + cooldownAmount;
+
+			if (now < expirationTime) {
+				const timeLeft = (expirationTime - now) / 1000;
+				return msg.reply(`wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command`);
 			}
 		}
-		sendMessages(xlogChannelIDs, logMessage)
-		return rea.message.delete();
-		}
-		catch(err){console.error(err)}
-	})
-	.on('voiceStateUpdate', (oldState, newState) => {
-		try{
-		let voiceChannelIDs = client.provider.get(oldState.guild, 'voiceChannelIDs', null);
-		if(!voiceChannelIDs) return false;
-		//compare old channel state to new channel state
-		if(!oldState.channelID && newState.channelID) return sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** joined **${newState.channel.name}**.`);
-		else if(oldState.channelID && !newState.channelID) return sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** left **${oldState.channel.name}**.`);
-		else if(oldState.channelID && newState.channelID && newState.channelID != oldState.channelID) return sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** moved to **${newState.channel.name}** from **${oldState.channel.name}**.`);
-		}
-		catch(err){console.error(err)}
-	})
-	.on('guildMemberAdd', (member) => {
-		console.log("join");
-		if(member.guild.id === "163175631562080256"){
-			console.log("in the cool one");
-			if(member.guild.memberCount < 6969) return member.guild.channels.cache.get("163175631562080256").send(`*${6969-member.guild.memberCount} until 6969.* <:borp:337407396945330188>`);
-			else if(member.guild.memberCount === 6969) return member.guild.channels.cache.get("163175631562080256").send(`*${member}, you are the 6969th user!*`);
-			console.log("what the fuck is a member");
-		}
-	})
-	.on('commandError', (cmd, err) => {
-		if(err instanceof commando.FriendlyError) return;
-		console.error(`Error in command ${cmd.groupID}:${cmd.memberName}`, err);
-	})
-	.on('commandBlocked', (msg, reason) => {
-		console.log(oneLine`
-			Command ${msg.command ? `${msg.command.groupID}:${msg.command.memberName}` : ''}
-			blocked; ${reason}
-		`);
-	})
-	.on('commandPrefixChange', (guild, prefix) => {
-		console.log(oneLine`
-			Prefix ${prefix === '' ? 'removed' : `changed to ${prefix || 'the default'}`}
-			${guild ? `in guild ${guild.name} (${guild.id})` : 'globally'}.
-		`);
-	})
-	.on('commandStatusChange', (guild, command, enabled) => {
-		console.log(oneLine`
-			Command ${command.groupID}:${command.memberName}
-			${enabled ? 'enabled' : 'disabled'}
-			${guild ? `in guild ${guild.name} (${guild.id})` : 'globally'}.
-		`);
-	})
-	.on('groupStatusChange', (guild, group, enabled) => {
-		console.log(oneLine`
-			Group ${group.id}
-			${enabled ? 'enabled' : 'disabled'}
-			${guild ? `in guild ${guild.name} (${guild.id})` : 'globally'}.
-		`);
-	})
-	.on('commandRun', (command, promise, msg, args, fromPattern) => {
-		console.log(`By ${msg.author.username}|${msg.author.id} in ${msg.guild ? `${msg.guild.name}|${msg.guild.id}` : 'DM channel'}`);
-	});
 
-client.setProvider(
-	sqlite.open(path.join(__dirname, 'database.sqlite3')).then(db => new commando.SQLiteProvider(db))
-).catch(console.error);
+		timestamps.set(msg.author.id, now);
+		setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount);
+	}
 
-client.registry
-	.registerGroups([
-	['meme', 'meme'],
-	['channel', 'channel'],
-	['custom', 'custom'],
-	['role', 'role'],
-	['x', 'x'],
-	['suggestion', 'suggestion'],
-	['mod', 'mod'],
-	['gacha', 'gacha'],
-	['tts', 'tts'],
-	['commands', 'commands', true],
-	['util', 'util']
-	])
-	.registerDefaultTypes()
-	.registerDefaultCommands({unknownCommand:false})
-	.registerType(require("./guild.js"))
-	.registerType(require("./time.js"))
-	.registerType(require("./memberexclude.js"))
-	.registerCommandsIn(path.join(__dirname, 'commands'));
+	try {
+        if(command.args) {
+			args[command.args.length-1] = args.slice(command.args.length-1, args.length).join(' ');
+			
+            for(var i = 0; i < command.args.length; i++) {
+                try {
+					if (args[i]){
+						args[i] = client.argHandler.parseArg(args[i], command.args[i].type, msg);
 
-client.login(config.token);
+						if (typeof command.args[i].validator === 'function'
+						 && !command.args[i].validator(args[i], msg))
+						 throw new Error('Argument is not valid');
+
+						if (command.args[i].key) args[command.args[i].key] = args[i];
+					}
+                }
+                catch (error) {
+					msg.reply(`\`${args[i]}\` is an invalid argument`, { split: true });
+					return console.error(error);
+                }
+            }
+        }
+
+		command.execute(msg, args);
+    }
+    catch (error) {
+		console.error(error);
+		msg.reply('there was an error\nping guy 19 times');
+	}
+});
+
+client.on('messageReactionAdd', async (reaction, user) => {
+	if (reaction.emoji.name != "❌" || !reaction.message.requiredX) return;
+
+	const xChannel = await channelTags.findOne({ where: {
+		guild_id: reaction.message.guild.id,
+		channel_id: reaction.message.channel.id,
+		x: 1
+	} });
+	if (!xChannel) return;
+
+	if (reaction.count < reaction.message.requiredX) return;
+
+	const logChannels = await channelTags.findAll({ where: {
+		guild_id: reaction.message.guild.id,
+		log: 1
+	} })
+	const logChannelIDs = logChannels.map(channel => channel.channel_id);
+
+	sendMessages(logChannelIDs, `Deleted ${reaction.message.author.tag}[${reaction.message.author.id}]'s message[${reaction.message.id}]`);
+
+	reaction.message.delete();
+});
+
+client.on('voiceStateUpdate', async (oldState, newState) => {
+    try {
+		const voiceChannels = await channelTags.findAll({ where: {
+			guild_id: oldState.guild.id,
+			voice: 1
+		} })
+		if (!voiceChannels[0]) return;
+		const voiceChannelIDs = voiceChannels.map(channel => channel.channel_id);
+
+		if (!oldState.channelID && newState.channelID) return sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** joined **${newState.channel.name}**.`);
+		else if (oldState.channelID && !newState.channelID) return sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** left **${oldState.channel.name}**.`);
+		else if (oldState.channelID && newState.channelID && newState.channelID != oldState.channelID) return sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** moved to **${newState.channel.name}** from **${oldState.channel.name}**.`);
+	}
+	catch (error) {console.error(error)}
+});
+
+client.login(token);
