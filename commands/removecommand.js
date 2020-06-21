@@ -10,7 +10,7 @@ module.exports = {
             key: 'name',
             type: 'string',
             validator (arg) {
-                return arg.length <= 32;
+                return arg.length <= 32 && !arg.includes(' ');
             }
         }
     ],
@@ -23,7 +23,7 @@ module.exports = {
 
         if (!command) return msg.reply('that\'s not a command');
 
-        command.destroy();
+        await command.destroy();
 
         return msg.reply(`removed \`${args.name}\``);
 	},

@@ -9,7 +9,7 @@ module.exports = {
             key: 'name',
             type: 'string',
             validator (arg) {
-                return arg.length <= 32;
+                return arg.length <= 32 && !arg.includes(' ');
             }
         },
         {
