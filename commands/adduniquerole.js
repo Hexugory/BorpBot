@@ -20,7 +20,7 @@ module.exports = {
         } });
         if (role) return msg.reply('that\'s already a unique role');
 
-        uniqueRoles.create({
+        await uniqueRoles.create({
             guild_id: msg.guild.id,
             role_id: args.role.id
         });
