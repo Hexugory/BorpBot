@@ -2,7 +2,8 @@ const { db } = require('../borp.js')
 const customCommands = db.import('../models/customCommands');
 
 module.exports = {
-	name: 'listcommands',
+    name: 'custom',
+    aliases: ['listcommands'],
     description: 'List all custom commands.',
     guildOnly: true,
 	async execute(msg, args) {
