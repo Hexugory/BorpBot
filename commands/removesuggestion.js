@@ -19,7 +19,7 @@ module.exports = {
         } });
         if (!suggestion) return msg.reply('that\'s not a suggestion');
 
-        suggestion.destroy();
+        await suggestion.destroy();
 
         return msg.reply('removed suggestion');
 	},

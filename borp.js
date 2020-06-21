@@ -9,7 +9,8 @@ client.commands = new Discord.Collection();
 client.argHandler = new ArgHandler();
 client.db = new Sequelize({
 	dialect: 'sqlite',
-	storage: './database.sqlite'
+	storage: './database.sqlite',
+	logging: false
 });
 
 function sendMessages (arr, content, options = {}) {
@@ -90,9 +91,9 @@ client.on('message', async (msg) => {
 
 	if (msg.author.id != owner && (await blacklistUsers.findOne({ where: { user_id: msg.author.id, blacklisted: 1 } }))) return;
 
-	const args = msg.content.slice(prefix.length).split(/ +/);
+	let args = msg.content.slice(prefix.length).split(/ +/);
     const commandName = args.shift().toLowerCase();
-    if (args.length > 0) client.argHandler.formatArgs(args);
+    if (args.length > 0) args = client.argHandler.formatArgs(args);
 
 	const command = client.commands.get(commandName)
 		|| client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));

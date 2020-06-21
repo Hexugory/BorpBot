@@ -20,7 +20,7 @@ module.exports = {
         } });
         if (!role) return msg.reply('that\'s not a unique role');
 
-        role.destroy();
+        await role.destroy();
 
         return msg.reply(`removed role \`${args.role.name}\``);
 	},
