@@ -25,7 +25,7 @@ module.exports = {
         if (msg.client.commands.get(args.name)
         || msg.client.commands.find(c => c.aliases && c.aliases.includes(args.name))) return msg.reply('you tried, but you can\'t name a custom command after a bot command');
 
-        customCommands.create({
+        await customCommands.create({
             guild_id: msg.guild.id,
             name: args.name,
             response: args.response
