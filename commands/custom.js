@@ -7,7 +7,9 @@ module.exports = {
     description: 'List all custom commands.',
     guildOnly: true,
 	async execute(msg, args) {
-        const guildCommands = await customCommands.findAll({ where: { guild_id: msg.guild.id } });
+        const guildCommands = await customCommands.findAll({ where: {
+            guild_id: msg.guild.id
+        } });
         var reply = "";
 
         for (let command of guildCommands) {

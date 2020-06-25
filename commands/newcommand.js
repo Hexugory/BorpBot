@@ -1,4 +1,4 @@
-const { db } = require('../borp.js')
+const { db } = require('../borp.js');
 const customCommands = db.import('../models/customCommands');
 
 module.exports = {
@@ -19,7 +19,9 @@ module.exports = {
     ],
     guildOnly: true,
 	async execute(msg, args) {
-        const guildCommands = await customCommands.findAll({ where: { guild_id: msg.guild.id } });
+        const guildCommands = await customCommands.findAll({ where: {
+            guild_id: msg.guild.id
+        } });
 
         if (guildCommands.find(command => {return command.name === args.name})) return msg.reply('you can\'t have two commands with the same name');
         if (msg.client.commands.get(args.name)
