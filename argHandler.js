@@ -14,12 +14,12 @@ module.exports = class ArgHandler {
         this.types = types;
     }
 
-    formatArgs (args) {
-        args = args.join(' ').match(/(".+")|(\S+)/g);
-
+    formatArgs (msg) {
+        const args = msg.match(/(".+")|(\S+)/g);
         for(let [i, arg] of args.entries()) {
             args[i] = arg.replace(/"/g, '');
         }
+        
         return args;
     }
 

@@ -6,9 +6,9 @@ module.exports = {
     description: 'List all of this server\'s suggestions.',
     permission: ['MANAGE_SERVER'],
 	async execute(msg, args) {
-        const guildSuggestions = await suggestions.findAll({
+        const guildSuggestions = await suggestions.findAll({ where: {
             guild_id: msg.guild.id
-        });
+        }});
 
         var message = '';
         for (const suggestion of guildSuggestions) {

@@ -3,6 +3,7 @@ const Discord = require('discord.js');
 const { prefix, token, owner } = require('./config.json');
 const ArgHandler = require('./argHandler.js');
 const Sequelize = require('sequelize');
+const moment = require('moment');
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
@@ -80,8 +81,24 @@ suggestions.sync();
 const uniqueRoles = client.db.import('./models/uniqueRoles');
 uniqueRoles.sync();
 
+const reminders = client.db.import('./models/reminders');
+reminders.sync();
+
 client.once('ready', () => {
-    console.log(`Logged in as ${client.user.tag}`);
+	console.log(`Logged in as ${client.user.tag}`);
+	setInterval(async () => {
+		const allReminders = await reminders.findAll();
+		for (const reminder of allReminders) {
+			if (moment.utc().isBefore(reminder.time)) return;
+
+			const sender = client.users.resolve(reminder.sender_id);
+			if (sender) {
+				sender.send(`you asked to be reminded of: ${reminder.reminder}`);
+			}
+
+			return await reminder.destroy();
+		}
+	}, 60000)
 });
 
 client.on('message', async (msg) => {
@@ -91,15 +108,16 @@ client.on('message', async (msg) => {
 
 	if (msg.author.id != owner && (await blacklistUsers.findOne({ where: { user_id: msg.author.id, blacklisted: 1 } }))) return;
 
-	let args = msg.content.slice(prefix.length).split(/ +/);
+	const args = client.argHandler.formatArgs(msg.content.slice(prefix.length));
     const commandName = args.shift().toLowerCase();
-    if (args.length > 0) args = client.argHandler.formatArgs(args);
 
 	const command = client.commands.get(commandName)
 		|| client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
 	if (!command) {
-		const guildCommands = await customCommands.findAll({ where: { guild_id: msg.guild.id } });
+		const guildCommands = await customCommands.findAll({ where: {
+			guild_id: msg.guild.id
+		} });
 		const customCommand = guildCommands.find(command => { return command.name === commandName });
 		if (!customCommand) return;
 
