@@ -25,6 +25,6 @@ module.exports = {
             reminder: args.reminder
         });
 
-        return msg.reply(`set a reminder at \`${endTime.format('MMMM Do YYYY, h:mm:ss a ZZ')}\``);
+        return msg.reply(`set a reminder for \`${endTime.format('MMMM Do YYYY, h:mm:ss a ZZ')}\``);
 	},
 };
