@@ -89,14 +89,14 @@ client.once('ready', () => {
 	setInterval(async () => {
 		const allReminders = await reminders.findAll();
 		for (const reminder of allReminders) {
-			if (moment.utc().isBefore(reminder.time)) return;
+			if (moment.utc().isBefore(reminder.time)) continue;
 
 			const sender = client.users.resolve(reminder.sender_id);
 			if (sender) {
 				sender.send(`you asked to be reminded of: ${reminder.reminder}`);
 			}
 
-			return await reminder.destroy();
+			await reminder.destroy();
 		}
 	}, 60000)
 });
