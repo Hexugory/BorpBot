@@ -34,7 +34,7 @@ module.exports = {
         }
 
         const suggestion = await suggestions.create({
-            guild_id: msg.guild.id,
+            guild_id: args.guild.id,
             sender_id: msg.author.id,
             anonymous: args.anonymous ? 1 : 0,
             suggestion: args.suggestion
