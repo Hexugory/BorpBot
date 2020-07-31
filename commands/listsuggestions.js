@@ -1,5 +1,6 @@
 const { db } = require('../borp.js')
 const suggestions = db.import('../models/suggestions');
+const moment = require('moment');
 
 module.exports = {
 	name: 'listsuggestions',
@@ -14,7 +15,9 @@ module.exports = {
         for (const suggestion of guildSuggestions) {
             let sender = msg.guild.members.resolve(suggestion.sender_id);
             sender = sender ? sender.user.tag : '[Missing User]';
-            message += `${suggestion.anonymous ? '[Anonymous]' : sender} suggested: ${suggestion.suggestion}\nSuggestion ID: ${suggestion.id}\n`
+            message += `${suggestion.anonymous ? '[Anonymous]' : sender} suggested: ${suggestion.suggestion}
+Suggestion created at ${moment.utc(suggestion.createdAt).format('ddd MMM D YYYY')}
+Suggestion ID: ${suggestion.id}\n`
         }
         
         if (message.length < 1) return msg.reply('this server has no suggestions');
