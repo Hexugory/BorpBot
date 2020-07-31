@@ -8,19 +8,31 @@ module.exports = {
     args: [
         {
             key: 'id',
-            type: 'integer'
+            type: 'integer',
+            infinite: true
         }
     ],
     guildOnly: true,
 	async execute(msg, args) {
-        const suggestion = await suggestions.findOne({ where: {
-            guild_id: msg.guild.id,
-            id: args.id
-        } });
-        if (!suggestion) return msg.reply('that\'s not a suggestion');
+        let returnStr = '\n';
 
-        await suggestion.destroy();
+        for (const id of args.id) {
+            const suggestion = await suggestions.findOne({ where: {
+                guild_id: msg.guild.id,
+                id: id
+            } });
 
-        return msg.reply('removed suggestion');
+            if (suggestion) {
+                returnStr += `${id}: removed ✅\n`;
+            }
+            else {
+                returnStr += `${id}: does not exist ❌\n`;
+                continue;
+            };
+    
+            await suggestion.destroy();
+        }
+
+        return msg.reply(returnStr, { split: true });
 	},
 };

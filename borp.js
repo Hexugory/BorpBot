@@ -192,12 +192,24 @@ client.on('message', async (msg) => {
 
 	try {
         if(command.args) {
-			args[command.args.length-1] = args.slice(command.args.length-1, args.length).join(' ');
+			if (!command.args[command.args.length-1].infinite) { 
+				args[command.args.length-1] = args.slice(command.args.length-1, args.length).join(' ');
+			}
 			
             for(var i = 0; i < command.args.length; i++) {
                 try {
 					if (args[i]){
-						args[i] = client.argHandler.parseArg(args[i], command.args[i].type, msg);
+						if (!command.args[i].infinite){
+							args[i] = client.argHandler.parseArg(args[i], command.args[i].type, msg);
+						}
+						else {
+							const infinite = [];
+							for (var j = i; j < args.length; j++) {
+								infinite.push(client.argHandler.parseArg(args[j], command.args[i].type, msg));
+							}
+							
+							args[i] = infinite;
+						}
 
 						if (typeof command.args[i].validator === 'function'
 						 && !command.args[i].validator(args[i], msg))

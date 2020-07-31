@@ -6,6 +6,7 @@ module.exports = {
 	name: 'suggest',
     description: 'Suggest something to a server.',
     cooldown: 60,
+    usage: '<server> <anonymous (yes/no)> <suggestion>',
     args: [
         {
             key: 'guild',
