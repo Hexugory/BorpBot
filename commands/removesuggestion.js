@@ -4,7 +4,7 @@ const suggestions = db.import('../models/suggestions');
 module.exports = {
 	name: 'removesuggestion',
     description: 'Remove a suggestion.',
-    permission: ['MANAGE_SERVER'],
+    permission: ['MANAGE_GUILD'],
     args: [
         {
             key: 'id',
