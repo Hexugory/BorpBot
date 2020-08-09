@@ -2,29 +2,43 @@ const { db } = require('../borp.js')
 const customCommands = db.import('../models/customCommands');
 
 module.exports = {
-	name: 'removecommand',
+    name: 'removecommand',
+    aliases: ['removecommands'],
     description: 'Remove a custom command.',
     permission: ['MANAGE_MESSAGES'],
     args: [
         {
             key: 'name',
             type: 'string',
+            infinite: true,
             validator (arg) {
-                return arg.length <= 32 && !arg.includes(' ');
+                return arg.every(value => {
+                    return value.length <= 32 && !value.includes(' ');
+                });
             }
         }
     ],
     guildOnly: true,
 	async execute(msg, args) {
-        const command = await customCommands.findOne({ where: {
-            guild_id: msg.guild.id,
-            name: args.name
-        } });
+        let returnStr = '\n';
 
-        if (!command) return msg.reply('that\'s not a command');
+        for (const name of args.name) {
+            const command = await customCommands.findOne({ where: {
+                guild_id: msg.guild.id,
+                name: name
+            } });
 
-        await command.destroy();
+            if (command) {
+                returnStr += `${name}: removed ✅\n`;
+            }
+            else {
+                returnStr += `${name}: does not exist ❌\n`;
+                continue;
+            };
+    
+            await command.destroy();
+        }
 
-        return msg.reply(`removed \`${args.name}\``);
+        return msg.reply(returnStr, { split: true });
 	},
 };
