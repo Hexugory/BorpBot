@@ -2,7 +2,8 @@ const { db } = require('../borp.js')
 const suggestions = db.import('../models/suggestions');
 
 module.exports = {
-	name: 'removesuggestion',
+    name: 'removesuggestion',
+    aliases: ['removesuggestions'],
     description: 'Remove a suggestion.',
     permission: ['MANAGE_GUILD'],
     args: [
