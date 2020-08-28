@@ -5,7 +5,7 @@ module.exports = {
         if (id) id = id[1];
 
         if (!id) {
-            return msg.guild.members.cache.filter(user => {return user.username.toLowerCase().startsWith(arg.toLowerCase())}).array().length === 1;
+            return msg.guild.members.cache.filter(member => {return member.user.username.toLowerCase().startsWith(arg.toLowerCase())}).array().length === 1;
         }
 
         if (!msg.guild.members.resolve(id)) return false;
@@ -17,7 +17,7 @@ module.exports = {
         if (id) id = id[1];
 
         if (!id) {
-            return msg.guild.members.cache.find(user => {return user.username.toLowerCase().startsWith(arg.toLowerCase())});
+            return msg.guild.members.cache.find(member => {return member.user.username.toLowerCase().startsWith(arg.toLowerCase())});
         }
 
         return msg.guild.members.resolve(id);
