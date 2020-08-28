@@ -75,6 +75,9 @@ xConfigs.sync();
 const blacklistUsers = client.db.import('./models/blacklistedUsers');
 blacklistUsers.sync();
 
+const commandBlacklist = client.db.import('./models/commandBlacklist');
+commandBlacklist.sync();
+
 const suggestions = client.db.import('./models/suggestions');
 suggestions.sync();
 
@@ -138,6 +141,13 @@ client.on('message', async (msg) => {
 
 		return msg.channel.send(customCommand.response);
 	};
+
+	if (msg.author.id != owner) {
+		const member = (await commandBlacklist.findOrCreate({ where: { user_id: msg.author.id, guild_id: msg.guild.id } }))[0];
+		if (JSON.parse(member.blacklist)[command.name]) {
+			return;
+		}
+	}
 
 	if (command.ownerOnly && msg.author.id != owner) {
 		return msg.reply('why would you be allowed to use that command')
