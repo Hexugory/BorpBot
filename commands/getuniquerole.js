@@ -9,11 +9,24 @@ module.exports = {
     args: [
         {
             key: 'role',
-            type: 'role'
+            type: 'role',
+            optional: true
         }
     ],
     guildOnly: true,
 	async execute(msg, args) {
+        if (!args.role) {
+            const guildRoles = await uniqueRoles.findAll({ where: {
+                guild_id: msg.guild.id
+            } });
+            const guildRoleIDs = guildRoles.map(role => role.role_id);
+
+            const newRoles = msg.member.roles.cache
+                .filter(role => !guildRoleIDs.includes(role.id))
+            msg.member.roles.set(newRoles);
+            return msg.reply(`removed role`);
+        }
+
         const role = await uniqueRoles.findOne({ where: {
             guild_id: msg.guild.id,
             role_id: args.role.id
@@ -22,8 +35,8 @@ module.exports = {
         const guildRoles = await uniqueRoles.findAll({ where: {
             guild_id: msg.guild.id
         } });
-
         const guildRoleIDs = guildRoles.map(role => role.role_id);
+        
         const newRoles = msg.member.roles.cache
             .filter(role => !guildRoleIDs.includes(role.id))
             .set(args.role.id, args.role);
