@@ -213,7 +213,7 @@ client.on('message', async (msg) => {
 			
             for(var i = 0; i < command.args.length; i++) {
                 try {
-					if (args[i]){
+					if (args[i]) {
 						if (!command.args[i].infinite){
 							args[i] = client.argHandler.parseArg(args[i], command.args[i].type, msg);
 						}
