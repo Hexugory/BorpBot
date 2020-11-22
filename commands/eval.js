@@ -9,6 +9,8 @@ module.exports = {
     ],
     ownerOnly: true,
 	async execute(msg, args) {
-        return msg.channel.send(eval(args.code));
+        const result = eval(args.code);
+        console.log(result);
+        return msg.channel.send(result);
 	},
 };

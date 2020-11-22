@@ -17,7 +17,7 @@ module.exports = class ArgHandler {
     formatArgs (msg) {
         const args = msg.match(/("[^"]+")|(\S+)/g);
         for(let [i, arg] of args.entries()) {
-            args[i] = arg.replace(/"/g, '');
+            args[i] = arg.replace(/(^"|"$)/g, '');
         }
         
         return args;
