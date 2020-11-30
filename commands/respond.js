@@ -4,6 +4,7 @@ const suggestions = db.import('../models/suggestions');
 module.exports = {
 	name: 'respond',
     description: 'Respond to a suggestion.',
+    permission: ['MANAGE_MESSAGES'],
     args: [
         {
             key: 'id',
