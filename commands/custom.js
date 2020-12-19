@@ -4,7 +4,7 @@ const customCommands = db.import('../models/customCommands');
 module.exports = {
     name: 'custom',
     aliases: ['listcommands'],
-    description: 'List all custom commands.',
+    description: 'List all custom commands',
     guildOnly: true,
 	async execute(msg, args) {
         const guildCommands = await customCommands.findAll({ where: {

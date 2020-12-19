@@ -4,7 +4,7 @@ const customCommands = db.import('../models/customCommands');
 module.exports = {
     name: 'removecommand',
     aliases: ['removecommands'],
-    description: 'Remove a custom command.',
+    description: 'Remove a custom command',
     permission: ['MANAGE_MESSAGES'],
     args: [
         {

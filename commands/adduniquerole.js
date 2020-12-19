@@ -4,7 +4,7 @@ const uniqueRoles = db.import('../models/uniqueRoles');
 module.exports = {
     name: 'adduniquerole',
     aliases: ['addlocationrole'],
-    description: 'Add a unique role.',
+    description: 'Add a unique role',
     args: [
         {
             key: 'role',

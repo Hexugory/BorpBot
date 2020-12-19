@@ -3,7 +3,7 @@ const customCommands = db.import('../models/customCommands');
 
 module.exports = {
 	name: 'newcommand',
-    description: 'Create a new custom command.',
+    description: 'Create a new custom command',
     args: [
         {
             key: 'name',

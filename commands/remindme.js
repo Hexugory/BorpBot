@@ -4,7 +4,7 @@ const reminders = db.import('../models/reminders');
 
 module.exports = {
 	name: 'remindme',
-    description: 'Sets a reminder.',
+    description: 'Sets a reminder',
     args: [
         {
             key: 'time',

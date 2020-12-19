@@ -4,7 +4,7 @@ const moment = require('moment');
 
 module.exports = {
 	name: 'listsuggestions',
-    description: 'List all of this server\'s suggestions.',
+    description: 'List all of this server\'s suggestions',
     permission: ['MANAGE_GUILD'],
 	async execute(msg, args) {
         const guildSuggestions = await suggestions.findAll({ where: {

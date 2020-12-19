@@ -4,7 +4,7 @@ const channelTags = db.import('../models/channelTags');
 
 module.exports = {
 	name: 'suggest',
-    description: 'Suggest something to a server.',
+    description: 'Suggest something to a server',
     cooldown: 60,
     usage: '<server> <anonymous (yes/no)> <suggestion>',
     args: [
