@@ -10,7 +10,8 @@ module.exports = {
     ownerOnly: true,
 	async execute(msg, args) {
         const result = eval(args.code);
+        console.log(args.code);
         console.log(result);
-        return msg.channel.send(result);
+        return msg.channel.send(result.toString());
 	},
 };
