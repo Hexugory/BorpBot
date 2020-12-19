@@ -39,8 +39,8 @@ module.exports = class WikiCommand extends SlashCommand {
         }
         
         return ctx.send({
-            content: `https://en.touhouwiki.net/wiki/${search.data.query.search[0].title}`,
+            content: `https://en.touhouwiki.net/wiki/${encodeURIComponent(search.data.query.search[0].title.replace(/ /g, '_'))}`,
             includeSource: true
-        })
+        });
     }
 }
