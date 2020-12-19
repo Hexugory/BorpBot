@@ -3,7 +3,7 @@ const commandBlacklist = db.import('../models/commandBlacklist');
 
 module.exports = {
 	name: 'blacklist',
-    description: 'Blacklist a member from a command.',
+    description: 'Blacklist a member from a command',
     args: [
         {
             key: 'command',

@@ -4,7 +4,7 @@ const uniqueRoles = db.import('../models/uniqueRoles');
 module.exports = {
     name: 'removeuniquerole',
     aliases: ['removelocationrole'],
-    description: 'Remove a unique role.',
+    description: 'Remove a unique role',
     args: [
         {
             key: 'role',

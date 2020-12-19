@@ -3,7 +3,7 @@ const suggestions = db.import('../models/suggestions');
 
 module.exports = {
 	name: 'viewsender',
-    description: 'Request the sender of a suggestion.',
+    description: 'Request the sender of a suggestion',
     args: [
         {
             key: 'id',

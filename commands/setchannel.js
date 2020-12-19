@@ -3,7 +3,7 @@ const channelTags = db.import('../models/channelTags');
 
 module.exports = {
 	name: 'setchannel',
-    description: 'Set a property of a channel.',
+    description: 'Set a property of a channel',
     args: [
         {
             key: 'tag',

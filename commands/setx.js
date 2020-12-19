@@ -3,7 +3,7 @@ const xConfigs = db.import('../models/xConfigs');
 
 module.exports = {
 	name: 'setx',
-    description: 'Set the X config for a channel.',
+    description: 'Set the X config for a channel',
     args: [
         {
             key: 'activityTime',

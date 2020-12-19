@@ -7,7 +7,7 @@ module.exports = class SuggestCommand extends SlashCommand {
     constructor(creator) {
         super(creator, {
             name: 'suggest',
-            description: 'Send a suggestion to the server.',
+            description: 'Send a suggestion to the server',
             guildID: '163175631562080256',
 
             options: [{
@@ -19,7 +19,7 @@ module.exports = class SuggestCommand extends SlashCommand {
             {
                 type: CommandOptionType.STRING,
                 name: 'suggestion',
-                description: 'The content of your suggestion.',
+                description: 'The content of your suggestion',
                 required: true
             }]
         });

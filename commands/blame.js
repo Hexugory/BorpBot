@@ -1,6 +1,6 @@
 module.exports = {
 	name: 'blame',
-    description: 'Blame someone for your problems.',
+    description: 'Blame someone for your problems',
     cooldown: 5,
 	async execute(msg) {
         var recent = await msg.channel.messages.fetch({limit: 20});
