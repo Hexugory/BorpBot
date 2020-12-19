@@ -1,17 +1,26 @@
 const fs = require('fs');
+const path = require('path');
+const { SlashCreator, GatewayServer } = require('slash-create');
 const Discord = require('discord.js');
-const { prefix, token, owner } = require('./config.json');
+const { prefix, token, owner, pubkey, clientid } = require('./config.json');
 const ArgHandler = require('./argHandler.js');
 const Sequelize = require('sequelize');
 const moment = require('moment');
 
 const client = new Discord.Client();
+
 client.commands = new Discord.Collection();
 client.argHandler = new ArgHandler();
 client.db = new Sequelize({
 	dialect: 'sqlite',
 	storage: './database.sqlite',
 	logging: false
+});
+
+const creator = new SlashCreator({
+	applicationID: clientid,
+	publicKey: pubkey,
+	token: token
 });
 
 function sendMessages (arr, content, options = {}) {
@@ -53,6 +62,18 @@ async function xCalculation (msg) {
 }
 
 module.exports = {db: client.db, sendMessages: sendMessages};
+
+creator
+	.withServer(
+		new GatewayServer(
+			(handler) => client.ws.on('INTERACTION_CREATE', handler)
+		)
+	)
+	.registerCommandsIn(path.join(__dirname, 'slash'))
+	.syncCommands({deleteCommands: true})
+	.on('commandError', (command, err, ctx) => {return console.error(err)})
+	.on('error', (err) => {return console.error(err)})
+	.on('commandRegister', (command, cr) => {return console.log(command)});
 
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 

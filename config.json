@@ -1,6 +1,8 @@
 {
-"token": "bot token",
-"owner": "bot owner id",
-"game": "bot game",
-"prefix": "bot prefix"
+    "token": "bot token",
+    "pubkey": "application public key",
+    "clientid": "application client id",
+    "owner": "bot owner id",
+    "game": "bot game",
+    "prefix": "bot prefix"
 }
