@@ -10,18 +10,20 @@ module.exports = class SuggestCommand extends SlashCommand {
             description: 'Send a suggestion to the server',
             guildID: '163175631562080256',
 
-            options: [{
-                type: CommandOptionType.BOOLEAN,
-                name: 'anonymous',
-                description: 'Would you like your suggestion to be anonymous?',
-                required: true
-            },
-            {
-                type: CommandOptionType.STRING,
-                name: 'suggestion',
-                description: 'The content of your suggestion',
-                required: true
-            }]
+            options: [
+                {
+                    type: CommandOptionType.BOOLEAN,
+                    name: 'anonymous',
+                    description: 'Would you like your suggestion to be anonymous?',
+                    required: true
+                },
+                {
+                    type: CommandOptionType.STRING,
+                    name: 'suggestion',
+                    description: 'The content of your suggestion',
+                    required: true
+                }
+            ]
         });
     }
 
