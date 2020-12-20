@@ -38,7 +38,7 @@ module.exports = class WikiCommand extends SlashCommand {
             });
         }
 
-        const extract = await axios.get('https://en.touhouwiki.net/api.php?action=query&prop=extracts&exlimit=1&explaintext=1&exintro=1&exchars=600&redirects&format=json&titles='+search.data.query.search[0].title);
+        const extract = await axios.get('https://en.touhouwiki.net/api.php?action=query&prop=extracts&exlimit=1&explaintext=1&exintro=1&redirects&format=json&titles='+search.data.query.search[0].title);
         
         const page = extract.data.query.pages[Object.keys(extract.data.query.pages)[0]];
 
