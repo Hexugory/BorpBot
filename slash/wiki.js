@@ -21,16 +21,26 @@ module.exports = class WikiCommand extends SlashCommand {
     }
 
     async run(ctx) {
-        const search = await axios.get('https://en.touhouwiki.net/api.php?action=query&prop=extracts&exlimit=1&explaintext=1&exintro=1&redirects&format=json&titles='+ctx.options.query);
-        
-        const page = search.data.query.pages[Object.keys(search.data.query.pages)[0]];
+        const search = await axios.get('https://en.touhouwiki.net/api.php', {
+            params: {
+                action: 'query',
+                list: 'search',
+                srsearch: ctx.options.query,
+                srwhat: 'nearmatch',
+                format: 'json'
+            }
+        });
 
-        if (!page.pageid) {
+        if (!search.data.query.search[0]) {
             return ctx.send({
                 content: 'that page doesn\'t seem to exist',
                 ephemeral: true
             });
         }
+
+        const extract = await axios.get('https://en.touhouwiki.net/api.php?action=query&prop=extracts&exlimit=1&explaintext=1&exintro=1&redirects&format=json&titles='+search.data.query.search[0].title);
+        
+        const page = extract.data.query.pages[Object.keys(extract.data.query.pages)[0]];
 
         return ctx.send({
             embeds: [
