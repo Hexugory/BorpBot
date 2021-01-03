@@ -1,5 +1,4 @@
-const { db } = require('../borp.js')
-const uniqueRoles = db.import('../models/uniqueRoles');
+const { uniqueRoles } = require('../borp.js');
 
 module.exports = {
     name: 'getuniquerole',

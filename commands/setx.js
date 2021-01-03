@@ -1,5 +1,4 @@
-const { db } = require('../borp.js')
-const xConfigs = db.import('../models/xConfigs');
+const { xConfigs } = require('../borp.js');
 
 module.exports = {
 	name: 'setx',

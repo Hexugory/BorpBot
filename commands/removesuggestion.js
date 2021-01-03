@@ -1,5 +1,4 @@
-const { db } = require('../borp.js')
-const suggestions = db.import('../models/suggestions');
+const { suggestions } = require('../borp.js');
 
 module.exports = {
     name: 'removesuggestion',

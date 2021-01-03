@@ -1,5 +1,4 @@
-const { db } = require('../borp.js')
-const channelTags = db.import('../models/channelTags');
+const { channelTags } = require('../borp.js');
 
 module.exports = {
 	name: 'setchannel',

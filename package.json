@@ -17,11 +17,11 @@
   },
   "homepage": "https://github.com/jimmyy4/BorpBot#readme",
   "dependencies": {
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "discord.js": "^12.5.1",
-    "moment": "^2.27.0",
-    "sequelize": "^5.21.13",
+    "moment": "^2.29.1",
+    "sequelize": "^6.3.5",
     "slash-create": "^1.2.0",
-    "sqlite3": "^4.2.0"
+    "sqlite3": "^5.0.0"
   }
 }
