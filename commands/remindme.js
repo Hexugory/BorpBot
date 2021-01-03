@@ -1,6 +1,5 @@
 const moment = require('moment');
-const { db } = require('../borp.js');
-const reminders = db.import('../models/reminders');
+const { reminders } = require('../borp.js');
 
 module.exports = {
 	name: 'remindme',

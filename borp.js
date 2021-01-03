@@ -61,7 +61,46 @@ async function xCalculation (msg) {
 	msg.requiredX = Math.max(Math.min(Math.ceil(xConfig.activityRatio * uniqueIDs.length), xConfig.maximum), xConfig.minimum);
 }
 
-module.exports = {db: client.db, sendMessages: sendMessages};
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
+const cooldowns = new Discord.Collection();
+
+const customCommands = require('./models/customCommands')(client.db, Sequelize);
+customCommands.sync();
+
+const channelTags = require('./models/channelTags')(client.db, Sequelize);
+channelTags.sync();
+
+const xConfigs = require('./models/xConfigs')(client.db, Sequelize);
+xConfigs.sync();
+
+const blacklistUsers = require('./models/blacklistedUsers')(client.db, Sequelize);
+blacklistUsers.sync();
+
+const commandBlacklist = require('./models/commandBlacklist')(client.db, Sequelize);
+commandBlacklist.sync();
+
+const suggestions = require('./models/suggestions')(client.db, Sequelize);
+suggestions.sync();
+
+const uniqueRoles = require('./models/uniqueRoles')(client.db, Sequelize);
+uniqueRoles.sync();
+
+const reminders = require('./models/reminders')(client.db, Sequelize);
+reminders.sync();
+
+module.exports = {
+	db: client.db,
+	sendMessages: sendMessages,
+	customCommands: customCommands,
+	channelTags: channelTags,
+	xConfigs: xConfigs,
+	blacklistUsers: blacklistUsers,
+	commandBlacklist: commandBlacklist,
+	suggestions: suggestions,
+	uniqueRoles: uniqueRoles,
+	reminders: reminders
+};
 
 creator
 	.withServer(
@@ -75,38 +114,10 @@ creator
 	.on('error', (err) => {return console.error(err)})
 	.on('commandRegister', (command, cr) => {return console.log(command)});
 
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	client.commands.set(command.name, command);
 }
-
-const cooldowns = new Discord.Collection();
-
-const customCommands = client.db.import('./models/customCommands');
-customCommands.sync();
-
-const channelTags = client.db.import('./models/channelTags');
-channelTags.sync();
-
-const xConfigs = client.db.import('./models/xConfigs');
-xConfigs.sync();
-
-const blacklistUsers = client.db.import('./models/blacklistedUsers');
-blacklistUsers.sync();
-
-const commandBlacklist = client.db.import('./models/commandBlacklist');
-commandBlacklist.sync();
-
-const suggestions = client.db.import('./models/suggestions');
-suggestions.sync();
-
-const uniqueRoles = client.db.import('./models/uniqueRoles');
-uniqueRoles.sync();
-
-const reminders = client.db.import('./models/reminders');
-reminders.sync();
 
 client.once('ready', () => {
 	console.log(`Logged in as ${client.user.tag}`);

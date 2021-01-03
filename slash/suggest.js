@@ -1,7 +1,5 @@
 const { SlashCommand, CommandOptionType } = require('slash-create');
-const { db, sendMessages } = require('../borp.js')
-const suggestions = db.import('../models/suggestions');
-const channelTags = db.import('../models/channelTags');
+const { suggestions, channelTags, sendMessages } = require('../borp.js')
 
 module.exports = class SuggestCommand extends SlashCommand {
     constructor(creator) {

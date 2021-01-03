@@ -1,5 +1,4 @@
-const { db } = require('../borp.js')
-const customCommands = db.import('../models/customCommands');
+const { customCommands } = require('../borp.js');
 
 module.exports = {
     name: 'custom',

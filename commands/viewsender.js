@@ -1,5 +1,4 @@
-const { db, sendMessages } = require('../borp.js')
-const suggestions = db.import('../models/suggestions');
+const { suggestions, sendMessages } = require('../borp.js');
 
 module.exports = {
 	name: 'viewsender',

@@ -1,5 +1,4 @@
-const { db } = require('../borp.js')
-const commandBlacklist = db.import('../models/commandBlacklist');
+const { commandBlacklist } = require('../borp.js');
 
 module.exports = {
 	name: 'blacklist',
