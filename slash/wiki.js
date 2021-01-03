@@ -7,7 +7,6 @@ module.exports = class WikiCommand extends SlashCommand {
         super(creator, {
             name: 'wiki',
             description: 'Query the Touhou Wiki',
-            guildID: '163175631562080256',
 
             options: [
                 {
