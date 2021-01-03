@@ -20,7 +20,16 @@ module.exports = class WikiCommand extends SlashCommand {
     }
 
     async run(ctx) {
-        const search = await axios.get('https://en.touhouwiki.net/api.php', {
+        const interlanguage = ['da', 'de', 'en', 'es', 'fr', 'it', 'ko', 'ms', 'nl', 'pl', 'pt', 'ru', 'sv', 'tr', 'uk', 'vi', 'zh'];
+
+        var wiki = 'en'
+        const interwiki = ctx.options.query.match(/^\w\w:/)?.[0]?.slice(0, 2)
+        if (interlanguage.includes(interwiki)) {
+            wiki = interwiki;
+            ctx.options.query = ctx.options.query.slice(2);
+        }
+
+        const search = await axios.get(`https://${wiki}.touhouwiki.net/api.php`, {
             params: {
                 action: 'query',
                 list: 'search',
@@ -37,7 +46,7 @@ module.exports = class WikiCommand extends SlashCommand {
             }
         }
 
-        const extract = await axios.get('https://en.touhouwiki.net/api.php', {
+        const extract = await axios.get(`https://${wiki}.touhouwiki.net/api.php`, {
             params: {
                 action: 'query',
                 prop: 'extracts',
@@ -45,7 +54,7 @@ module.exports = class WikiCommand extends SlashCommand {
                 explaintext: 1,
                 exintro: 1,
                 exchars: 500,
-                redirects: '',
+                redirects: 1,
                 format: 'json',
                 titles: search.data.query.search[0].title
             }
@@ -57,7 +66,7 @@ module.exports = class WikiCommand extends SlashCommand {
             embeds: [
                 new MessageEmbed({
                     title: page.title,
-                    url: encodeURI(`https://en.touhouwiki.net/wiki/${page.title}`),
+                    url: encodeURI(`https://${wiki}.touhouwiki.net/wiki/${page.title}`),
                     description: page.extract.slice(0, -3),
                     footer: {
                         iconURL: `https://en.touhouwiki.net/favicon.ico`,
