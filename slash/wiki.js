@@ -7,7 +7,6 @@ module.exports = class WikiCommand extends SlashCommand {
         super(creator, {
             name: 'wiki',
             description: 'Query the Touhou Wiki',
-            guildID: '225034347558862849',
 
             options: [
                 {
@@ -53,7 +52,6 @@ module.exports = class WikiCommand extends SlashCommand {
         });
         
         const page = extract.data.query.pages[Object.keys(extract.data.query.pages)[0]];
-        console.log(page)
 
         return {
             embeds: [
