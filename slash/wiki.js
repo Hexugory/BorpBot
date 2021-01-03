@@ -7,6 +7,7 @@ module.exports = class WikiCommand extends SlashCommand {
         super(creator, {
             name: 'wiki',
             description: 'Query the Touhou Wiki',
+            guildID: '225034347558862849',
 
             options: [
                 {
@@ -31,17 +32,30 @@ module.exports = class WikiCommand extends SlashCommand {
         });
 
         if (!search.data.query.search[0]) {
-            return ctx.send({
+            return {
                 content: 'that page doesn\'t seem to exist',
                 ephemeral: true
-            });
+            }
         }
 
-        const extract = await axios.get('https://en.touhouwiki.net/api.php?action=query&prop=extracts&exlimit=1&explaintext=1&exintro=1&exchars=500&redirects&format=json&titles='+search.data.query.search[0].title);
+        const extract = await axios.get('https://en.touhouwiki.net/api.php', {
+            params: {
+                action: 'query',
+                prop: 'extracts',
+                exlimit: 1,
+                explaintext: 1,
+                exintro: 1,
+                exchars: 500,
+                redirects: '',
+                format: 'json',
+                titles: search.data.query.search[0].title
+            }
+        });
         
         const page = extract.data.query.pages[Object.keys(extract.data.query.pages)[0]];
+        console.log(page)
 
-        return ctx.send({
+        return {
             embeds: [
                 new MessageEmbed({
                     title: page.title,
@@ -54,6 +68,6 @@ module.exports = class WikiCommand extends SlashCommand {
                 })
             ],
             includeSource: true
-        });
+        };
     }
 }

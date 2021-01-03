@@ -43,9 +43,9 @@ module.exports = class SuggestCommand extends SlashCommand {
         const message = `${ctx.options.anonymous ? '[Anonymous]' : `${ctx.member.user.username}#${ctx.member.user.discriminator}`} suggested: ${ctx.options.suggestion}\nSuggestion ID: ${suggestion.id}`;
         sendMessages(suggestChannelIDs, message, { split: true });
         
-        return ctx.send({
+        return {
             content: 'suggestion sent',
             ephemeral: true
-        });
+        };
     }
 }
