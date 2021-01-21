@@ -3,6 +3,7 @@ const { commandBlacklist } = require('../borp.js');
 module.exports = {
 	name: 'blacklist',
     description: 'Blacklist a member from a command',
+    permission: ['MANAGE_MESSAGES'],
     args: [
         {
             key: 'command',
@@ -17,7 +18,7 @@ module.exports = {
 	async execute(msg, args) {
         const { commands } = msg.client;
         if (!commands.get(args.command)) {
-            msg.reply(`there's no \`${args.command}\` command`);
+            return msg.reply(`there's no \`${args.command}\` command`);
         }
 
         const member = (await commandBlacklist.findOrCreate({ where: { user_id: args.member.id, guild_id: msg.guild.id } }))[0];
