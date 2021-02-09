@@ -143,8 +143,8 @@ client.on('message', async (msg) => {
 	};
 
 	if (msg.channel.id === '637483955666550833') {
-		msg.react('\u{1F44D}');
-		msg.react('\u{1F44E}');
+		await msg.react('\u{1F44D}');
+		await msg.react('\u{1F44E}');
 	}
 
 	if (msg.guild) xCalculation(msg);
