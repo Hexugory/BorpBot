@@ -137,12 +137,17 @@ client.once('ready', () => {
 });
 
 client.on('message', async (msg) => {
-	if(msg.content.toLowerCase().includes("press 🇫 to pay respects")
+	if (msg.content.toLowerCase().includes("press 🇫 to pay respects")
 	   || msg.content.toLowerCase().includes("press f to pay respects")){
 		msg.react('\u{1f1eb}');
 	};
 
-	if(msg.guild) xCalculation(msg);
+	if (msg.channel.id === '637483955666550833') {
+		msg.react('\u{1F44D}');
+		msg.react('\u{1F44E}');
+	}
+
+	if (msg.guild) xCalculation(msg);
 
 	if (!msg.content.startsWith(prefix) || msg.author.bot) return;
 
