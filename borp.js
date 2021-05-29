@@ -277,6 +277,7 @@ client.on('message', async (msg) => {
             }
         }
 
+		console.info(`${msg.author.tag} (${msg.author.id}) used ${command.name} in ${msg.channel.name} (${msg.channel.id})`)
 		command.execute(msg, args);
     }
     catch (error) {
