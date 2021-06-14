@@ -4,7 +4,7 @@ module.exports = {
     ownerOnly: true,
 
 	async execute(msg) {
-        msg.client.slashCommands.each((command) => {
+        for (const command of msg.client.slashCommands.array()){
             console.log(command);
             if (command.guildID) {
                 const data = {
@@ -22,6 +22,6 @@ module.exports = {
                 data.options = command?.args;
                 await msg.client.application.commands.create(data);
             }
-        });
+        };
 	},
 };
