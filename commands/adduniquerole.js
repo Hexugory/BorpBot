@@ -1,4 +1,4 @@
-const { uniqueRoles } = require('../borp.js');
+const { uniqueRoles } = require('../database.js');
 
 module.exports = {
     name: 'adduniquerole',

@@ -1,4 +1,4 @@
-const { blacklistUsers } = require('../borp.js');
+const { blacklistUsers } = require('../database.js');
 
 module.exports = {
 	name: 'gblacklist',

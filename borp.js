@@ -1,29 +1,33 @@
 const fs = require('fs');
 const path = require('path');
-const { SlashCreator, GatewayServer } = require('slash-create');
 const Discord = require('discord.js');
-const { prefix, token, owner, pubkey, clientid } = require('./config.json');
-const ArgHandler = require('./argHandler.js');
-const Sequelize = require('sequelize');
 const moment = require('moment');
+const { prefix, token, owner, pubkey, clientid } = require('./config.json');
+const CommandHandler = require('./commandHandler.js');
+const { 
+	customCommands,
+	channelTags,
+	xConfigs,
+	blacklistUsers,
+	commandBlacklist,
+	suggestions,
+	uniqueRoles,
+	reminders } = require('./database.js');
 
-const client = new Discord.Client();
+const intents = new Discord.Intents();
+intents.add(Discord.Intents.FLAGS.GUILDS)
+	.add(Discord.Intents.FLAGS.GUILD_VOICE_STATES)
+	.add(Discord.Intents.FLAGS.GUILD_MESSAGES)
+	.add(Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS)
+	.add(Discord.Intents.FLAGS.DIRECT_MESSAGES);
+const client = new Discord.Client({ intents: intents });
+
 
 client.commands = new Discord.Collection();
-client.argHandler = new ArgHandler();
-client.db = new Sequelize({
-	dialect: 'sqlite',
-	storage: './database.sqlite',
-	logging: false
-});
-
-const creator = new SlashCreator({
-	applicationID: clientid,
-	publicKey: pubkey,
-	token: token
-});
-
-function sendMessages (arr, content, options = {}) {
+client.slashCommands = new Discord.Collection();
+client.commandHandler = new CommandHandler();
+client.db = require('./database.js').db;
+client.sendMessages = (arr, content, options = {}) => {
 	for (let channel of arr) {
 		try {
 			client.channels.resolve(channel).send(content, options).catch(err => console.error(err));
@@ -63,64 +67,25 @@ async function xCalculation (msg) {
 
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
-const cooldowns = new Discord.Collection();
-
-const customCommands = require('./models/customCommands')(client.db, Sequelize);
-customCommands.sync();
-
-const channelTags = require('./models/channelTags')(client.db, Sequelize);
-channelTags.sync();
-
-const xConfigs = require('./models/xConfigs')(client.db, Sequelize);
-xConfigs.sync();
-
-const blacklistUsers = require('./models/blacklistedUsers')(client.db, Sequelize);
-blacklistUsers.sync();
-
-const commandBlacklist = require('./models/commandBlacklist')(client.db, Sequelize);
-commandBlacklist.sync();
-
-const suggestions = require('./models/suggestions')(client.db, Sequelize);
-suggestions.sync();
-
-const uniqueRoles = require('./models/uniqueRoles')(client.db, Sequelize);
-uniqueRoles.sync();
-
-const reminders = require('./models/reminders')(client.db, Sequelize);
-reminders.sync();
-
-module.exports = {
-	db: client.db,
-	sendMessages: sendMessages,
-	customCommands: customCommands,
-	channelTags: channelTags,
-	xConfigs: xConfigs,
-	blacklistUsers: blacklistUsers,
-	commandBlacklist: commandBlacklist,
-	suggestions: suggestions,
-	uniqueRoles: uniqueRoles,
-	reminders: reminders
-};
-
-creator
-	.withServer(
-		new GatewayServer(
-			(handler) => client.ws.on('INTERACTION_CREATE', handler)
-		)
-	)
-	.registerCommandsIn(path.join(__dirname, 'slash'))
-	.syncCommands({deleteCommands: true})
-	.on('commandError', (command, err, ctx) => {return console.error(err)})
-	.on('error', (err) => {return console.error(err)})
-	.on('commandRegister', (command, cr) => {return console.log(command)});
-
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	client.commands.set(command.name, command);
 }
 
+const slashCommandFiles = fs.readdirSync('./slash').filter(file => file.endsWith('.js'));
+
+for (const file of slashCommandFiles) {
+	const command = require(`./slash/${file}`);
+	client.slashCommands.set(command.name, command);
+}
+
+const cooldowns = new Discord.Collection();
+
 client.once('ready', () => {
 	console.log(`Logged in as ${client.user.tag}`);
+
+
+
 	setInterval(async () => {
 		const allReminders = await reminders.findAll();
 		for (const reminder of allReminders) {
@@ -153,137 +118,18 @@ client.on('message', async (msg) => {
 
 	if (msg.author.id != owner && (await blacklistUsers.findOne({ where: { user_id: msg.author.id, blacklisted: 1 } }))) return;
 
-	const args = client.argHandler.formatArgs(msg.content.slice(prefix.length));
-    const commandName = args.shift().toLowerCase();
+	const command = await client.commandHandler.parseCommand(msg);
+});
 
-	const command = client.commands.get(commandName)
-		|| client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+client.on('interaction', async (int) => {
+	if (!int.isCommand()) return;
+	
+	const command = client.slashCommands.get(int.commandName);
 
-	if (!command) {
-		const guildCommands = await customCommands.findAll({ where: {
-			guild_id: msg.guild.id
-		} });
-		const customCommand = guildCommands.find(command => { return command.name === commandName });
-		if (!customCommand) return;
-
-		const memeChannel = await channelTags.findOne({ where: {
-			guild_id: msg.guild.id,
-			channel_id: msg.channel.id,
-			meme: 1
-		} });
-		if (!memeChannel
-			 && !msg.member.hasPermission('MANAGE_MESSAGES')
-			 && msg.author.id != owner) 
-			 return msg.reply('you can\'t use custom commands in this channel');
-
-		return msg.channel.send(customCommand.response);
-	};
-
-	if (msg.author.id != owner) {
-		const member = (await commandBlacklist.findOrCreate({ where: { user_id: msg.author.id, guild_id: msg.guild.id } }))[0];
-		if (JSON.parse(member.blacklist)[command.name]) {
-			return;
-		}
-	}
-
-	if (command.ownerOnly && msg.author.id != owner) {
-		return msg.reply('why would you be allowed to use that command')
-	} 
-
-	if (command.guildOnly && msg.channel.type !== 'text') {
-		return msg.reply('i\'m not sure what you were expecting, but that command doesn\'t work in DMs');
-	}
-
-	if (command.permission && msg.author.id != owner) {
-		for(let permission of command.permission) {
-			if (!msg.member.hasPermission(permission)) return msg.reply('you aren\'t allowed to use that command');
-		}
-	}
-
-	if (command.args && !command.args[0].optional && !args.length) {
-		let reply = 'i\'ll do that, as soon as you give me the command arguments';
-
-		if (command.usage) {
-			reply += `\nthe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
-		}
-
-		return msg.channel.send(reply);
-	}
-
-	if (command.args && args.length < command.args.filter(arg => {return !arg.optional}).length) {
-		let reply = 'you\'re missing arguments';
-
-		if (command.usage) {
-			reply += `\nthe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
-		}
-
-		return msg.channel.send(reply);
-	}
-
-	if (command.cooldown && msg.author.id != owner) {
-		if (!cooldowns.has(command.name)) {
-			cooldowns.set(command.name, new Discord.Collection());
-		}
-
-		const now = Date.now();
-		const timestamps = cooldowns.get(command.name);
-		const cooldownAmount = (command.cooldown || 3) * 1000;
-
-		if (timestamps.has(msg.author.id)) {
-			const expirationTime = timestamps.get(msg.author.id) + cooldownAmount;
-
-			if (now < expirationTime) {
-				const timeLeft = (expirationTime - now) / 1000;
-				return msg.reply(`wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command`);
-			}
-		}
-
-		timestamps.set(msg.author.id, now);
-		setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount);
-	}
-
-	try {
-        if(command.args) {
-			if (!command.args[command.args.length-1].infinite) { 
-				args[command.args.length-1] = args.slice(command.args.length-1, args.length).join(' ');
-			}
-			
-            for(var i = 0; i < command.args.length; i++) {
-                try {
-					if (args[i]) {
-						if (!command.args[i].infinite){
-							args[i] = client.argHandler.parseArg(args[i], command.args[i].type, msg);
-						}
-						else {
-							const infinite = [];
-							for (var j = i; j < args.length; j++) {
-								infinite.push(client.argHandler.parseArg(args[j], command.args[i].type, msg));
-							}
-							
-							args[i] = infinite;
-						}
-
-						if (typeof command.args[i].validator === 'function'
-						 && !command.args[i].validator(args[i], msg))
-						 throw new Error('Argument is not valid');
-
-						if (command.args[i].key) args[command.args[i].key] = args[i];
-					}
-                }
-                catch (error) {
-					msg.reply(`\`${args[i]}\` is an invalid argument`, { split: true });
-					return console.error(error);
-                }
-            }
-        }
-
-		console.info(`${msg.author.tag} (${msg.author.id}) used ${command.name} in ${msg.channel.name} (${msg.channel.id})`)
-		command.execute(msg, args);
-    }
-    catch (error) {
-		console.error(error);
-		msg.reply('there was an error\nping guy 19 times');
-	}
+	command.execute(int).catch(error => {
+		int.reply({ content: 'there was an error\nping guy 19 times', ephemeral: true });
+		return console.error(error);
+	});
 });
 
 client.on('messageReactionAdd', async (reaction, user) => {
@@ -304,7 +150,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 	} })
 	const logChannelIDs = logChannels.map(channel => channel.channel_id);
 
-	sendMessages(logChannelIDs, `Deleted ${reaction.message.author.tag}[${reaction.message.author.id}]'s message[${reaction.message.id}]`);
+	client.sendMessages(logChannelIDs, `Deleted ${reaction.message.author.tag}[${reaction.message.author.id}]'s message[${reaction.message.id}]`);
 
 	reaction.message.delete();
 });
@@ -318,9 +164,9 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 		if (!voiceChannels[0]) return;
 		const voiceChannelIDs = voiceChannels.map(channel => channel.channel_id);
 
-		if (!oldState.channelID && newState.channelID) return sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** joined **${newState.channel.name}**.`);
-		else if (oldState.channelID && !newState.channelID) return sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** left **${oldState.channel.name}**.`);
-		else if (oldState.channelID && newState.channelID && newState.channelID != oldState.channelID) return sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** moved to **${newState.channel.name}** from **${oldState.channel.name}**.`);
+		if (!oldState.channelID && newState.channelID) return client.sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** joined **${newState.channel.name}**.`);
+		else if (oldState.channelID && !newState.channelID) return client.sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** left **${oldState.channel.name}**.`);
+		else if (oldState.channelID && newState.channelID && newState.channelID != oldState.channelID) return client.sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** moved to **${newState.channel.name}** from **${oldState.channel.name}**.`);
 	}
 	catch (error) {console.error(error)}
 });

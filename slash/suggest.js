@@ -1,49 +1,43 @@
-const { SlashCommand, CommandOptionType } = require('slash-create');
-const { suggestions, channelTags, sendMessages } = require('../borp.js')
+const { suggestions, channelTags, commandBlacklist } = require('../database.js');
 
-module.exports = class SuggestCommand extends SlashCommand {
-    constructor(creator) {
-        super(creator, {
-            name: 'suggest',
-            description: 'Send a suggestion to the server',
-            guildID: '163175631562080256',
+module.exports = {
+	name: 'suggest',
+    description: 'Suggest something to a server',
+    args: [
+        {
+            name: 'anonymous',
+            type: 'BOOLEAN',
+            description: 'Would you like your suggestion to be anonymous?',
+            required: true
+        },
+        {
+            name: 'suggestion',
+            type: 'STRING',
+            description: 'The content of your suggestion',
+            required: true
+        }
+    ],
+	async execute(int) {
+        const member = (await commandBlacklist.findOrCreate({ where: { user_id: int.member.id, guild_id: int.guildID } }))[0];
+        if (JSON.parse(member.blacklist)[int.commandName]) {
+            return int.reply({ content: 'you\'re not allowed to send suggestions to this server', ephemeral: true });
+        }
 
-            options: [
-                {
-                    type: CommandOptionType.BOOLEAN,
-                    name: 'anonymous',
-                    description: 'Would you like your suggestion to be anonymous?',
-                    required: true
-                },
-                {
-                    type: CommandOptionType.STRING,
-                    name: 'suggestion',
-                    description: 'The content of your suggestion',
-                    required: true
-                }
-            ]
-        });
-    }
-
-    async run(ctx) {
         const suggestion = await suggestions.create({
-            guild_id: ctx.guildID,
-            sender_id: ctx.member.id,
-            anonymous: ctx.options.anonymous ? 1 : 0,
-            suggestion: ctx.options.suggestion
+            guild_id: int.guildID,
+            sender_id: int.member.id,
+            anonymous: int.options.get('anonymous').value,
+            suggestion: int.options.get('suggestion').value
         });
 
         const suggestChannels = await channelTags.findAll({ where: {
-            guild_id: ctx.guildID,
+            guild_id: int.guildID,
             suggest: 1
-        } })
+        } });
         const suggestChannelIDs = suggestChannels.map(channel => channel.channel_id);
-        const message = `${ctx.options.anonymous ? '[Anonymous]' : `${ctx.member.user.username}#${ctx.member.user.discriminator}`} suggested: ${ctx.options.suggestion}\nSuggestion ID: ${suggestion.id}`;
-        sendMessages(suggestChannelIDs, message, { split: true });
+        const message = `${int.options.get('anonymous').value ? '[Anonymous]' : int.member.user.tag} suggested: ${int.options.get('suggestion').value}\nSuggestion ID: ${suggestion.id}`;
+        int.client.sendMessages(suggestChannelIDs, message, { split: true });
         
-        return {
-            content: 'suggestion sent',
-            ephemeral: true
-        };
-    }
-}
+        return int.reply({ content: 'suggestion sent', ephemeral: true });
+	},
+};

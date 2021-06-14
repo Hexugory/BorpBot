@@ -1,4 +1,4 @@
-const { suggestions, channelTags, sendMessages } = require('../borp.js');
+const { suggestions, channelTags } = require('../database.js');
 
 module.exports = {
 	name: 'suggest',
@@ -30,7 +30,7 @@ module.exports = {
             default:
                 args.anonymous = false;
                 break;
-        }
+        };
 
         const suggestion = await suggestions.create({
             guild_id: args.guild.id,
@@ -42,11 +42,11 @@ module.exports = {
         const suggestChannels = await channelTags.findAll({ where: {
             guild_id: args.guild.id,
             suggest: 1
-        } })
+        } });
         const suggestChannelIDs = suggestChannels.map(channel => channel.channel_id);
         const message = `${args.anonymous ? '[Anonymous]' : msg.author.tag} suggested: ${args.suggestion}\nSuggestion ID: ${suggestion.id}`;
-        sendMessages(suggestChannelIDs, message, { split: true });
+        client.sendMessages(suggestChannelIDs, message, { split: true });
         
-        return msg.reply('suggestion sent')
+        return msg.reply('suggestion sent');
 	},
 };

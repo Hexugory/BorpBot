@@ -1,4 +1,4 @@
-const { channelTags } = require('../borp.js');
+const { channelTags } = require('../database.js');
 
 module.exports = {
 	name: 'setchannel',

@@ -1,4 +1,4 @@
-const { suggestions } = require('../borp.js');
+const { suggestions } = require('../database.js');
 const moment = require('moment');
 
 module.exports = {
