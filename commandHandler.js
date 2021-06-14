@@ -44,7 +44,7 @@ module.exports = class CommandHandler {
             return this.parseCustomCommand(msg, commandName);
         };
 
-        if (msg.author.id != owner) {
+        if (msg.author.id != owner && msg.guild) {
             const member = (await commandBlacklist.findOrCreate({ where: { user_id: msg.author.id, guild_id: msg.guild.id } }))[0];
             if (JSON.parse(member.blacklist)[command.name]) {
                 return;
