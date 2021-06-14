@@ -12,7 +12,7 @@ module.exports = {
                     description: command.description
                 }
                 data.options = command?.args;
-                msg.client.application.commands.create(data, command.guildID);
+                await msg.client.application.commands.create(data, command.guildID);
             }
             else {
                 const data = {
@@ -20,7 +20,7 @@ module.exports = {
                     description: command.description
                 }
                 data.options = command?.args;
-                msg.client.application.commands.create(data);
+                await msg.client.application.commands.create(data);
             }
         });
 	},
