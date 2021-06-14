@@ -86,12 +86,12 @@ module.exports = class CommandHandler {
         }
     
         if (command.cooldown && msg.author.id != owner) {
-            if (!client.cooldowns.has(command.name)) {
-                client.cooldowns.set(command.name, new Discord.Collection());
+            if (!msg.client.cooldowns.has(command.name)) {
+                msg.client.cooldowns.set(command.name, new Discord.Collection());
             }
     
             const now = Date.now();
-            const timestamps = client.cooldowns.get(command.name);
+            const timestamps = msg.client.cooldowns.get(command.name);
             const cooldownAmount = (command.cooldown || 3) * 1000;
     
             if (timestamps.has(msg.author.id)) {
