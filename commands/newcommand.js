@@ -1,4 +1,4 @@
-const { customCommands } = require('../borp.js');
+const { customCommands } = require('../database.js');
 
 module.exports = {
 	name: 'newcommand',

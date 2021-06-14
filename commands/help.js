@@ -22,7 +22,7 @@ module.exports = {
 			data.push(commands.map(command => command.name).join(', '));
 			data.push(`\nyou can send \`${prefix}help [command name]\` to get info on a specific command`);
 
-			return msg.author.send(data, { split: true })
+			return msg.author.send(data.join('\n'), { split: true })
 				.then(() => {
 					if (msg.channel.type === 'dm') return;
 					msg.reply('i\'ve sent you a DM with a list of commands');
@@ -48,6 +48,6 @@ module.exports = {
 
 		data.push(`**Cooldown:** ${command.cooldown || 3} second(s)`);
 
-		msg.channel.send(data, { split: true });
+		msg.channel.send(data.join('\n'), { split: true });
 	},
 };

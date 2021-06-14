@@ -1,4 +1,4 @@
-const { xConfigs } = require('../borp.js');
+const { xConfigs } = require('../database.js');
 
 module.exports = {
 	name: 'setx',

@@ -1,4 +1,4 @@
-const { suggestions } = require('../borp.js');
+const { suggestions } = require('../database.js');
 
 module.exports = {
     name: 'removesuggestion',

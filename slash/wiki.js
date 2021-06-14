@@ -1,39 +1,32 @@
-const { SlashCommand, CommandOptionType } = require('slash-create');
 const { MessageEmbed } = require('discord.js');
 const axios = require('axios');
 
-module.exports = class WikiCommand extends SlashCommand {
-    constructor(creator) {
-        super(creator, {
-            name: 'wiki',
-            description: 'Query the Touhou Wiki',
-
-            options: [
-                {
-                    type: CommandOptionType.STRING,
-                    name: 'query',
-                    description: 'The page to search',
-                    required: true
-                }
-            ]
-        });
-    }
-
-    async run(ctx) {
+module.exports = {
+    name: 'wiki',
+    description: 'Query the Touhou Wiki',
+    args: [
+        {
+            name: 'query',
+            type: 'STRING',
+            description: 'The page to search',
+            required: true
+        }
+    ],
+    async execute(int) {
         const interlanguage = ['da', 'de', 'en', 'es', 'fr', 'it', 'ko', 'ms', 'nl', 'pl', 'pt', 'ru', 'sv', 'tr', 'uk', 'vi', 'zh'];
 
-        var wiki = 'en'
-        const interwiki = ctx.options.query.match(/^\w\w:/)?.[0]?.slice(0, 2)
+        var wiki = 'en';
+        const interwiki = int.options.get('query').value.match(/^\w\w:/)?.[0]?.slice(0, 2);
         if (interlanguage.includes(interwiki)) {
             wiki = interwiki;
-            ctx.options.query = ctx.options.query.slice(2);
+            int.options.get('query').value = int.options.get('query').value.slice(2);
         }
 
         const search = await axios.get(`https://${wiki}.touhouwiki.net/api.php`, {
             params: {
                 action: 'query',
                 list: 'search',
-                srsearch: ctx.options.query,
+                srsearch: int.options.get('query').value,
                 srwhat: 'nearmatch',
                 format: 'json'
             }
@@ -62,7 +55,7 @@ module.exports = class WikiCommand extends SlashCommand {
         
         const page = extract.data.query.pages[Object.keys(extract.data.query.pages)[0]];
 
-        return {
+        return int.reply({
             embeds: [
                 new MessageEmbed({
                     title: page.title,
@@ -73,8 +66,7 @@ module.exports = class WikiCommand extends SlashCommand {
                         text: `Touhou Wiki`
                     }
                 })
-            ],
-            includeSource: true
-        };
+            ]
+        });
     }
 }
