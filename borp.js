@@ -20,7 +20,7 @@ intents.add(Discord.Intents.FLAGS.GUILDS)
 	.add(Discord.Intents.FLAGS.GUILD_MESSAGES)
 	.add(Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS)
 	.add(Discord.Intents.FLAGS.DIRECT_MESSAGES);
-const client = new Discord.Client({ intents: intents });
+const client = new Discord.Client({ intents: intents, partials: ['CHANNEL'] });
 
 
 client.commands = new Discord.Collection();
@@ -79,12 +79,10 @@ for (const file of slashCommandFiles) {
 	client.slashCommands.set(command.name, command);
 }
 
-const cooldowns = new Discord.Collection();
+client.cooldowns = new Discord.Collection();
 
 client.once('ready', () => {
 	console.log(`Logged in as ${client.user.tag}`);
-
-
 
 	setInterval(async () => {
 		const allReminders = await reminders.findAll();
