@@ -140,7 +140,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 	} });
 	if (!xChannel) return;
 
-	console.info(`${reaction.count} ❌ placed on message with ${reaction.message.requiredX} required in channel with ${reaction.message.channel.xRecentMessages} recent messages`);
+	console.info(`${reaction.count} ❌ placed on message with ${reaction.message.requiredX} required in channel with ${reaction.message.channel.xRecentMessages.length} recent messages`);
 
 	if (reaction.count < reaction.message.requiredX) return;
 
