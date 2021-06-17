@@ -54,10 +54,10 @@ async function xCalculation (msg) {
 
 	if (!msg.channel.xRecentMessages) msg.channel.xRecentMessages = [];
 	msg.channel.xRecentMessages.push(msg);
-	msg.channel.xRecentMessages = msg.channel.xRecentMessages.filter(msg => msg.createdAt > now-xConfig.activityTime);
+	msg.channel.xRecentMessages = msg.channel.xRecentMessages.filter(msg => msg.createdTimestamp > now-xConfig.activityTime);
 
 	const uniqueIDs = [];
-	for (let recentMsg of msg.channel.xRecentMessages) {
+	for (const recentMsg of msg.channel.xRecentMessages) {
 		if (!recentMsg.author.bot
 			 && !uniqueIDs.includes(recentMsg.author.id)) uniqueIDs.push(recentMsg.author.id);
 	}
@@ -139,6 +139,8 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		x: 1
 	} });
 	if (!xChannel) return;
+
+	console.info(`${reaction.count} ❌ placed on message with ${reaction.message.requiredX} required in channel with ${reaction.message.channel.xRecentMessages} recent messages`);
 
 	if (reaction.count < reaction.message.requiredX) return;
 
