@@ -61,7 +61,7 @@ module.exports = class CommandHandler {
     
         if (command.permission && msg.author.id != owner) {
             for (let permission of command.permission) {
-                if (!msg.member.hasPermission(permission)) return msg.reply('you aren\'t allowed to use that command');
+                if (!msg.member.permissionsIn(msg.channel).has(permission)) return msg.reply('you aren\'t allowed to use that command');
             }
         }
     
