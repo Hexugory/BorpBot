@@ -15,7 +15,7 @@ module.exports = {
             id: args.id
         } });
 
-        const sender = msg.guild.members.resolve(suggestion.sender_id);
+        const sender = msg.guild.members.resolve(suggestion.sender_id) || (await msg.guild.members.fetch(suggestion.sender_id));
         if (!sender) return msg.reply('that user could not be found')
         sender.send(`The staff of ${msg.guild.name} have viewed your name on one of your suggestions.`);
 
