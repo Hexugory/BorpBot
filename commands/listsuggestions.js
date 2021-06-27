@@ -12,7 +12,7 @@ module.exports = {
 
         var message = '';
         for (const suggestion of guildSuggestions) {
-            let sender = msg.guild.members.resolve(suggestion.sender_id);
+            let sender = msg.guild.members.resolve(suggestion.sender_id) || (await msg.guild.members.fetch(suggestion.sender_id));
             sender = sender ? sender.user.tag : '[Missing User]';
             message += `${suggestion.anonymous ? '[Anonymous]' : sender} suggested: ${suggestion.suggestion}
 Suggestion created at ${moment.utc(suggestion.createdAt).format('ddd MMM D YYYY')}, ID: ${suggestion.id}\n\n`
