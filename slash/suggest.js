@@ -18,20 +18,20 @@ module.exports = {
         }
     ],
 	async execute(int) {
-        const member = (await commandBlacklist.findOrCreate({ where: { user_id: int.member.id, guild_id: int.guildID } }))[0];
+        const member = (await commandBlacklist.findOrCreate({ where: { user_id: int.member.id, guild_id: int.guildId } }))[0];
         if (JSON.parse(member.blacklist)[int.commandName]) {
             return int.reply({ content: 'you\'re not allowed to send suggestions to this server', ephemeral: true });
         }
 
         const suggestion = await suggestions.create({
-            guild_id: int.guildID,
+            guild_id: int.guildId,
             sender_id: int.member.id,
             anonymous: int.options.get('anonymous').value,
             suggestion: int.options.get('suggestion').value
         });
 
         const suggestChannels = await channelTags.findAll({ where: {
-            guild_id: int.guildID,
+            guild_id: int.guildId,
             suggest: 1
         } });
         const suggestChannelIDs = suggestChannels.map(channel => channel.channel_id);
