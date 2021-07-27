@@ -99,7 +99,7 @@ client.once('ready', () => {
 	}, 60000)
 });
 
-client.on('message', async (msg) => {
+client.on('messageCreate', async (msg) => {
 	if (msg.content.toLowerCase().includes("press 🇫 to pay respects")
 	   || msg.content.toLowerCase().includes("press f to pay respects")){
 		msg.react('\u{1f1eb}');
@@ -119,15 +119,59 @@ client.on('message', async (msg) => {
 	const command = await client.commandHandler.parseCommand(msg);
 });
 
-client.on('interaction', async (int) => {
-	if (!int.isCommand()) return;
-	
-	const command = client.slashCommands.get(int.commandName);
+client.on('interactionCreate', async (int) => {
+	if (int.isCommand()) {
+		const command = client.slashCommands.get(int.commandName);
 
-	command.execute(int).catch(error => {
-		int.reply({ content: 'there was an error\nping guy 19 times', ephemeral: true });
-		return console.error(error);
-	});
+		if (command.permission && int.user.id != owner) {
+			for (const permission of command.permission) {
+				if (!int.member.permissionsIn(int.channel).has(permission)) return int.reply({ content: 'you aren\'t allowed to use that command', ephemeral: true });
+			}
+		}
+
+		command.execute(int).catch(error => {
+			int.reply({ content: 'there was an error\nping guy 19 times', ephemeral: true });
+			return console.error(error);
+		});
+	}
+	else if (int.isSelectMenu()) {
+		if (int.customId != 'uniqueroleselect') return;
+
+		const role = await uniqueRoles.findOne({ where: {
+            guild_id: int.guild.id,
+            role_id: int.values[0]
+        } });
+        if (!role) return int.reply({ content: 'you can\'t request that role (something may have gone wrong)', ephemeral: true });
+		
+        const guildRoles = await uniqueRoles.findAll({ where: {
+            guild_id: int.guild.id
+        } });
+        const guildRoleIDs = guildRoles.map(role => role.role_id);
+        
+        const newRoles = int.member.roles.cache
+            .map(role => {return role.id})
+			.filter(role => !guildRoleIDs.includes(role));
+		newRoles.push(int.values[0]);
+		
+        int.member.roles.set(newRoles);
+
+		return int.reply({ content: `given role \`${role.role_name}\``, ephemeral: true });
+	}
+	else if (int.isButton()) {
+		if (int.customId != 'uniqueroleremove') return;
+
+		const guildRoles = await uniqueRoles.findAll({ where: {
+			guild_id: int.guild.id
+		} });
+		const guildRoleIDs = guildRoles.map(role => role.role_id);
+
+		const newRoles = int.member.roles.cache
+			.filter(role => !guildRoleIDs.includes(role.id))
+		
+		int.member.roles.set(newRoles);
+
+		return int.reply({ content: 'removed role', ephemeral: true });
+	}
 });
 
 client.on('messageReactionAdd', async (reaction, user) => {
