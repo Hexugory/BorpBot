@@ -38,6 +38,6 @@ module.exports = {
                     .setStyle('SECONDARY')
             );
 
-        return msg.channel.send({ components: [menu,button]});
+        return msg.channel.send({ content: 'select a role', components: [menu,button]});
     },
 };
