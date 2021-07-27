@@ -208,9 +208,9 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 		if (!voiceChannels[0]) return;
 		const voiceChannelIDs = voiceChannels.map(channel => channel.channel_id);
 
-		if (!oldState.channelID && newState.channelID) return client.sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** joined **${newState.channel.name}**.`);
-		else if (oldState.channelID && !newState.channelID) return client.sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** left **${oldState.channel.name}**.`);
-		else if (oldState.channelID && newState.channelID && newState.channelID != oldState.channelID) return client.sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** moved to **${newState.channel.name}** from **${oldState.channel.name}**.`);
+		if (!oldState.channelId && newState.channelId) return client.sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** joined **${newState.channel.name}**.`);
+		else if (oldState.channelId && !newState.channelId) return client.sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** left **${oldState.channel.name}**.`);
+		else if (oldState.channelId && newState.channelId && newState.channelId != oldState.channelId) return client.sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** moved to **${newState.channel.name}** from **${oldState.channel.name}**.`);
 	}
 	catch (error) {console.error(error)}
 });
