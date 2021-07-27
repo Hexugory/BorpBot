@@ -55,12 +55,12 @@ module.exports = class CommandHandler {
             return msg.reply('why would you be allowed to use that command')
         } 
     
-        if (command.guildOnly && msg.channel.type !== 'text') {
+        if (command.guildOnly && !msg.channel.isText()) {
             return msg.reply('i\'m not sure what you were expecting, but that command doesn\'t work in DMs');
         }
     
         if (command.permission && msg.author.id != owner) {
-            for (let permission of command.permission) {
+            for (const permission of command.permission) {
                 if (!msg.member.permissionsIn(msg.channel).has(permission)) return msg.reply('you aren\'t allowed to use that command');
             }
         }

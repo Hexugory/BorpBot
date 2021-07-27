@@ -8,6 +8,16 @@ module.exports = {
         {
             key: 'role',
             type: 'role'
+        },
+        {
+            key: 'description',
+            type: 'string',
+            optional: true
+        },
+        {
+            key: 'emoji',
+            type: 'string',
+            optional: true
         }
     ],
     permission: ['MANAGE_ROLES'],
@@ -21,7 +31,10 @@ module.exports = {
 
         await uniqueRoles.create({
             guild_id: msg.guild.id,
-            role_id: args.role.id
+            role_id: args.role.id,
+            role_name: args.role.name,
+            description: args.description,
+            emoji: args.emoji
         });
 
         return msg.reply(`added role \`${args.role.name}\``);
