@@ -15,7 +15,7 @@ module.exports = {
 
         for (const role of guildRoles) {
             guildRoleOptions.push({
-                label: role.role_name,
+                label: (role.role_name.length > 25) ? role.role_name.substring(0, 21) + '...' : role.role_name,
                 description: role.description,
                 value: role.role_id,
                 emoji: role.emoji
