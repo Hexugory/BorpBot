@@ -5,7 +5,7 @@ module.exports = {
         if (id) id = id[1];
 
         if (!id) {
-            return msg.client.users.cache.filter(user => {return user.username.toLowerCase().startsWith(arg.toLowerCase())}).array().length === 1;
+            return msg.client.users.cache.filter(user => {return user.username.toLowerCase().startsWith(arg.toLowerCase())}).size === 1;
         }
 
         if (!msg.client.users.resolve(id)) return false;
