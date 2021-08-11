@@ -18,9 +18,9 @@
   "homepage": "https://github.com/jimmyy4/BorpBot#readme",
   "dependencies": {
     "axios": "^0.21.1",
-    "discord.js": "^13.0.0-dev.918921e8211fc16e9b12d2502f3168264246ea22",
+    "discord.js": "^13.0.1",
     "moment": "^2.29.1",
-    "sequelize": "^6.6.2",
+    "sequelize": "^6.6.5",
     "sqlite3": "^5.0.2"
   }
 }
