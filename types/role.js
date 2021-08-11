@@ -5,7 +5,7 @@ module.exports = {
         if (id) id = id[1];
 
         if (!id) {
-            return msg.guild.roles.cache.filter(role => {return role.name.toLowerCase().startsWith(arg.toLowerCase())}).array().length === 1;
+            return msg.guild.roles.cache.filter(role => {return role.name.toLowerCase().startsWith(arg.toLowerCase())}).size === 1;
         }
 
         if (!msg.guild.roles.resolve(id)) return false;
