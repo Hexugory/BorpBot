@@ -20,7 +20,7 @@ intents.add(Discord.Intents.FLAGS.GUILDS)
 	.add(Discord.Intents.FLAGS.GUILD_MESSAGES)
 	.add(Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS)
 	.add(Discord.Intents.FLAGS.DIRECT_MESSAGES);
-const client = new Discord.Client({ intents: intents, partials: ['CHANNEL'] });
+const client = new Discord.Client({ intents: intents, partials: ['CHANNEL', 'REACTION'] });
 
 
 client.commands = new Discord.Collection();
