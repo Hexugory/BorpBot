@@ -133,6 +133,7 @@ client.on('interactionCreate', async (int) => {
 			int.reply({ content: 'there was an error\nping guy 19 times', ephemeral: true });
 			return console.error(error);
 		});
+		console.info(`${int.user.tag} (${int.user.id}) used ${command.name} in ${int.channel.name} (${int.channel.id})`);
 	}
 	else if (int.isSelectMenu()) {
 		if (int.customId != 'uniqueroleselect') return;
