@@ -33,10 +33,10 @@ module.exports = {
         });
 
         if (!search.data.query.search[0]) {
-            return {
+            return int.reply({
                 content: 'that page doesn\'t seem to exist',
                 ephemeral: true
-            }
+            })
         }
 
         const extract = await axios.get(`https://${wiki}.touhouwiki.net/api.php`, {
