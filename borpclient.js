@@ -7,7 +7,7 @@ module.exports = class BorpClient extends require('discord.js').Client {
     sendMessages (arr, content) {
         for (let channel of arr) {
             try {
-                client.channels.resolve(channel).send(content).catch(err => console.error(err));
+                this.channels.resolve(channel).send(content).catch(err => console.error(err));
             }
             catch (error) {console.error(error)}
         }
