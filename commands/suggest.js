@@ -45,7 +45,7 @@ module.exports = {
         } });
         const suggestChannelIDs = suggestChannels.map(channel => channel.channel_id);
         const message = `${args.anonymous ? '[Anonymous]' : msg.author.tag} suggested: ${args.suggestion}\nSuggestion ID: ${suggestion.id}`;
-        client.sendMessages(suggestChannelIDs, message, { split: true });
+        client.sendMessages(suggestChannelIDs, { split: true, content: message });
         
         return msg.reply('suggestion sent');
 	},

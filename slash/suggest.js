@@ -36,7 +36,7 @@ module.exports = {
         } });
         const suggestChannelIDs = suggestChannels.map(channel => channel.channel_id);
         const message = `${int.options.get('anonymous').value ? '[Anonymous]' : int.member.user.tag} suggested: ${int.options.get('suggestion').value}\nSuggestion ID: ${suggestion.id}`;
-        int.client.sendMessages(suggestChannelIDs, message, { split: true });
+        int.client.sendMessages(suggestChannelIDs, { split: true, content: message });
         
         return int.reply({ content: 'suggestion sent', ephemeral: true });
 	},
