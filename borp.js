@@ -199,7 +199,10 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		.setTitle(`ID: ${reaction.message.id}`)
 		.setURL(reaction.message.url)
 		.setDescription(reaction.message.content+'\n'+reaction.message.attachments.map(value => {return value.url}).join('\n'))
-		.setFooter({text: `${reaction.message.author.tag} (${reaction.message.author.id})`, iconURL: reaction.message.author.avatarURL({size:32})})
+		.setFooter({
+			text: `${reaction.message.author.tag} (${reaction.message.author.id})`,
+			iconURL: reaction.message.author.avatarURL({size:32})
+		})
 		.setTimestamp(reaction.message.createdTimestamp)
 		.setColor(0x992e22);
 	client.sendMessages(logChannelIDs, `Message by ${reaction.message.author.tag} (${reaction.message.author.id}) deleted from ${reaction.message.channel}`, {embeds: [embed]});
