@@ -4,6 +4,7 @@ const Discord = require('discord.js');
 const moment = require('moment');
 const { prefix, token, owner, pubkey, clientid } = require('./config.json');
 const CommandHandler = require('./commandHandler.js');
+const BorpClient = require('./borpclient.js');
 const { 
 	customCommands,
 	channelTags,
@@ -20,21 +21,13 @@ intents.add(Discord.Intents.FLAGS.GUILDS)
 	.add(Discord.Intents.FLAGS.GUILD_MESSAGES)
 	.add(Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS)
 	.add(Discord.Intents.FLAGS.DIRECT_MESSAGES);
-const client = new Discord.Client({ intents: intents, partials: ['CHANNEL', 'REACTION'] });
+const client = new BorpClient({ intents: intents, partials: ['CHANNEL', 'REACTION'] });
 
 
 client.commands = new Discord.Collection();
 client.slashCommands = new Discord.Collection();
 client.commandHandler = new CommandHandler();
 client.db = require('./database.js').db;
-client.sendMessages = (arr, content, options = {}) => {
-	for (let channel of arr) {
-		try {
-			client.channels.resolve(channel).send(content, options).catch(err => console.error(err));
-		}
-		catch (error) {console.error(error)}
-	}
-}
 
 async function xCalculation (msg) {
 	const xChannel = await channelTags.findOne({ where: {
@@ -205,7 +198,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		})
 		.setTimestamp(reaction.message.createdTimestamp)
 		.setColor(0x992e22);
-	client.sendMessages(logChannelIDs, `Message by ${reaction.message.author.tag} (${reaction.message.author.id}) deleted from ${reaction.message.channel}`, {embeds: [embed]});
+	client.sendMessages(logChannelIDs, {embeds: [embed], content: `Message by ${reaction.message.author.tag} (${reaction.message.author.id}) deleted from ${reaction.message.channel}`});
 
 	reaction.message.delete();
 });
