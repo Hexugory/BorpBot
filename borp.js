@@ -216,7 +216,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 		if (newState.channel?.type === "GUILD_STAGE_VOICE") oldState = null;
 
 		if (!oldState?.channelId && newState?.channelId) return client.sendMessages(voiceChannelIDs, `**${newState.member.displayName}** joined **${newState.channel.name}**.`);
-		else if (oldState?.channelId && !oldState?.channelId) return client.sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** left **${oldState.channel.name}**.`);
+		else if (oldState?.channelId && !newState?.channelId) return client.sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** left **${oldState.channel.name}**.`);
 		else if (oldState?.channelId && newState?.channelId && newState?.channelId != oldState?.channelId) return client.sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** moved to **${newState.channel.name}** from **${oldState.channel.name}**.`);
 	}
 	catch (error) {console.error(error)}
