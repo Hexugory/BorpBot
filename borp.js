@@ -212,9 +212,12 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 		if (!voiceChannels[0]) return;
 		const voiceChannelIDs = voiceChannels.map(channel => channel.channel_id);
 
-		if (!oldState.channelId && newState.channelId) return client.sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** joined **${newState.channel.name}**.`);
-		else if (oldState.channelId && !newState.channelId) return client.sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** left **${oldState.channel.name}**.`);
-		else if (oldState.channelId && newState.channelId && newState.channelId != oldState.channelId) return client.sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** moved to **${newState.channel.name}** from **${oldState.channel.name}**.`);
+		if (oldState.channel?.type === "GUILD_STAGE_VOICE") oldState = null;
+		if (newState.channel?.type === "GUILD_STAGE_VOICE") oldState = null;
+
+		if (!oldState?.channelId && newState?.channelId) return client.sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** joined **${newState.channel.name}**.`);
+		else if (oldState?.channelId && !newState?.channelId) return client.sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** left **${oldState.channel.name}**.`);
+		else if (oldState?.channelId && newState?.channelId && newState?.channelId != oldState?.channelId) return client.sendMessages(voiceChannelIDs, `**${oldState.member.displayName}** moved to **${newState.channel.name}** from **${oldState.channel.name}**.`);
 	}
 	catch (error) {console.error(error)}
 });
