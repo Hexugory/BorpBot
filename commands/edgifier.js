@@ -1,8 +1,15 @@
 const Jimp = require('jimp');
 
 module.exports = {
-	name: 'randomcase',
-    description: 'dOEs thIs',
+	name: 'edgifier',
+    description: 'fuck',
+    args: [
+        {
+            type: 'integer',
+            key: 'hue',
+            optional: true
+        }
+    ],
 	async execute(msg, args) {
         const avatar = await Jimp.read(msg.author.displayAvatarURL({
             size: 256,
@@ -13,9 +20,9 @@ module.exports = {
               .color([
                 { apply: 'blue', params: [ -9999 ] },
                 { apply: 'green', params: [ -9999 ] },
-                { apply: 'hue', params: [ args.hue ] }
+                { apply: 'hue', params: [ args.hue ? args.hue : 0 ] }
                ])
-              .getBuffer(jimp.MIME_PNG, function(err, buffer){
+              .getBuffer(Jimp.MIME_PNG, function(err, buffer){
 				return msg.channel.send({files: [{attachment: buffer,name: `Edgy-${msg.author.username}.png`}]}).catch(err => console.error(err));
 			  });
 	},
