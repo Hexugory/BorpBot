@@ -19,6 +19,7 @@
   "dependencies": {
     "axios": "^0.26.1",
     "discord.js": "^13.6.0",
+    "jimp": "^0.16.1",
     "moment": "^2.29.1",
     "sequelize": "^6.17.0",
     "sqlite3": "^5.0.2"
