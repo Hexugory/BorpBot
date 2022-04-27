@@ -13,6 +13,10 @@ module.exports = {
         var guildToggleRoles = [];
 
         for (const role of guildRoles) {
+            if (!int.guild.roles.resolve(role.role_id)) {
+                role.destroy();
+                return int.reply({ content: 'failed due to deleted role', ephemeral: true });
+            }
             guildToggleRoles.push(new MessageButton()
                 .setLabel((role.role_name.length > 25) ? role.role_name.substring(0, 21) + '...' : role.role_name)
                 .setCustomId(role.role_id)
