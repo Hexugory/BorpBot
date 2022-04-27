@@ -170,10 +170,6 @@ client.on('interactionCreate', async (int) => {
             role_id: int.customId
         } });
         if (!role) return int.reply({ content: 'you can\'t request that role (something may have gone wrong)', ephemeral: true });
-		if (!int.guild.roles.resolve(role.role_id)) {
-			role.destroy();
-			return int.reply({ content: 'you can\'t request that role (something may have gone wrong)', ephemeral: true });
-		}
 
 		const memberRole = int.member.roles.resolve(int.customId);
 		if (!memberRole) {
