@@ -13,7 +13,8 @@ const {
 	commandBlacklist,
 	suggestions,
 	uniqueRoles,
-	reminders } = require('./database.js');
+	reminders, 
+	toggleRoles} = require('./database.js');
 
 const intents = new Discord.Intents();
 intents.add(Discord.Intents.FLAGS.GUILDS)
@@ -116,11 +117,7 @@ client.on('interactionCreate', async (int) => {
 	if (int.isCommand()) {
 		const command = client.slashCommands.get(int.commandName);
 
-		if (command.permission && int.user.id != owner) {
-			for (const permission of command.permission) {
-				if (!int.member.permissionsIn(int.channel).has(permission)) return int.reply({ content: 'you aren\'t allowed to use that command', ephemeral: true });
-			}
-		}
+		if (command.guildOnly && !int.guild) return msg.reply('i\'m not sure what you were expecting, but that command doesn\'t work in DMs');
 
 		command.execute(int).catch(error => {
 			int.reply({ content: 'there was an error\nping guy 19 times', ephemeral: true });
@@ -152,19 +149,37 @@ client.on('interactionCreate', async (int) => {
 		return int.reply({ content: `given role \`${role.role_name}\``, ephemeral: true });
 	}
 	else if (int.isButton()) {
-		if (int.customId != 'uniqueroleremove') return;
+		console.info(`${int.user.tag} used ${int.customId}`);
 
-		const guildRoles = await uniqueRoles.findAll({ where: {
-			guild_id: int.guild.id
-		} });
-		const guildRoleIDs = guildRoles.map(role => role.role_id);
+		if (int.customId === 'uniqueroleremove') {
+			const guildRoles = await uniqueRoles.findAll({ where: {
+				guild_id: int.guild.id
+			} });
+			const guildRoleIDs = guildRoles.map(role => role.role_id);
 
-		const newRoles = int.member.roles.cache
-			.filter(role => !guildRoleIDs.includes(role.id))
+			const newRoles = int.member.roles.cache
+				.filter(role => !guildRoleIDs.includes(role.id))
+			
+			await int.member.roles.set(newRoles);
+
+			return int.reply({ content: 'removed role', ephemeral: true });
+		}
 		
-		int.member.roles.set(newRoles);
+		const role = await toggleRoles.findOne({ where: {
+            guild_id: int.guild.id,
+            role_id: int.customId
+        } });
+        if (!role) return int.reply({ content: 'you can\'t request that role (something may have gone wrong)', ephemeral: true });
 
-		return int.reply({ content: 'removed role', ephemeral: true });
+		const memberRole = int.member.roles.resolve(int.customId);
+		if (!memberRole) {
+			await int.member.roles.add(int.customId);
+			return int.reply({ content: `given role \`${role.role_name}\``, ephemeral: true });
+		}
+		else {
+			await int.member.roles.remove(int.customId);
+			return int.reply({ content: 'removed role', ephemeral: true });
+		}
 	}
 });
 

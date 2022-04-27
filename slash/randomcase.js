@@ -10,7 +10,7 @@ module.exports = {
         }
     ],
 	async execute(int) {
-        var strSplit = int.options.get('text').value.toLowerCase().split('')
+        var strSplit = int.options.get('text').value.toLowerCase().split('');
         for(let [i, char] of strSplit.entries()){
             if (Math.random() > 0.5) strSplit[i] = char.toUpperCase();
         }
