@@ -28,7 +28,7 @@ module.exports = {
         }
 
         for (let i = 0; i < rows.length; i+=5) {
-            await int.channel.send({ content: 'select your roles', components: rows.slice(i, i+5)});
+            await int.channel.send({ content: '__​__', components: rows.slice(i, i+5)});
         }
 
         return int.reply({ content: 'deployed', ephemeral: true })
