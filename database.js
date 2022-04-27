@@ -27,6 +27,9 @@ suggestions.sync();
 const uniqueRoles = require('./models/uniqueRoles')(db, Sequelize);
 uniqueRoles.sync();
 
+const toggleRoles = require('./models/toggleRoles')(db, Sequelize);
+toggleRoles.sync();
+
 const reminders = require('./models/reminders')(db, Sequelize);
 reminders.sync();
 
@@ -39,5 +42,6 @@ module.exports = {
 	commandBlacklist: commandBlacklist,
 	suggestions: suggestions,
 	uniqueRoles: uniqueRoles,
+	toggleRoles: toggleRoles,
 	reminders: reminders
 };

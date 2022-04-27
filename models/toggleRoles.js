@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    var uniqueRoles = sequelize.define('uniqueRoles', {
+    var toggleRoles = sequelize.define('toggleRoles', {
         guild_id: {
             type: DataTypes.TEXT,
             allowNull: false
@@ -12,9 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         role_name: {
             type: DataTypes.TEXT,
             allowNull: false
-        },
-        emoji: DataTypes.TEXT,
-        description: DataTypes.TEXT,
+        }
     });
-    return uniqueRoles;
+    return toggleRoles;
 }
