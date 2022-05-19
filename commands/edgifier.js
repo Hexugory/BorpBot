@@ -11,7 +11,7 @@ module.exports = {
         }
     ],
 	async execute(msg, args) {
-        const avatar = await Jimp.read(msg.author.displayAvatarURL({
+        const avatar = await Jimp.read(msg.member.displayAvatarURL({
             size: 256,
             format: 'png'
         }));
