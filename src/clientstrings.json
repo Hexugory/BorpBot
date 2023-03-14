@@ -1,0 +1,13 @@
+{
+    "command": {
+        "guildOnly": "i'm not sure what you were expecting, but that command doesn't work in DMs",
+        "ownerOnly": "why would you be allowed to use that command",
+        "noPermission": "you aren't allowed to use that command",
+        "noArguments": "i'll do that, as soon as you give me the command arguments",
+        "missingArguments": "you're missing arguments",
+        "invalidArgument": "`{1}` is an invalid argument",
+        "usagePrefix": "the proper usage would be: ",
+        "onCooldown": "wait {1} more seconds before reusing the `{2}` command"
+    },
+    "error": "there was an error\nping guy 19 times"
+}
