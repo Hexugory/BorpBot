@@ -213,7 +213,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		})
 		.setTimestamp(reaction.message.createdTimestamp)
 		.setColor(0x992e22);
-	client.sendMessages(logChannelIDs, {embeds: [embed], content: `Message by ${reaction.message.author.tag} (${reaction.message.author.id}) deleted from ${reaction.message.channel}`});
+	client.sendMessages(logChannelIDs, {embeds: [embed], content: `Message by ${reaction.message.author.tag} (${reaction.message.author.id}) ❌ed from ${reaction.message.channel}\nby ${reaction.users.cache.reduce((acc, user) => acc + user.toString(), '')}`});
 
 	reaction.message.delete();
 });
