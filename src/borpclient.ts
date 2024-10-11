@@ -167,10 +167,10 @@ export class BorpClient extends CommandClient {
      * @param arr 
      * @param content 
      */
-    sendMessages (arr: TextBasedChannel[] | string[], content: string | MessagePayload | MessageCreateOptions) {
+    sendMessages (arr: (TextBasedChannel | Snowflake)[], content: string | MessagePayload | MessageCreateOptions) {
         for (let channel of arr) {
             try {
-                (this.channels.resolve(channel) as TextBasedChannel).send(content).catch(err => console.error(err));
+                (this.channels.resolve(channel) as TextBasedChannel | null)?.send(content).catch(err => console.error(err));
             }
             catch (error) {console.error(error)}
         }
