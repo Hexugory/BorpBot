@@ -33,6 +33,9 @@ toggleRoles.sync();
 const reminders = require('./models/reminders')(db, Sequelize);
 reminders.sync();
 
+const dubsLogs = require('./models/dubsLogs')(db, Sequelize);
+dubsLogs.sync();
+
 module.exports = {
     db: db,
 	customCommands: customCommands,
@@ -43,5 +46,6 @@ module.exports = {
 	suggestions: suggestions,
 	uniqueRoles: uniqueRoles,
 	toggleRoles: toggleRoles,
-	reminders: reminders
+	reminders: reminders,
+	dubsLogs: dubsLogs
 };
