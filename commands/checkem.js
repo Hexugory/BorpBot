@@ -7,9 +7,12 @@ module.exports = {
 	async execute(msg, args) {
         const timestamp = new Date();
 
-        const lastRoll = await dubsLogs.findOne({ where: {
-            user_id: msg.author.id
-        } });
+        const lastRoll = await dubsLogs.findOne({
+            where: {
+                user_id: msg.author.id
+            },
+            order: [['createdAt', 'DESC']]
+        });
 
         if (lastRoll && Math.floor(lastRoll.createdAt.getTime() / 86400000) === Math.floor(timestamp.getTime() / 86400000)) return msg.reply('farming');
 
