@@ -12,12 +12,10 @@ module.exports = {
             ],
             limit: 20
         });
-        console.log(top);
 
         const embed = new MessageEmbed();
         let body = '';
         top.forEach(row => {
-            console.log(row.id);
             const timestampInSeconds = Math.floor(row.createdAt.getTime()/1000);
             body += `<@${row.user_id}> <t:${timestampInSeconds}:d> <t:${timestampInSeconds}:t> No.${row.roll}\n`;
         });
