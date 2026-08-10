@@ -22,9 +22,19 @@ module.exports = {
             roll += Math.floor(Math.random()*10);
         }
 
+        let rollArray = roll.toString().split('').reverse();
+        let scoreDigit = rollArray[0];
+        let matchingDigits = [];
+        for (let digit of rollArray) {
+            if (digit == scoreDigit) matchingDigits.push(digit);
+            else break;
+        }
+        if (matchingDigits[0] === '0') matchingDigits[0] = '1';
+
         await dubsLogs.create({
             user_id: msg.author.id,
-            roll: parseInt(roll, 10)
+            roll: parseInt(roll, 10),
+            score: parseInt(matchingDigits.join(''), 10)
         });
 
         const embed = new MessageEmbed();
