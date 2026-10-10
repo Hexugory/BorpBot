@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const Discord = require('discord.js');
 const moment = require('moment');
-const { prefix, token, owner, pubkey, clientid } = require('./config.json');
+const { prefix, token, owner, pubkey, clientid, deployslash } = require('./config.json');
 const CommandHandler = require('./commandHandler.js');
 const BorpClient = require('./borpclient.js');
 const { 
@@ -75,7 +75,7 @@ for (const file of slashCommandFiles) {
 
 client.cooldowns = new Discord.Collection();
 
-client.once('ready', () => {
+client.once('ready', async () => {
 	console.log(`Logged in as ${client.user.tag}`);
 
 	setInterval(async () => {
@@ -91,6 +91,28 @@ client.once('ready', () => {
 			await reminder.destroy();
 		}
 	}, 60000)
+
+	if (deployslash) {
+		for (const command of [...client.slashCommands.values()]){
+			console.log(command);
+			if (command.guildID) {
+				const data = {
+					name: command.name,
+					description: command.description
+				}
+				data.options = command?.args;
+				await client.application.commands.create(data, command.guildID).catch(err => console.error(err));
+			}
+			else {
+				const data = {
+					name: command.name,
+					description: command.description
+				}
+				data.options = command?.args;
+				await client.application.commands.create(data).catch(err => console.error(err));
+			}
+		};
+	}
 });
 
 client.on('messageCreate', async (msg) => {
@@ -117,7 +139,11 @@ client.on('interactionCreate', async (int) => {
 	if (int.isCommand()) {
 		const command = client.slashCommands.get(int.commandName);
 
-		if (command.guildOnly && !int.guild) return msg.reply('i\'m not sure what you were expecting, but that command doesn\'t work in DMs');
+		if (command.guildOnly && !int.guild) return int.reply('i\'m not sure what you were expecting, but that command doesn\'t work in DMs');
+
+		if (command.ownerOnly && int.member.id != owner) {
+            return int.reply('why would you be allowed to use that command')
+        }
 
 		command.execute(int).catch(error => {
 			int.reply({ content: 'there was an error\nping guy 19 times', ephemeral: true });
