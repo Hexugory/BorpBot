@@ -57,7 +57,7 @@ module.exports = {
         const d1 = roll.substring(roll.length-2, roll.length-1);
         const d2 = roll.substring(roll.length-1);
         if (d1 === d2) embed.setImage('https://game.touhoudiscord.net/~guyhero/Dubs_Guy.jpg');
-        if (int.options.get('body').value) embed.setDescription(int.options.get('body').value);
+        if (int.options.get('body')) embed.setDescription(int.options.get('body').value);
         
         return int.reply({ embeds: [embed] });
 	},
