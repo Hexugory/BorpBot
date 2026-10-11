@@ -23,7 +23,7 @@ module.exports = {
 
         const lastRoll = await dubsLogs.findOne({
             where: {
-                user_id: int.member.id
+                user_id: int.user.id
             },
             order: [['createdAt', 'DESC']]
         });
@@ -46,7 +46,7 @@ module.exports = {
         if (matchingDigits[0] === '0') matchingDigits[0] = '1';
 
         await dubsLogs.create({
-            user_id: int.member.id,
+            user_id: int.user.id,
             roll: parseInt(roll, 10),
             score: parseInt(matchingDigits.join(''), 10)
         });

@@ -25,7 +25,7 @@ module.exports = {
         endTime.add(time);
 
         await reminders.create({
-            sender_id: int.member.id,
+            sender_id: int.user.id,
             time: endTime.toDate(),
             reminder: int.options.get('reminder').value
         });
